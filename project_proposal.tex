@@ -1,0 +1,156 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Team Registration and Project Proposal},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Team Registration and Project Proposal}
+\author{}
+\date{\vspace{-2.5em}2024-11-07}
+
+\begin{document}
+\maketitle
+
+\textbf{Group members (name and uni)}: Pradeeti Mainali (pm3260), Sining
+Leng (sl5454), Polly Wu(rw3031), Shizhe Zhang (sz3214), Yan Li(yl5505)
+
+\textbf{Tentative Project Title}: No Zombie Apocolypse Here: Exploring
+Mushrooms
+
+\textbf{Motivation for this project}: With an increase in people who
+forage for mushrooms, we want to explore this data set to see if there
+are any striking characteristics of mushrooms that can be used to
+determine if they are poisonous or edible.
+
+\textbf{Intended final products}:
+
+\begin{itemize}
+\tightlist
+\item
+  Website describing the data set and our regression results; a screen
+  cast of our website.
+\item
+  A written report that details how we complete our project.
+\end{itemize}
+
+\textbf{Anticipated data sources}:
+\href{https://archive.ics.uci.edu/dataset/73/mushroom}{Mushroom dataset
+from UC Irvine}
+
+This data set includes descriptions of hypothetical samples
+corresponding to 23 species of gilled mushrooms in the Agaricus and
+Lepiota Family (pp.~500-525). Each species is identified as definitely
+edible, definitely poisonous, or of unknown edibility and not
+recommended.
+
+\textbf{Planned analyses/visualizations/coding challenges}:
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Planned Analyses}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Baseline characteristics comparison for mushrooms categorized as
+    poisonous or edible
+  \item
+    Univariate regression for how each feature (cap\_shape,
+    cap\_surface, cap\_color, bruises, etc. ) is associated with
+    poisonous
+  \item
+    Multivariate regression model for predicting whether a mushroom is
+    poisonous
+  \end{itemize}
+\item
+  \emph{Visualizations}: Hexbin plot to show the number distribution of
+  classes/habitats v.s. color (cap/stalk/veil/spore).
+\item
+  \emph{Coding challenges}: picking co-variates for the multivariate
+  model
+\end{itemize}
+
+\textbf{Planned timeline}:
+
+\begin{itemize}
+\tightlist
+\item
+  November 8th: Submit the Proposal
+\item
+  November 11-15: Project review meeting
+\item
+  Nov 17: Finalizing plans and starting work (Internal deadline).
+\item
+  Nov 24: Webpage work due (internal deadline)
+\item
+  Dec 1: Screencast recoded and report written (internal deadline). The
+  final review of work starts.
+\item
+  December 7: Report, webpage, and screencast, peer assessment due.
+\item
+  December 12th: In-class discussion of projects
+\end{itemize}
+
+\end{document}
