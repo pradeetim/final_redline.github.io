@@ -1,0 +1,9 @@
+---
+title: "Code Red: Unpacking Inequality"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+
