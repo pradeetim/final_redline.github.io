@@ -33,7 +33,8 @@ poverty =
 demo = 
   read_excel("./Datasets/NYC_census_core_data.xlsx")|>
   janitor::clean_names()|>
-  filter(geo_type == "CT2020")
+  filter(geo_type == "CT2020")|>
+  rename(geoid = geo_id)
 ```
 
 
@@ -67,7 +68,16 @@ redlining =
   read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
   janitor::clean_names()|>
   mutate(fip = substr(geoid20, 1, 5))|>
-  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))
+  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
+  rename(geoid = geoid20)
 ```
 
+## PLACE data 
+
+```{r}
+place =
+  read_csv("./Datasets/PLACES.csv")|>
+  janitor::clean_names()|>
+  rename(geoid = location_id)
+```
 
