@@ -6,6 +6,68 @@ output: github_document
 ---
 
 ```{r}
-
+library(tidyverse)
+library(readxl)
 ```
+
+## SNAP enrollment data 
+
+```{r}
+SNAP = 
+  read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv", skip=1)|>
+  janitor::clean_names()|>
+  mutate(geoid = str_remove(geography, ".*US"))
+```
+
+## poverty level
+
+```{r}
+poverty = 
+  read_csv(file = "./Datasets/ACS-poverty-level.csv", skip=1)|>
+  janitor::clean_names()|>
+  mutate(geoid = str_remove(geography, ".*US"))
+```
+## NYC census demographic 
+
+```{r}
+demo = 
+  read_excel("./Datasets/NYC_census_core_data.xlsx")|>
+  janitor::clean_names()|>
+  filter(geo_type == "CT2020")
+```
+
+
+## healthy store data 
+
+```{r}
+nyc_healthy_store = 
+  read_csv("./Datasets/Recognized_Shop_Healthy_Stores.csv")|>
+  janitor::clean_names()|>
+  distinct(bin, .keep_all = TRUE)|>
+  mutate(fipcode = case_when(
+    borough == "Bronx" ~ "36005",
+    borough == "Brooklyn" ~ "36047",
+    borough == "New York" ~ "36061"
+  ),
+  ct_label = case_when(
+    census_tract_2020 < 100 ~ paste0("00", census_tract_2020, "00"),
+    census_tract_2020 < 1000 ~ paste0("0", census_tract_2020, "00"),
+    census_tract_2020 < 10000 ~ paste0(census_tract_2020, "00"),
+    census_tract_2020 < 100000 ~ paste0(census_tract_2020, "0")
+  ))|>
+  select(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)|>
+  filter(!is.na(ct_label))|>
+  mutate(geoid = paste(fipcode, ct_label, sep = ""))|>
+  select(-fipcode, -ct_label)
+```
+## redlining data 
+
+```{r}
+redlining = 
+  read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
+  janitor::clean_names()|>
+  mutate(fip = substr(geoid20, 1, 5))|>
+  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))
+```
+
 
