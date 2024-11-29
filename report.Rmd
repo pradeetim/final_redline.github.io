@@ -9,7 +9,15 @@ output:
 
 ### Motivation
 
+The practice of redlining, where certain neighborhoods were systematically denied access to resources based on racial and economic factors, has had long-lasting effects on urban communities. In New York City, the legacy of redlining continues to shape access to vital services such as healthy food and public assistance programs. The motivation for this project is to explore how these historical practices have impacted modern-day disparities in access to healthy grocery stores and enrollment in the Supplemental Nutrition Assistance Program (SNAP).
+
+Our primary goal is to investigate the relationship between the neighborhoods that were historically redlined and their current access to essential resources. We seek to answer questions about the extent to which redlining has contributed to food deserts, areas where healthy food options are scarce, and whether these communities have disproportionately higher rates of SNAP enrollment. By understanding these connections, we aim to uncover the ways in which systemic inequalities persist in shaping the health and well-being of New Yorkers, and to contribute to ongoing discussions about potential policy solutions to address these disparities.
+
+This project is driven by a desire to shed light on the intersection of urban planning, socioeconomic disparities, and public health, and to highlight the role of policy in creating both opportunities and barriers for communities that continue to experience the effects of redlining. Through this exploration, we hope to contribute valuable insights to the broader conversation about equity in urban environments and the long-term impacts of discriminatory practices on marginalized populations.
+
 ### Initial Questions
+
+
 
 ### Data
 
