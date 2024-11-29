@@ -1,0 +1,29 @@
+---
+title: "Final Report"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+### Motivation
+
+### Initial Questions
+
+### Data
+
+### Exploratory Analysis
+
+### Regression Analysis
+
+### Discussion
+
+
+
+
+
+
+
+
+

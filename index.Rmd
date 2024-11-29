@@ -2,17 +2,18 @@
 title: "Code Red: Unpacking Inequality"
 output: 
   html_document:
+    code_folding: hide
     toc: true
     toc_float: true
 ---
 
-## Introduction
+### Introduction:
 
-## Screencast
+### Project Overview: Questions
 
-## Website Overview
+### Project Overview: Screencast
 
-## Collaborators
+### Collaborators:
 
 
 

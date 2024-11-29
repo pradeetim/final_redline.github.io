@@ -1,0 +1,23 @@
+---
+title: "Meet our team!"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+Thank you for visiting our website to learn more about redlining. 
+
+Meet the team below:
+
+#### Sining Leng
+
+#### Yan Li 
+
+#### Pradeeti Mainali
+<img src = "images/authors/pradeeti.jpg" style = "width:20%">
+
+#### Polly Wu
+
+#### Shizhe Zhang
+

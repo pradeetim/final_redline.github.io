@@ -26,6 +26,8 @@ that details how we completed our project.
   stores](https://data.cityofnewyork.us/Health/Recognized-Shop-Healthy-Stores/ud4g-9x9z/about_data)
 - [American Community
   Survey](https://www.census.gov/programs-surveys/acs)
+- [PLACES: Local Data for Better
+  Health](https://data.cdc.gov/500-Cities-Places/PLACES-Local-Data-for-Better-Health-Census-Tract-D/cwsq-ngmh/about_data)
 
 **Planned analyses/visualizations/coding challenges:**
 

@@ -601,68 +601,102 @@ padding-top: 0px;
 
 <body>
 
-<h1 id="team-registration-and-project-proposal">Team Registration and
-Project Proposal</h1>
-<p>2024-11-07</p>
-<p><strong>Group members (name and uni)</strong>: Pradeeti Mainali
-(pm3260), Sining Leng (sl5454), Polly Wu (rw3031), Shizhe Zhang
-(sz3214), Yan Li (yl5505)</p>
-<p><strong>Tentative Project Title</strong>: Code Red: Unpacking
-Inequality</p>
-<p><strong>Motivation for this project</strong>: This project aims to
-understand and uncover how historical redlining policies can contribute
-to modern poverty-level disparities and healthy food access. By
-identifying these disparities, the exploration can provide actionable
-insights for policymakers and community organizations aiming to address
-food deserts and improve the quality of life in underserved areas.</p>
-<p><strong>Intended final products</strong>: Website describing the data
-set and our regression results, a screencast of our website, and a
-written report that details how we completed our project.</p>
-<p><strong>Anticipated data sources</strong>:</p>
-<ul>
-<li><a href="https://www.openicpsr.org/openicpsr/project/141121/version/V2/view">Historical
-Redlining Scores</a></li>
-<li><a href="https://data.cityofnewyork.us/Health/Recognized-Shop-Healthy-Stores/ud4g-9x9z/about_data">NYC
-recognized healthy stores</a></li>
-<li><a href="https://www.census.gov/programs-surveys/acs">American
-Community Survey</a></li>
-<li><a href="https://data.cdc.gov/500-Cities-Places/PLACES-Local-Data-for-Better-Health-Census-Tract-D/cwsq-ngmh/about_data">PLACES:
-Local Data for Better Health</a></li>
-</ul>
-<p><strong>Planned analyses/visualizations/coding
-challenges:</strong></p>
-<ul>
-<li><em>Planned Analyses</em>:
-<ul>
-<li>Regression models to assess the relationship between redlining score
-and current outcomes (e.g., income, health, housing prices), adjust for
-potential confounders.</li>
-<li>A descriptive comparison of social and demographic characteristics
-between A-grade and D-grade neighborhoods.</li>
-<li>Key metrics: race and ethnicity distribution, poverty level, median
-income, and education levels.</li>
-</ul></li>
-<li><em>Visualizations</em>: Geospatial visualization of historical
-redlining grades overlaid with the distribution of healthy food stores
-in NYC.</li>
-<li><em>Coding challenges</em>: We have several data sets that need to
-be cleaned and merged. Matching the census data with the NYC healthy
-food store data (need to match census tract with zip codes)</li>
-</ul>
-<p><strong>Planned timeline</strong>:</p>
-<ul>
-<li>November 8th: Submit the Proposal [Completed]</li>
-<li>November 11-15: Project review meeting (Topic Change)
-[Completed]</li>
-<li>Nov 24: Finalizing plans and starting work (Internal deadline)
-[Completed]</li>
-<li>Nov 29: Webpage work due (internal deadline)</li>
-<li>Dec 3: Screen cast recorded and report written (internal deadline).
-The final review of work starts.</li>
-<li>December 7: Report, webpage, and screen cast, peer assessment
-due.</li>
-<li>December 12th: In-class discussion of projects</li>
-</ul>
+<h1 id="data-cleaning">Data Cleaning</h1>
+<p>Polly Wu (rw3031) 2024-11-24</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code></pre></div>
+<h2 id="snap-enrollment-data">SNAP enrollment data</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>SNAP <span class="ot">=</span> </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;./Datasets/ACS_SNAP_ENROLLMENT.csv&quot;</span>, <span class="at">skip=</span><span class="dv">1</span>)<span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">str_remove</span>(geography, <span class="st">&quot;.*US&quot;</span>))</span></code></pre></div>
+<pre><code>## Rows: 2329 Columns: 458
+## ── Column specification ────────
+## Delimiter: &quot;,&quot;
+## chr (458): Geography, Geographic Area Name, Estimate!!Total!!Households, Mar...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<h2 id="poverty-level">poverty level</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>poverty <span class="ot">=</span> </span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;./Datasets/ACS-poverty-level.csv&quot;</span>, <span class="at">skip=</span><span class="dv">1</span>)<span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">str_remove</span>(geography, <span class="st">&quot;.*US&quot;</span>))</span></code></pre></div>
+<pre><code>## New names:
+## Rows: 2327 Columns: 375
+## ── Column specification
+## ──────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic
+## Area Name,
+## Estimate!!Total!!UNRELATED
+## INDIV... dbl (228):
+## Estimate!!Total!!Population for
+## whom poverty status is
+## determined... lgl (1): ...375
+## ℹ Use `spec()` to retrieve the
+## full column specification for
+## this data. ℹ Specify the column
+## types or set `show_col_types =
+## FALSE` to quiet this message.
+## • `` -&gt; `...375`</code></pre>
+<h2 id="nyc-census-demographic">NYC census demographic</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>demo <span class="ot">=</span> </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">read_excel</span>(<span class="st">&quot;./Datasets/NYC_census_core_data.xlsx&quot;</span>)<span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">filter</span>(geo_type <span class="sc">==</span> <span class="st">&quot;CT2020&quot;</span>)<span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> geo_id)</span></code></pre></div>
+<h2 id="healthy-store-data">healthy store data</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>nyc_healthy_store <span class="ot">=</span> </span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="st">&quot;./Datasets/Recognized_Shop_Healthy_Stores.csv&quot;</span>)<span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">distinct</span>(bin, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fipcode =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    borough <span class="sc">==</span> <span class="st">&quot;Bronx&quot;</span> <span class="sc">~</span> <span class="st">&quot;36005&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    borough <span class="sc">==</span> <span class="st">&quot;Brooklyn&quot;</span> <span class="sc">~</span> <span class="st">&quot;36047&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    borough <span class="sc">==</span> <span class="st">&quot;New York&quot;</span> <span class="sc">~</span> <span class="st">&quot;36061&quot;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  ),</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">ct_label =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">100</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;00&quot;</span>, census_tract_2020, <span class="st">&quot;00&quot;</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;0&quot;</span>, census_tract_2020, <span class="st">&quot;00&quot;</span>),</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">10000</span> <span class="sc">~</span> <span class="fu">paste0</span>(census_tract_2020, <span class="st">&quot;00&quot;</span>),</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">100000</span> <span class="sc">~</span> <span class="fu">paste0</span>(census_tract_2020, <span class="st">&quot;0&quot;</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  ))<span class="sc">|&gt;</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="fu">select</span>(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)<span class="sc">|&gt;</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(ct_label))<span class="sc">|&gt;</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">paste</span>(fipcode, ct_label, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))<span class="sc">|&gt;</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>fipcode, <span class="sc">-</span>ct_label)</span></code></pre></div>
+<pre><code>## Rows: 675 Columns: 15
+## ── Column specification ────────
+## Delimiter: &quot;,&quot;
+## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
+## dbl (10): Zip 
+## Code, Year Awarded, Program 
+## Wave, Latitude, Longitude, Com...
+## lgl  (1): Address
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<h2 id="redlining-data">redlining data</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>redlining <span class="ot">=</span> </span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">read_excel</span>(<span class="st">&quot;./Datasets/Historic Redlining Score 2020B.xlsx&quot;</span>)<span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fip =</span> <span class="fu">substr</span>(geoid20, <span class="dv">1</span>, <span class="dv">5</span>))<span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">filter</span>(fip <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;36005&quot;</span>, <span class="st">&quot;36047&quot;</span>, <span class="st">&quot;36061&quot;</span>, <span class="st">&quot;36081&quot;</span>, <span class="st">&quot;36085&quot;</span>))<span class="sc">|&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> geoid20)</span></code></pre></div>
+<h2 id="place-data">PLACE data</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>place <span class="ot">=</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="st">&quot;./Datasets/PLACES.csv&quot;</span>)<span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> location_id)</span></code></pre></div>
+<pre><code>## Rows: 73621 Columns: 25
+## ── Column specification ────────
+## Delimiter: &quot;,&quot;
+## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
+## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
+## lgl  (2): Data_Value_Footnote_Symbol, Data_Value_Footnote
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 
 </body>
 </html>

@@ -2,11 +2,18 @@ name: "Final Project"
 output_dir: "."
 navbar:
   title: "Home"
-  right:
+  left: 
     - text: "About"
-      href: about.html
+      menu:
+      - text: "Meet the Team"
+        href: team.html
+      - text: "Data Source"
+        href: about.html
+  right:
     - text: "Demographics"
       href: demographics.html
+    - text: "Project Report"
+      href: report.html
     - icon: fa-github fa-lg
       href: https://github.com/pradeetim/final_redline.github.io
 output:

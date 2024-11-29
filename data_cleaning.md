@@ -5,20 +5,6 @@ Polly Wu (rw3031)
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-    ## ✔ purrr     1.0.2     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-``` r
 library(readxl)
 ```
 
@@ -32,7 +18,7 @@ SNAP =
 ```
 
     ## Rows: 2329 Columns: 458
-    ## ── Column specification ────────────────────────────────────────────────────────
+    ## ── Column specification ────────
     ## Delimiter: ","
     ## chr (458): Geography, Geographic Area Name, Estimate!!Total!!Households, Mar...
     ## 
@@ -51,12 +37,19 @@ poverty =
     ## New names:
     ## Rows: 2327 Columns: 375
     ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED INDIV... dbl
-    ## (228): Estimate!!Total!!Population for whom poverty status is determined... lgl
-    ## (1): ...375
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## ──────── Delimiter: "," chr
+    ## (146): Geography, Geographic
+    ## Area Name,
+    ## Estimate!!Total!!UNRELATED
+    ## INDIV... dbl (228):
+    ## Estimate!!Total!!Population for
+    ## whom poverty status is
+    ## determined... lgl (1): ...375
+    ## ℹ Use `spec()` to retrieve the
+    ## full column specification for
+    ## this data. ℹ Specify the column
+    ## types or set `show_col_types =
+    ## FALSE` to quiet this message.
     ## • `` -> `...375`
 
 ## NYC census demographic
@@ -94,12 +87,12 @@ nyc_healthy_store =
 ```
 
     ## Rows: 675 Columns: 15
-    ## ── Column specification ────────────────────────────────────────────────────────
+    ## ── Column specification ────────
     ## Delimiter: ","
     ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
     ## dbl (10): Zip 
     ## Code, Year Awarded, Program 
-    ## Wave, Latitude, Longitude, Commu...
+    ## Wave, Latitude, Longitude, Com...
     ## lgl  (1): Address
     ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
@@ -126,7 +119,7 @@ place =
 ```
 
     ## Rows: 73621 Columns: 25
-    ## ── Column specification ────────────────────────────────────────────────────────
+    ## ── Column specification ────────
     ## Delimiter: ","
     ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
     ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
