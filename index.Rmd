@@ -2,23 +2,42 @@
 title: "Code Red: Unpacking Inequality"
 output: 
   html_document:
-    code_folding: hide
     toc: true
     toc_float: true
 ---
 
 ### Introduction:
 
+<center>
+  <img src="images/rl.jpg" style="width:40%;">
+</center>
+
+<center style="font-size: 10px;"> 
+Photo from: [NY Times](https://www.nytimes.com/2017/08/24/upshot/how-redlinings-racist-effects-lasted-for-decades.html) 
+</center>
+
+Redlining, a discriminatory practice that denied resources and opportunities to neighborhoods based on racial and economic factors, has left a lasting impact on cities across the United States. In New York City, the echoes of this policy are still visible today, shaping access to essential services and community health.
+
+This project delves into the relationship between historical redlining and present-day disparities in access to healthy grocery stores and Supplemental Nutrition Assistance Program (SNAP) enrollment. By examining these connections, we aim to shed light on how systemic inequities continue to affect New Yorkers and inspire conversations about solutions for a more equitable future.
+
+Explore our findings, interactive maps, and stories to better understand the ties between policy, place, and public health.
+
+
 ### Project Overview: Questions
+
+We started off our project with a few questions in mind:
+
+- **Neighborhood:** What areas in NYC were most heavily impacted by redlining? How do the demograpics within these areas compare?
+- **Grocery:** Are there fewer healthy grocery stores in neighborhoods that were historically redlined compared to other areas? How does access to health grocery stores correlate with health outcomes in these neighborhoods?
+- **SNAP:** Is there a higher rate of SNAP enrollment in areas that were historically redlined? Do these areas face more challenges accessing SNAP benefits? 
+- **Analysis:**
+  - How does redlining classification (e.g., grade A, B, C, D) predict the density of healthy grocery stores in a neighborhood? What is the relationship between redlining and SNAP enrollment rates across neighborhoods in NYC?
+  - Are there other factors (e.g., income levels) that mediate the relationship between redlining and food access?
 
 ### Project Overview: Screencast
 
-### Collaborators:
 
 
-
-
-
-
+We hope this website can be a good source to explore these trends between historical redlining and healthy food access in NYC. If you have any questions, please feel free to contact us.
 
 

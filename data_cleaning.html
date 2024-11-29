@@ -611,7 +611,7 @@ padding-top: 0px;
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">str_remove</span>(geography, <span class="st">&quot;.*US&quot;</span>))</span></code></pre></div>
 <pre><code>## Rows: 2329 Columns: 458
-## ── Column specification ────────
+## ── Column specification ──────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (458): Geography, Geographic Area Name, Estimate!!Total!!Households, Mar...
 ## 
@@ -625,19 +625,13 @@ padding-top: 0px;
 <pre><code>## New names:
 ## Rows: 2327 Columns: 375
 ## ── Column specification
-## ──────── Delimiter: &quot;,&quot; chr
-## (146): Geography, Geographic
-## Area Name,
-## Estimate!!Total!!UNRELATED
-## INDIV... dbl (228):
-## Estimate!!Total!!Population for
-## whom poverty status is
-## determined... lgl (1): ...375
-## ℹ Use `spec()` to retrieve the
-## full column specification for
-## this data. ℹ Specify the column
-## types or set `show_col_types =
-## FALSE` to quiet this message.
+## ────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED
+## INDIV... dbl (228): Estimate!!Total!!Population for whom poverty
+## status is determined... lgl (1): ...375
+## ℹ Use `spec()` to retrieve the full column specification for this
+## data. ℹ Specify the column types or set `show_col_types = FALSE` to
+## quiet this message.
 ## • `` -&gt; `...375`</code></pre>
 <h2 id="nyc-census-demographic">NYC census demographic</h2>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>demo <span class="ot">=</span> </span>
@@ -666,7 +660,7 @@ padding-top: 0px;
 <span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">paste</span>(fipcode, ct_label, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))<span class="sc">|&gt;</span></span>
 <span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>fipcode, <span class="sc">-</span>ct_label)</span></code></pre></div>
 <pre><code>## Rows: 675 Columns: 15
-## ── Column specification ────────
+## ── Column specification ──────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
 ## dbl (10): Zip 
@@ -689,7 +683,7 @@ padding-top: 0px;
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
 <span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> location_id)</span></code></pre></div>
 <pre><code>## Rows: 73621 Columns: 25
-## ── Column specification ────────
+## ── Column specification ──────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
 ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...

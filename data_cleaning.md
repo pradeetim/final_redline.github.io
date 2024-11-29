@@ -18,7 +18,7 @@ SNAP =
 ```
 
     ## Rows: 2329 Columns: 458
-    ## ── Column specification ────────
+    ## ── Column specification ──────────────────────────────────────────────
     ## Delimiter: ","
     ## chr (458): Geography, Geographic Area Name, Estimate!!Total!!Households, Mar...
     ## 
@@ -37,19 +37,13 @@ poverty =
     ## New names:
     ## Rows: 2327 Columns: 375
     ## ── Column specification
-    ## ──────── Delimiter: "," chr
-    ## (146): Geography, Geographic
-    ## Area Name,
-    ## Estimate!!Total!!UNRELATED
-    ## INDIV... dbl (228):
-    ## Estimate!!Total!!Population for
-    ## whom poverty status is
-    ## determined... lgl (1): ...375
-    ## ℹ Use `spec()` to retrieve the
-    ## full column specification for
-    ## this data. ℹ Specify the column
-    ## types or set `show_col_types =
-    ## FALSE` to quiet this message.
+    ## ────────────────────────────────────────────── Delimiter: "," chr
+    ## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED
+    ## INDIV... dbl (228): Estimate!!Total!!Population for whom poverty
+    ## status is determined... lgl (1): ...375
+    ## ℹ Use `spec()` to retrieve the full column specification for this
+    ## data. ℹ Specify the column types or set `show_col_types = FALSE` to
+    ## quiet this message.
     ## • `` -> `...375`
 
 ## NYC census demographic
@@ -87,7 +81,7 @@ nyc_healthy_store =
 ```
 
     ## Rows: 675 Columns: 15
-    ## ── Column specification ────────
+    ## ── Column specification ──────────────────────────────────────────────
     ## Delimiter: ","
     ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
     ## dbl (10): Zip 
@@ -119,7 +113,7 @@ place =
 ```
 
     ## Rows: 73621 Columns: 25
-    ## ── Column specification ────────
+    ## ── Column specification ──────────────────────────────────────────────
     ## Delimiter: ","
     ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
     ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...

@@ -12,6 +12,7 @@ navbar:
   right:
     - text: "Demographics"
       href: demographics.html
+    - text: "Analysis"
     - text: "Project Report"
       href: report.html
     - icon: fa-github fa-lg
