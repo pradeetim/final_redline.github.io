@@ -17,13 +17,17 @@ library(plotly)
 rmarkdown::render("data_cleaning.rmd")
 ```
 
-### Redlining throughout Boroughs.
+### Redlining throughout Boroughs:
 
+#### Average Redlining score in each borough.
 
+### SNAP Enrollment Count throughout Boroughs:
 
-### SNAP Enrollment Count throughout Boroughs
+#### SNAP Enrollment Demographics
 
 ### Grocery Stores in Manhattan, Brooklyn, and Bronx.
+
+### Redlining Scores and Demographics:
 
 ### Redlining Scores and SNAP Enrollment.
 
