@@ -71,7 +71,11 @@ SNAP =
          ph_non_hispanic = 100-ph_hispanic)|>
   select(geoid,name,ph_snap,everything())|>
   select(-geo_id)
+```
 
+The window below is a preview of the SNAP data set. 
+
+```{r}
 head(SNAP)|>
   knitr::kable()|>
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
@@ -81,29 +85,42 @@ head(SNAP)|>
 
 ## Historic Redlining Score Data
 
-The historic redlining score was obtained from the calculation by the National Community Reinvestment Coalition(NCRC) based on the 
+The redilning data had the following measures `hrs2020` and `internal2020`. The historic redlining score(HRS) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. 
+
+<img src = "images/hrs calculation method.png">
+
+Figure 1 Method of calculating the historic redlining score.[source](https://ncrc.org/holc-health/#methods)
+
+We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. 
 
 ```{r}
 redlining = 
   read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
   janitor::clean_names()|>
+  select(-cbsa)|>
   mutate(fip = substr(geoid20, 1, 5))|>
   filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
   rename(geoid = geoid20)
 ```
-matching the historic redlining score with snap enrollment data 
+
+We subsequently match the historic redlining score with snap enrollment data and our analysis based on geoid for the census tracts. 18 census tracts were removed for the final analysis due to missing value for snap enrollment data. Our final dataset contained 2034 observations and 25 variables. 
 
 ```{r}
 redlining_snap = 
   redlining|>
   left_join(SNAP, by = "geoid")|>
   filter(is.na(ph_snap)==FALSE)
+
+redlining_snap|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
 ```
 
 
-## healthy store data 
+## Recognized Healthy Store in NYC 
 
-We obtained the geoid for the census tracts based on the fip code of NYC, boroughs and specific census tract codes. 
+We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
 
 ```{r}
 nyc_healthy_store = 
@@ -126,11 +143,15 @@ nyc_healthy_store =
   filter(!is.na(ct_label))|>
   mutate(geoid = paste(fipcode, ct_label, sep = ""))|>
   select(-fipcode, -ct_label)
+
+nyc_healthy_store|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
 ```
+The data only had stores from the Bronx, Brooklyn and New York County. We coded the geoid for the census tracts based on the fipcode of NYC, boroughs and specific census tract codes. Stores that does not provide the census tract level data were excluded.Eventually, we selected the variables that were relevant for our exploratory and statistical analysis. The variables included involve: `r names(nyc_healthy_store)`.
 
-We obtain the count for the number of healthy food stores in the census tracts and matched that with the snap enrollment data for New York City, Bronx and Brooklyn Borough. 
-
-**please note that healthy store count is only available in three boroughs so make sure you filter before the match**
+We obtain the count for the number of healthy food stores within each census tracts and matched that with the snap enrollment data for New York City, Bronx and Brooklyn Borough based on geoid.  
 
 ```{r}
 health_store_count = 
@@ -138,12 +159,17 @@ nyc_healthy_store|>
   group_by(geoid)|>
   summarise(count_healthy_stores=n())
 
+#please note that healthy store count is only available in three boroughs so make sure you filter before the match
+#example code for the match
+
 redlining_snap|>
   filter(str_starts(geoid, "36005") | str_starts(geoid, "36047")| str_starts(geoid, "36061"))|>
   left_join(health_store_count,by="geoid")
 ```
 
 ## PLACE data 
+
+We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC census tracts from CDC to obtain the prevalence of a variety of health indicators that are likely associated with food insecurity. For the purpose of matching with other data sets, we pivoted the original data set into wide format to obtain the health measures as columns and rows as each census tracts. 
 
 ```{r}
 place_crude =
@@ -155,16 +181,21 @@ place_crude =
 
 place_cleaned=
   place_crude|>
+  janitor::clean_names()|>
   filter(measure_id %in% c("CANCER","DIABETES", "HIGHCHOL", "OBESITY"))|>
   pivot_wider(
     id_cols = geoid,
     names_from = measure_id,
     values_from = data_value
   )|>
-  mutate(geoid = as.character(geoid))|>
-  janitor::clean_names()
+  mutate(geoid = as.character(geoid))
+
+place_cleaned|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
 ```
-code book for place measures
+The description regarding the health indicators we have used for the analysis were indicated in the table below. 
 
 ```{r}
 place_crude|>
@@ -172,6 +203,8 @@ place_crude|>
   filter(measure_id %in% c("CANCER","DIABETES", "HIGHCHOL", "OBESITY"))|>
   knitr::kable()
 ```
+
+# optional section 
 
 **Comments: I think we may or may not need the following data in analysis, but if someone want to use that, we will include them in the data cleaning, or I will just delete them**
 
