@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yan Li" />
+
+<meta name="date" content="2024-11-30" />
+
+<title>Vis</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="team.html">Meet the Team</a>
+    </li>
+    <li>
+      <a href="about.html">Data Source</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="demographics.html">Demographics</a>
+</li>
+<li class="dropdown-header">Analysis</li>
+<li>
+  <a href="report.html">Project Report</a>
+</li>
+<li>
+  <a href="https://github.com/pradeetim/final_redline.github.io">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Vis</h1>
+<h4 class="author">Yan Li</h4>
+<h4 class="date">2024-11-30</h4>
+
+</div>
+
+
+<p>#DATA CLEANING</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(readxl)</code></pre>
+<div id="snap-enrollment-data" class="section level2">
+<h2>SNAP enrollment data</h2>
+<pre class="r"><code>SNAP = 
+  read_csv(file = &quot;./Datasets/ACS_SNAP_ENROLLMENT.csv&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  select(
+    geo_id:s2201_c01_001e,
+    s2201_c02_009e,
+    s2201_c02_015e,
+    s2201_c02_021e:s2201_c02_032e,
+    s2201_c02_036e:s2201_c02_038e,
+    s2201_c04_001e)|&gt;
+  select(-ends_with(&quot;m&quot;))|&gt;
+  slice(-1)|&gt;
+  mutate(geoid = str_remove(geo_id, &quot;.*US&quot;))|&gt;
+  rename(
+     total_ct_households = s2201_c01_001e,
+     ph_with_children = s2201_c02_009e,
+     ph_no_children = s2201_c02_015e,
+     ph_below_poverty = s2201_c02_021e,
+     ph_above_poverty = s2201_c02_022e,
+     ph_disability = s2201_c02_023e,
+     ph_no_disability = s2201_c02_024e,
+     ph_white = s2201_c02_025e,
+     ph_black = s2201_c02_026e,
+     ph_aian = s2201_c02_027e,
+     ph_asian = s2201_c02_028e,
+     ph_nhopi = s2201_c02_029e,
+     ph_some_other_race = s2201_c02_030e,
+     ph_two_race = s2201_c02_031e,
+     ph_hispanic = s2201_c02_032e,
+     ph_no_work = s2201_c02_036e,
+     ph_1_work = s2201_c02_037e,
+     ph_2_work = s2201_c02_038e,
+     ph_snap = s2201_c04_001e
+  )|&gt;
+  mutate(across(total_ct_households:ph_snap, as.numeric))|&gt;
+  select(geoid,name,ph_snap,everything())|&gt;
+  select(-geo_id)</code></pre>
+<pre><code>## Rows: 2330 Columns: 458
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (458): ﻿&quot;GEO_ID&quot;, NAME, S2201_C01_001E, S2201_C01_001M, S2201_C01_002E, ...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>## Warning: There were 19 warnings in `mutate()`.
+## The first warning was:
+## ℹ In argument: `across(total_ct_households:ph_snap, as.numeric)`.
+## Caused by warning:
+## ! NAs introduced by coercion
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 18 remaining warnings.</code></pre>
+<p>abbreviations for column_names:</p>
+<p>ct = count ph = percentage of households</p>
+</div>
+<div id="redlining-data" class="section level2">
+<h2>redlining data</h2>
+<pre class="r"><code>redlining = 
+  read_excel(&quot;./Datasets/Historic Redlining Score 2020B.xlsx&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  mutate(fip = substr(geoid20, 1, 5))|&gt;
+  filter(fip %in% c(&quot;36005&quot;, &quot;36047&quot;, &quot;36061&quot;, &quot;36081&quot;, &quot;36085&quot;))|&gt;
+  rename(geoid = geoid20)</code></pre>
+<p>matching the historic redlining score with snap enrollment data</p>
+<pre class="r"><code>redlining_snap = 
+  redlining|&gt;
+  left_join(SNAP, by = &quot;geoid&quot;)|&gt;
+  filter(is.na(ph_snap)==FALSE)</code></pre>
+</div>
+<div id="healthy-store-data" class="section level2">
+<h2>healthy store data</h2>
+<p>We obtained the geoid for the census tracts based on the fip code of
+NYC, boroughs and specific census tract codes.</p>
+<pre class="r"><code>nyc_healthy_store = 
+  read_csv(&quot;./Datasets/Recognized_Shop_Healthy_Stores.csv&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  distinct(bin, .keep_all = TRUE)|&gt;
+  mutate(fipcode = case_when(
+    borough == &quot;Bronx&quot; ~ &quot;36005&quot;,
+    borough == &quot;Brooklyn&quot; ~ &quot;36047&quot;,
+    borough == &quot;New York&quot; ~ &quot;36061&quot;
+  ),
+  ct_label = case_when(
+    census_tract_2020 &lt; 100 ~ paste0(&quot;00&quot;, census_tract_2020, &quot;00&quot;),
+    census_tract_2020 &lt; 1000 ~ paste0(&quot;0&quot;, census_tract_2020, &quot;00&quot;),
+    census_tract_2020 &lt; 1200 ~ paste0(census_tract_2020, &quot;00&quot;),
+    census_tract_2020 &lt; 10000 ~ paste0(&quot;00&quot;, census_tract_2020),
+    census_tract_2020 &lt; 100000 ~ paste0(&quot;0&quot;, census_tract_2020)
+  ))|&gt;
+  select(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)|&gt;
+  filter(!is.na(ct_label))|&gt;
+  mutate(geoid = paste(fipcode, ct_label, sep = &quot;&quot;))|&gt;
+  select(-fipcode, -ct_label)</code></pre>
+<pre><code>## Rows: 675 Columns: 15
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
+## dbl (10): Zip 
+## Code, Year Awarded, Program 
+## Wave, Latitude, Longitude, Commu...
+## lgl  (1): Address
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>We obtain the count for the number of healthy food stores in the
+census tracts and matched that with the snap enrollment data for New
+York City, Bronx and Brooklyn Borough.</p>
+<p><strong>please note that healthy store count is only available in
+three boroughs so make sure you filter before the match</strong></p>
+<pre class="r"><code>health_store_count = 
+nyc_healthy_store|&gt;
+  group_by(geoid)|&gt;
+  summarise(count_healthy_stores=n())
+
+redlining_snap|&gt;
+  filter(str_starts(geoid, &quot;36005&quot;) | str_starts(geoid, &quot;36047&quot;)| str_starts(geoid, &quot;36061&quot;))|&gt;
+  left_join(health_store_count,by=&quot;geoid&quot;)</code></pre>
+<pre><code>## # A tibble: 1,321 × 27
+##    geoid        cbsa metro_name         hrs2020 interval2020 fip   name  ph_snap
+##    &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;
+##  1 36061008603 35620 New York-Newark-J…       1            1 36061 Cens…     0  
+##  2 36061010200 35620 New York-Newark-J…       1            1 36061 Cens…     3.1
+##  3 36061010601 35620 New York-Newark-J…       1            1 36061 Cens…     0  
+##  4 36061011401 35620 New York-Newark-J…       1            1 36061 Cens…     1.2
+##  5 36061011402 35620 New York-Newark-J…       1            1 36061 Cens…     0.8
+##  6 36061012000 35620 New York-Newark-J…       1            1 36061 Cens…     0.8
+##  7 36061012200 35620 New York-Newark-J…       1            1 36061 Cens…     0  
+##  8 36061012800 35620 New York-Newark-J…       1            1 36061 Cens…     0  
+##  9 36061013000 35620 New York-Newark-J…       1            1 36061 Cens…     1.1
+## 10 36061014200 35620 New York-Newark-J…       1            1 36061 Cens…     0  
+## # ℹ 1,311 more rows
+## # ℹ 19 more variables: total_ct_households &lt;dbl&gt;, ph_with_children &lt;dbl&gt;,
+## #   ph_no_children &lt;dbl&gt;, ph_below_poverty &lt;dbl&gt;, ph_above_poverty &lt;dbl&gt;,
+## #   ph_disability &lt;dbl&gt;, ph_no_disability &lt;dbl&gt;, ph_white &lt;dbl&gt;,
+## #   ph_black &lt;dbl&gt;, ph_aian &lt;dbl&gt;, ph_asian &lt;dbl&gt;, ph_nhopi &lt;dbl&gt;,
+## #   ph_some_other_race &lt;dbl&gt;, ph_two_race &lt;dbl&gt;, ph_hispanic &lt;dbl&gt;,
+## #   ph_no_work &lt;dbl&gt;, ph_1_work &lt;dbl&gt;, ph_2_work &lt;dbl&gt;, …</code></pre>
+</div>
+<div id="place-data" class="section level2">
+<h2>PLACE data</h2>
+<pre class="r"><code>place_crude =
+  read_csv(&quot;./Datasets/PLACES.csv&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  rename(geoid = location_id)|&gt;
+  select(geoid, measure:data_value, measure_id)</code></pre>
+<pre><code>## Rows: 73621 Columns: 25
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
+## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
+## lgl  (2): Data_Value_Footnote_Symbol, Data_Value_Footnote
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>place_cleaned=
+  place_crude|&gt;
+  filter(measure_id %in% c(&quot;CANCER&quot;,&quot;DIABETES&quot;, &quot;HIGHCHOL&quot;, &quot;OBESITY&quot;))|&gt;
+  pivot_wider(
+    id_cols = geoid,
+    names_from = measure_id,
+    values_from = data_value
+  )</code></pre>
+<p>code book for place measures</p>
+<pre class="r"><code>place_crude|&gt;
+  distinct(measure, data_value_unit, measure_id)|&gt;
+  filter(measure_id %in% c(&quot;CANCER&quot;,&quot;DIABETES&quot;, &quot;HIGHCHOL&quot;, &quot;OBESITY&quot;))|&gt;
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="68%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">measure</th>
+<th align="left">data_value_unit</th>
+<th align="left">measure_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Obesity among adults</td>
+<td align="left">%</td>
+<td align="left">OBESITY</td>
+</tr>
+<tr class="even">
+<td align="left">Diagnosed diabetes among adults</td>
+<td align="left">%</td>
+<td align="left">DIABETES</td>
+</tr>
+<tr class="odd">
+<td align="left">High cholesterol among adults who have ever been
+screened</td>
+<td align="left">%</td>
+<td align="left">HIGHCHOL</td>
+</tr>
+<tr class="even">
+<td align="left">Cancer (non-skin) or melanoma among adults</td>
+<td align="left">%</td>
+<td align="left">CANCER</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Comments: I think we may or may not need the following data
+in analysis, but if someone want to use that, we will include them in
+the data cleaning, or I will just delete them</strong></p>
+</div>
+<div id="poverty-level-optional-for-use" class="section level2">
+<h2>poverty level [optional for use ]</h2>
+<pre class="r"><code>poverty = 
+  read_csv(file = &quot;./Datasets/ACS-poverty-level.csv&quot;, skip=1)|&gt;
+  janitor::clean_names()|&gt;
+  mutate(geoid = str_remove(geography, &quot;.*US&quot;))</code></pre>
+<pre><code>## New names:
+## Rows: 2327 Columns: 375
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED INDIV... dbl
+## (228): Estimate!!Total!!Population for whom poverty status is determined... lgl
+## (1): ...375
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...375`</code></pre>
+</div>
+<div id="nyc-census-demographic-optional-for-use"
+class="section level2">
+<h2>NYC census demographic [optional for use]</h2>
+<p><strong>For this data we have more detailed demographic by age
+division, and slightly different way of measuring race and ethnicty
+(Hispanic White non-Hispanic,Black non-Hispanic, Asian non-Hispanic,
+Some other race non-Hispanic, Non-Hispanic of two or more races). In
+case this will be interesting for EDA or analysis </strong></p>
+<pre class="r"><code>demo = 
+  read_excel(&quot;./Datasets/NYC_census_core_data.xlsx&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  filter(geo_type == &quot;CT2020&quot;)|&gt;
+  rename(geoid = geo_id)</code></pre>
+</div>
+<div id="visualization-draft" class="section level1">
+<h1>Visualization Draft</h1>
+<pre class="r"><code>library(tigris)</code></pre>
+<pre><code>## To enable caching of data, set `options(tigris_use_cache = TRUE)`
+## in your R script or .Rprofile.</code></pre>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Warning: package &#39;sf&#39; was built under R version 4.4.1</code></pre>
+<pre><code>## Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(ggplot2)
+
+# Set tigris to download shapefiles as sf objects
+options(tigris_use_cache = TRUE, tigris_class = &quot;sf&quot;)
+
+# Download NYC census tracts (NY state FIPS code is &quot;36&quot;)
+nyc_shapefile = tracts(state = &quot;36&quot;, county = c(&quot;005&quot;, &quot;047&quot;, &quot;061&quot;, &quot;081&quot;, &quot;085&quot;))</code></pre>
+<pre><code>## Retrieving data for the year 2022</code></pre>
+<pre class="r"><code>ggplot(data = nyc_shapefile) +
+  geom_sf(fill = &quot;lightblue&quot;, color = &quot;darkblue&quot;, size = 0.2) +
+  labs(title = &quot;New York City Census Tracts&quot;,
+       subtitle = &quot;Visualized using tigris and ggplot2&quot;,
+       caption = &quot;Source: US Census Bureau&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="Vis-Yan_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>nyc_shapefile = nyc_shapefile |&gt;
+  janitor::clean_names() |&gt;
+  mutate(geoid = as.character(geoid)) # Ensure geoid is a character string</code></pre>
+<pre class="r"><code># Merge the cleaned shapefile with redlining_snap dataset
+redlining_map = 
+  nyc_shapefile |&gt;
+  left_join(redlining_snap, by = &quot;geoid&quot;)</code></pre>
+<pre class="r"><code># Choropleth map of SNAP enrollment by redlining score (hrs2020)
+ggplot(data = redlining_map) +
+  geom_sf(aes(fill = ph_snap), color = &quot;black&quot;, size = 0.1) +
+  scale_fill_viridis_c(name = &quot;SNAP Enrollment Rate&quot;) +
+  labs(title = &quot;SNAP Enrollment in NYC by Census Tract&quot;,
+       subtitle = &quot;Overlayed with Redlining Scores (HRS2020)&quot;,
+       caption = &quot;Data Source: ACS, Historic Redlining&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="Vis-Yan_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code># Healthy grocery stores map
+ggplot() +
+  geom_sf(data = redlining_map, aes(fill = hrs2020), alpha = 0.5) +
+  geom_point(data = nyc_healthy_store, aes(x = longitude, y = latitude), 
+             color = &quot;blue&quot;, size = 1) +
+  scale_fill_viridis_c(name = &quot;HRS2020 (Redlining Score)&quot;) +
+  labs(title = &quot;Healthy Grocery Stores in NYC&quot;,
+       subtitle = &quot;Overlayed on Redlining Scores (HRS2020)&quot;,
+       caption = &quot;Data Source: Recognized Healthy Stores, Redlining Scores&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="Vis-Yan_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code># Filter shapefile for Bronx, Brooklyn, and Manhattan
+nyc_shapefile_filtered = 
+  nyc_shapefile |&gt;
+  filter(str_starts(geoid, &quot;36005&quot;) | str_starts(geoid, &quot;36047&quot;) | str_starts(geoid, &quot;36061&quot;))
+
+# Merge redlining_snap with health_store_count
+redlining_with_stores = 
+  nyc_shapefile_filtered |&gt;
+  left_join(redlining_snap, by = &quot;geoid&quot;) |&gt;
+  left_join(health_store_count, by = &quot;geoid&quot;)
+
+ggplot(data = redlining_with_stores) +
+  geom_sf(aes(fill = count_healthy_stores), color = &quot;black&quot;, size = 0.1) +
+  scale_fill_viridis_c(name = &quot;Healthy Store Count&quot;, na.value = &quot;grey&quot;) +
+  labs(title = &quot;Healthy Store Density in Bronx, Brooklyn, and Manhattan&quot;,
+       subtitle = &quot;Overlayed with Redlining Zones&quot;,
+       caption = &quot;Data Source: Healthy Stores, Historic Redlining&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="Vis-Yan_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code># Scatterplot for redlining score vs healthy store density
+ggplot(data = redlining_with_stores, aes(x = hrs2020, y = count_healthy_stores)) +
+  geom_point(color = &quot;blue&quot;, alpha = 0.7, size = 2) + # Scatter points
+  geom_smooth(method = &quot;lm&quot;, se = TRUE, color = &quot;red&quot;) + # Regression line
+  labs(
+    title = &quot;Relationship Between Redlining Scores (HRS2020) and Healthy Store Density&quot;,
+    x = &quot;Redlining Score (HRS2020)&quot;,
+    y = &quot;Healthy Store Count&quot;,
+    caption = &quot;Data Source: Recognized Healthy Stores, Redlining Scores&quot;
+  ) +
+  theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 1243 rows containing non-finite outside the scale range
+## (`stat_smooth()`).</code></pre>
+<pre><code>## Warning: Removed 1243 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
+<p><img src="Vis-Yan_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
