@@ -19,6 +19,8 @@ rmarkdown::render("data_cleaning.rmd")
 
 ### Redlining throughout Boroughs.
 
+
+
 ### SNAP Enrollment Count throughout Boroughs
 
 ### Grocery Stores in Manhattan, Brooklyn, and Bronx.
@@ -27,64 +29,4 @@ rmarkdown::render("data_cleaning.rmd")
 
 ### Redlining Scores and Grocery Stores.
 
-
-```{r, echo=FALSE}
-redlining_snap =
-  redlining_snap |>
-  mutate(borough = case_when(
-    str_detect(name, "Bronx") ~ "Bronx",
-    str_detect(name, "Kings") ~ "Brooklyn",
-    str_detect(name, "New York County") ~ "Manhattan",
-    str_detect(name, "Queens") ~ "Queens",
-    str_detect(name, "Richmond") ~ "Staten Island",
-    TRUE ~ "Other"
-  ))
-
-health_data =
-  place_cleaned |>
-  left_join(redlining_snap, by = "geoid")
-```
-
-Distribution of Redlining Scores:
-```{r}
-redlining_snap |>
-  plot_ly(y = ~hrs2020, color = ~borough, type = "box", colors = "viridis") |>
-  layout(title = "Distribution of Redlining Scores in Each Borough",
-         xaxis = list(title = 'Borough'),
-         yaxis = list(title = 'Redlining Score'),
-        showlegend = FALSE)
-```
-
-Obesity vs Redlining Score:
-```{r, echo=FALSE}
-health_data =
-  health_data |>
-  filter(!is.na(obesity) & !is.na(hrs2020))
-
-health_data |>
-  plot_ly(x = ~hrs2020,y = ~obesity, type = 'scatter', mode = 'markers', 
-             color = ~borough,
-             hoverinfo = 'text', 
-             text = ~paste('Borough:', borough, '<br>Obesity Rate:', obesity, '%', '<br>Redlining Score:', hrs2020)) |>
-  layout(
-    title = "Obesity Rate vs Redlining Score",
-    xaxis = list(title = "Redlining Score (HRS 2020)"),
-    yaxis = list(title = "Obesity Rate (%)"),
-    showlegend = FALSE
-  ) |>
-  facet_wrap(~borough)
-
-#This is another version
-health_data |>
-  ggplot(aes(y = obesity, x = hrs2020, color = borough)) +
-  geom_point() +
-  geom_smooth(color = "black") +
-  facet_wrap(~ borough, scales = "free") +
-  labs(
-    title = "Obesity Rate vs Redlining Score",
-    x = "Obesity Rate (%)",
-    y = "Redlining Score (HRS 2020)"
-  ) +
-  theme_minimal()
-```
 
