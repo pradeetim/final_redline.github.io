@@ -16,6 +16,33 @@ library(plotly)
 ```{r datacleaning, echo=FALSE, message=FALSE}
 rmarkdown::render("data_cleaning.rmd")
 ```
+```{r setup2, echo=FALSE, message=FALSE}
+# Mapping set up
+# Load the packages
+library(sf)
+library(leaflet)
+library(tidycensus)
+
+# Set your Census API key
+census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")
+install = TRUE
+# Get NYC census tract geometries
+nyc_tracts <- get_acs(
+  geography = "tract",
+  variables = "B19013_001",  # Median household income as an example (this is just to pull the geometry)
+  state = "NY",
+  county = c("Bronx", "Kings", "New York", "Queens", "Richmond"),
+  geometry = TRUE,
+  year = 2020
+) |>
+  st_transform(crs = 4326)  # Transform to WGS84 for compatibility with Leaflet
+
+# Preview the structure of the object
+head(nyc_tracts)
+
+```
+
+
 
 ### Redlining throughout Boroughs:
 
@@ -28,6 +55,49 @@ rmarkdown::render("data_cleaning.rmd")
 ### Grocery Stores in Manhattan, Brooklyn, and Bronx.
 
 ### Redlining Scores and Demographics:
+```{r}
+# Rename GEOID to geoid
+nyc_tracts <- nyc_tracts |>
+  rename(geoid = GEOID)
+# Join redlining data with census tract geometries
+redlining_sf <- 
+  nyc_tracts |>
+  left_join(redlining_snap, by = "geoid")
+
+```
+
+```{r}
+# Create a color palette for the interval2020 variable
+pal <- colorFactor(
+  palette = c("green", "blue", "yellow", "red"),
+  domain = redlining_sf$interval2020
+)
+
+# Plot redlining data on a leaflet map
+leaflet(redlining_sf) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~pal(interval2020),
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    label = ~paste0("Census Tract: ", geoid, "<br>Redlining Interval: ", interval2020, "<br>Redlining Score (2020): ", hrs2020)
+  ) |>
+  addLegend(
+    pal = pal,
+    values = ~interval2020,
+    opacity = 0.7,
+    title = "Redlining Category",
+    position = "bottomright"
+  )
+```
 
 ### Redlining Scores and SNAP Enrollment.
 
