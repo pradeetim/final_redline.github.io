@@ -1,706 +1,905 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Cleaning</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
-@font-face {
-font-family: octicons-link;
-src: url(data:font/woff;charset=utf-8;base64,d09GRgABAAAAAAZwABAAAAAACFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEU0lHAAAGaAAAAAgAAAAIAAAAAUdTVUIAAAZcAAAACgAAAAoAAQAAT1MvMgAAAyQAAABJAAAAYFYEU3RjbWFwAAADcAAAAEUAAACAAJThvmN2dCAAAATkAAAABAAAAAQAAAAAZnBnbQAAA7gAAACyAAABCUM+8IhnYXNwAAAGTAAAABAAAAAQABoAI2dseWYAAAFsAAABPAAAAZwcEq9taGVhZAAAAsgAAAA0AAAANgh4a91oaGVhAAADCAAAABoAAAAkCA8DRGhtdHgAAAL8AAAADAAAAAwGAACfbG9jYQAAAsAAAAAIAAAACABiATBtYXhwAAACqAAAABgAAAAgAA8ASm5hbWUAAAToAAABQgAAAlXu73sOcG9zdAAABiwAAAAeAAAAME3QpOBwcmVwAAAEbAAAAHYAAAB/aFGpk3jaTY6xa8JAGMW/O62BDi0tJLYQincXEypYIiGJjSgHniQ6umTsUEyLm5BV6NDBP8Tpts6F0v+k/0an2i+itHDw3v2+9+DBKTzsJNnWJNTgHEy4BgG3EMI9DCEDOGEXzDADU5hBKMIgNPZqoD3SilVaXZCER3/I7AtxEJLtzzuZfI+VVkprxTlXShWKb3TBecG11rwoNlmmn1P2WYcJczl32etSpKnziC7lQyWe1smVPy/Lt7Kc+0vWY/gAgIIEqAN9we0pwKXreiMasxvabDQMM4riO+qxM2ogwDGOZTXxwxDiycQIcoYFBLj5K3EIaSctAq2kTYiw+ymhce7vwM9jSqO8JyVd5RH9gyTt2+J/yUmYlIR0s04n6+7Vm1ozezUeLEaUjhaDSuXHwVRgvLJn1tQ7xiuVv/ocTRF42mNgZGBgYGbwZOBiAAFGJBIMAAizAFoAAABiAGIAznjaY2BkYGAA4in8zwXi+W2+MjCzMIDApSwvXzC97Z4Ig8N/BxYGZgcgl52BCSQKAA3jCV8CAABfAAAAAAQAAEB42mNgZGBg4f3vACQZQABIMjKgAmYAKEgBXgAAeNpjYGY6wTiBgZWBg2kmUxoDA4MPhGZMYzBi1AHygVLYQUCaawqDA4PChxhmh/8ODDEsvAwHgMKMIDnGL0x7gJQCAwMAJd4MFwAAAHjaY2BgYGaA4DAGRgYQkAHyGMF8NgYrIM3JIAGVYYDT+AEjAwuDFpBmA9KMDEwMCh9i/v8H8sH0/4dQc1iAmAkALaUKLgAAAHjaTY9LDsIgEIbtgqHUPpDi3gPoBVyRTmTddOmqTXThEXqrob2gQ1FjwpDvfwCBdmdXC5AVKFu3e5MfNFJ29KTQT48Ob9/lqYwOGZxeUelN2U2R6+cArgtCJpauW7UQBqnFkUsjAY/kOU1cP+DAgvxwn1chZDwUbd6CFimGXwzwF6tPbFIcjEl+vvmM/byA48e6tWrKArm4ZJlCbdsrxksL1AwWn/yBSJKpYbq8AXaaTb8AAHja28jAwOC00ZrBeQNDQOWO//sdBBgYGRiYWYAEELEwMTE4uzo5Zzo5b2BxdnFOcALxNjA6b2ByTswC8jYwg0VlNuoCTWAMqNzMzsoK1rEhNqByEyerg5PMJlYuVueETKcd/89uBpnpvIEVomeHLoMsAAe1Id4AAAAAAAB42oWQT07CQBTGv0JBhagk7HQzKxca2sJCE1hDt4QF+9JOS0nbaaYDCQfwCJ7Au3AHj+LO13FMmm6cl7785vven0kBjHCBhfpYuNa5Ph1c0e2Xu3jEvWG7UdPDLZ4N92nOm+EBXuAbHmIMSRMs+4aUEd4Nd3CHD8NdvOLTsA2GL8M9PODbcL+hD7C1xoaHeLJSEao0FEW14ckxC+TU8TxvsY6X0eLPmRhry2WVioLpkrbp84LLQPGI7c6sOiUzpWIWS5GzlSgUzzLBSikOPFTOXqly7rqx0Z1Q5BAIoZBSFihQYQOOBEdkCOgXTOHA07HAGjGWiIjaPZNW13/+lm6S9FT7rLHFJ6fQbkATOG1j2OFMucKJJsxIVfQORl+9Jyda6Sl1dUYhSCm1dyClfoeDve4qMYdLEbfqHf3O/AdDumsjAAB42mNgYoAAZQYjBmyAGYQZmdhL8zLdDEydARfoAqIAAAABAAMABwAKABMAB///AA8AAQAAAAAAAAAAAAAAAAABAAAAAA==) format('woff');
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
-body {
--webkit-text-size-adjust: 100%;
-text-size-adjust: 100%;
-color: #333;
-font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-font-size: 16px;
-line-height: 1.6;
-word-wrap: break-word;
-}
-a {
-background-color: transparent;
-}
-a:active,
-a:hover {
-outline: 0;
-}
-strong {
-font-weight: bold;
-}
-h1 {
-font-size: 2em;
-margin: 0.67em 0;
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
 }
 img {
-border: 0;
+  max-width:100%;
 }
-hr {
-box-sizing: content-box;
-height: 0;
+.tabbed-pane {
+  padding-top: 12px;
 }
-pre {
-overflow: auto;
+.html-widget {
+  margin-bottom: 20px;
 }
-code,
-kbd,
-pre {
-font-family: monospace, monospace;
-font-size: 1em;
+button.code-folding-btn:focus {
+  outline: none;
 }
-input {
-color: inherit;
-font: inherit;
-margin: 0;
+summary {
+  display: list-item;
 }
-html input[disabled] {
-cursor: default;
-}
-input {
-line-height: normal;
-}
-input[type="checkbox"] {
-box-sizing: border-box;
-padding: 0;
-}
-table {
-border-collapse: collapse;
-border-spacing: 0;
-}
-td,
-th {
-padding: 0;
-}
-* {
-box-sizing: border-box;
-}
-input {
-font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-}
-a {
-color: #4078c0;
-text-decoration: none;
-}
-a:hover,
-a:active {
-text-decoration: underline;
-}
-hr {
-height: 0;
-margin: 15px 0;
-overflow: hidden;
-background: transparent;
-border: 0;
-border-bottom: 1px solid #ddd;
-}
-hr:before {
-display: table;
-content: "";
-}
-hr:after {
-display: table;
-clear: both;
-content: "";
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-margin-top: 15px;
-margin-bottom: 15px;
-line-height: 1.1;
-}
-h1 {
-font-size: 30px;
-}
-h2 {
-font-size: 21px;
-}
-h3 {
-font-size: 16px;
-}
-h4 {
-font-size: 14px;
-}
-h5 {
-font-size: 12px;
-}
-h6 {
-font-size: 11px;
-}
-blockquote {
-margin: 0;
-}
-ul,
-ol {
-padding: 0;
-margin-top: 0;
-margin-bottom: 0;
-}
-ol ol,
-ul ol {
-list-style-type: lower-roman;
-}
-ul ul ol,
-ul ol ol,
-ol ul ol,
-ol ol ol {
-list-style-type: lower-alpha;
-}
-dd {
-margin-left: 0;
-}
-code {
-font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-font-size: 12px;
-}
-pre {
-margin-top: 0;
-margin-bottom: 0;
-font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
-}
-.select::-ms-expand {
-opacity: 0;
-}
-.octicon {
-font: normal normal normal 16px/1 octicons-link;
-display: inline-block;
-text-decoration: none;
-text-rendering: auto;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-}
-.octicon-link:before {
-content: '\f05c';
-}
-.markdown-body:before {
-display: table;
-content: "";
-}
-.markdown-body:after {
-display: table;
-clear: both;
-content: "";
-}
-.markdown-body>*:first-child {
-margin-top: 0 !important;
-}
-.markdown-body>*:last-child {
-margin-bottom: 0 !important;
-}
-a:not([href]) {
-color: inherit;
-text-decoration: none;
-}
-.anchor {
-display: inline-block;
-padding-right: 2px;
-margin-left: -18px;
-}
-.anchor:focus {
-outline: none;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-margin-top: 1em;
-margin-bottom: 16px;
-font-weight: bold;
-line-height: 1.4;
-}
-h1 .octicon-link,
-h2 .octicon-link,
-h3 .octicon-link,
-h4 .octicon-link,
-h5 .octicon-link,
-h6 .octicon-link {
-color: #000;
-vertical-align: middle;
-visibility: hidden;
-}
-h1:hover .anchor,
-h2:hover .anchor,
-h3:hover .anchor,
-h4:hover .anchor,
-h5:hover .anchor,
-h6:hover .anchor {
-text-decoration: none;
-}
-h1:hover .anchor .octicon-link,
-h2:hover .anchor .octicon-link,
-h3:hover .anchor .octicon-link,
-h4:hover .anchor .octicon-link,
-h5:hover .anchor .octicon-link,
-h6:hover .anchor .octicon-link {
-visibility: visible;
-}
-h1 {
-padding-bottom: 0.3em;
-font-size: 2.25em;
-line-height: 1.2;
-border-bottom: 1px solid #eee;
-}
-h1 .anchor {
-line-height: 1;
-}
-h2 {
-padding-bottom: 0.3em;
-font-size: 1.75em;
-line-height: 1.225;
-border-bottom: 1px solid #eee;
-}
-h2 .anchor {
-line-height: 1;
-}
-h3 {
-font-size: 1.5em;
-line-height: 1.43;
-}
-h3 .anchor {
-line-height: 1.2;
-}
-h4 {
-font-size: 1.25em;
-}
-h4 .anchor {
-line-height: 1.2;
-}
-h5 {
-font-size: 1em;
-}
-h5 .anchor {
-line-height: 1.1;
-}
-h6 {
-font-size: 1em;
-color: #777;
-}
-h6 .anchor {
-line-height: 1.1;
-}
-p,
-blockquote,
-ul,
-ol,
-dl,
-table,
-pre {
-margin-top: 0;
-margin-bottom: 16px;
-}
-hr {
-height: 4px;
-padding: 0;
-margin: 16px 0;
-background-color: #e7e7e7;
-border: 0 none;
-}
-ul,
-ol {
-padding-left: 2em;
-}
-ul ul,
-ul ol,
-ol ol,
-ol ul {
-margin-top: 0;
-margin-bottom: 0;
-}
-li>p {
-margin-top: 16px;
-}
-dl {
-padding: 0;
-}
-dl dt {
-padding: 0;
-margin-top: 16px;
-font-size: 1em;
-font-style: italic;
-font-weight: bold;
-}
-dl dd {
-padding: 0 16px;
-margin-bottom: 16px;
-}
-blockquote {
-padding: 0 15px;
-color: #777;
-border-left: 4px solid #ddd;
-}
-blockquote>:first-child {
-margin-top: 0;
-}
-blockquote>:last-child {
-margin-bottom: 0;
-}
-table {
-display: block;
-width: 100%;
-overflow: auto;
-word-break: normal;
-word-break: keep-all;
-}
-table th {
-font-weight: bold;
-}
-table th,
-table td {
-padding: 6px 13px;
-border: 1px solid #ddd;
-}
-table tr {
-background-color: #fff;
-border-top: 1px solid #ccc;
-}
-table tr:nth-child(2n) {
-background-color: #f8f8f8;
-}
-img {
-max-width: 100%;
-box-sizing: content-box;
-background-color: #fff;
-}
-code {
-padding: 0;
-padding-top: 0.2em;
-padding-bottom: 0.2em;
-margin: 0;
-font-size: 85%;
-background-color: rgba(0,0,0,0.04);
-border-radius: 3px;
-}
-code:before,
-code:after {
-letter-spacing: -0.2em;
-content: "\00a0";
-}
-pre>code {
-padding: 0;
-margin: 0;
-font-size: 100%;
-word-break: normal;
-white-space: pre;
-background: transparent;
-border: 0;
-}
-.highlight {
-margin-bottom: 16px;
-}
-.highlight pre,
-pre {
-padding: 16px;
-overflow: auto;
-font-size: 85%;
-line-height: 1.45;
-background-color: #f7f7f7;
-border-radius: 3px;
-}
-.highlight pre {
-margin-bottom: 0;
-word-break: normal;
-}
-pre {
-word-wrap: normal;
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
-display: inline;
-max-width: initial;
-padding: 0;
-margin: 0;
-overflow: initial;
-line-height: inherit;
-word-wrap: normal;
-background-color: transparent;
-border: 0;
-}
-pre code:before,
-pre code:after {
-content: normal;
-}
-kbd {
-display: inline-block;
-padding: 3px 5px;
-font-size: 11px;
-line-height: 10px;
-color: #555;
-vertical-align: middle;
-background-color: #fcfcfc;
-border: solid 1px #ccc;
-border-bottom-color: #bbb;
-border-radius: 3px;
-box-shadow: inset 0 -1px 0 #bbb;
-}
-.pl-c {
-color: #969896;
-}
-.pl-c1,
-.pl-s .pl-v {
-color: #0086b3;
-}
-.pl-e,
-.pl-en {
-color: #795da3;
-}
-.pl-s .pl-s1,
-.pl-smi {
-color: #333;
-}
-.pl-ent {
-color: #63a35c;
-}
-.pl-k {
-color: #a71d5d;
-}
-.pl-pds,
-.pl-s,
-.pl-s .pl-pse .pl-s1,
-.pl-sr,
-.pl-sr .pl-cce,
-.pl-sr .pl-sra,
-.pl-sr .pl-sre {
-color: #183691;
-}
-.pl-v {
-color: #ed6a43;
-}
-.pl-id {
-color: #b52a1d;
-}
-.pl-ii {
-background-color: #b52a1d;
-color: #f8f8f8;
-}
-.pl-sr .pl-cce {
-color: #63a35c;
-font-weight: bold;
-}
-.pl-ml {
-color: #693a17;
-}
-.pl-mh,
-.pl-mh .pl-en,
-.pl-ms {
-color: #1d3e81;
-font-weight: bold;
-}
-.pl-mq {
-color: #008080;
-}
-.pl-mi {
-color: #333;
-font-style: italic;
-}
-.pl-mb {
-color: #333;
-font-weight: bold;
-}
-.pl-md {
-background-color: #ffecec;
-color: #bd2c00;
-}
-.pl-mi1 {
-background-color: #eaffea;
-color: #55a532;
-}
-.pl-mdr {
-color: #795da3;
-font-weight: bold;
-}
-.pl-mo {
-color: #1d3e81;
-}
-kbd {
-display: inline-block;
-padding: 3px 5px;
-font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
-line-height: 10px;
-color: #555;
-vertical-align: middle;
-background-color: #fcfcfc;
-border: solid 1px #ccc;
-border-bottom-color: #bbb;
-border-radius: 3px;
-box-shadow: inset 0 -1px 0 #bbb;
-}
-.task-list-item {
-list-style-type: none;
-}
-.task-list-item+.task-list-item {
-margin-top: 3px;
-}
-.task-list-item input {
-margin: 0 0.35em 0.25em -1.6em;
-vertical-align: middle;
-}
-:checked+.radio-label {
-z-index: 1;
-position: relative;
-border-color: #4078c0;
-}
-.sourceLine {
-display: inline-block;
-}
-code .kw { color: #000000; }
-code .dt { color: #ed6a43; }
-code .dv { color: #009999; }
-code .bn { color: #009999; }
-code .fl { color: #009999; }
-code .ch { color: #009999; }
-code .st { color: #183691; }
-code .co { color: #969896; }
-code .ot { color: #0086b3; }
-code .al { color: #a61717; }
-code .fu { color: #63a35c; }
-code .er { color: #a61717; background-color: #e3d2d2; }
-code .wa { color: #000000; }
-code .cn { color: #008080; }
-code .sc { color: #008080; }
-code .vs { color: #183691; }
-code .ss { color: #183691; }
-code .im { color: #000000; }
-code .va {color: #008080; }
-code .cf { color: #000000; }
-code .op { color: #000000; }
-code .bu { color: #000000; }
-code .ex { color: #000000; }
-code .pp { color: #999999; }
-code .at { color: #008080; }
-code .do { color: #969896; }
-code .an { color: #008080; }
-code .cv { color: #008080; }
-code .in { color: #008080; }
-</style>
-<style>
-body {
-box-sizing: border-box;
-min-width: 200px;
-max-width: 980px;
-margin: 0 auto;
-padding: 45px;
-padding-top: 0px;
+  padding: 0;
 }
 </style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
 
 
 </head>
 
 <body>
 
-<h1 id="data-cleaning">Data Cleaning</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code></pre></div>
-<h2 id="snap-enrollment-data">SNAP enrollment data</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>SNAP <span class="ot">=</span> </span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;./Datasets/ACS_SNAP_ENROLLMENT.csv&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    geo_id<span class="sc">:</span>s2201_c01_001e,</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    s2201_c02_009e,</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    s2201_c02_015e,</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>    s2201_c02_021e<span class="sc">:</span>s2201_c02_032e,</span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    s2201_c02_036e<span class="sc">:</span>s2201_c02_038e,</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    s2201_c04_001e)<span class="sc">|&gt;</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;m&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="sc">-</span><span class="dv">1</span>)<span class="sc">|&gt;</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">str_remove</span>(geo_id, <span class="st">&quot;.*US&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>     <span class="at">total_ct_households =</span> s2201_c01_001e,</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>     <span class="at">ph_with_children =</span> s2201_c02_009e,</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>     <span class="at">ph_no_children =</span> s2201_c02_015e,</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>     <span class="at">ph_below_poverty =</span> s2201_c02_021e,</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>     <span class="at">ph_above_poverty =</span> s2201_c02_022e,</span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>     <span class="at">ph_disability =</span> s2201_c02_023e,</span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>     <span class="at">ph_no_disability =</span> s2201_c02_024e,</span>
-<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>     <span class="at">ph_white =</span> s2201_c02_025e,</span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>     <span class="at">ph_black =</span> s2201_c02_026e,</span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>     <span class="at">ph_aian =</span> s2201_c02_027e,</span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>     <span class="at">ph_asian =</span> s2201_c02_028e,</span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>     <span class="at">ph_nhopi =</span> s2201_c02_029e,</span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>     <span class="at">ph_some_other_race =</span> s2201_c02_030e,</span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>     <span class="at">ph_two_race =</span> s2201_c02_031e,</span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>     <span class="at">ph_hispanic =</span> s2201_c02_032e,</span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>     <span class="at">ph_no_work =</span> s2201_c02_036e,</span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>     <span class="at">ph_1_work =</span> s2201_c02_037e,</span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>     <span class="at">ph_2_work =</span> s2201_c02_038e,</span>
-<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>     <span class="at">ph_snap =</span> s2201_c04_001e</span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
-<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(total_ct_households<span class="sc">:</span>ph_snap, as.numeric))<span class="sc">|&gt;</span></span>
-<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>  <span class="fu">select</span>(geoid,name,ph_snap,<span class="fu">everything</span>())<span class="sc">|&gt;</span></span>
-<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>geo_id)</span></code></pre></div>
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="team.html">Meet the Team</a>
+    </li>
+    <li>
+      <a href="about.html">Data Source</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="demographics.html">Demographics</a>
+</li>
+<li class="dropdown-header">Analysis</li>
+<li>
+  <a href="report.html">Project Report</a>
+</li>
+<li>
+  <a href="https://github.com/pradeetim/final_redline.github.io">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data Cleaning</h1>
+
+</div>
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(readxl)</code></pre>
+<div id="snap-enrollment-data" class="section level2">
+<h2>SNAP enrollment data</h2>
+<p>The SNAP enrollment data was acquired from the American Community
+Survey 5-year estimates of 2022 from the Census Bureau. The original
+dataset contained estimates for SNAP/Food stamp enrollment at the census
+tract level as well as other households attributes at the census tract
+level: estimate and percent for distribution of race and ethnicity,
+poverty status, disability status, presentation of children under age of
+18, etc.</p>
+<p>We selected the variables that were relevant to our analysis to build
+the final dataset, the final variables included were the following:</p>
+<ul>
+<li><code>r geoid</code>: the geographic id for identification of census
+tract</li>
+<li><code>total_ct_households</code>: estimate total count for number of
+households</li>
+<li><code>ph_with_children</code>: estimate percentage of households
+with children under 18 years</li>
+<li><code>ph_no_children</code>: estimate percentage of households
+without children under 18 years</li>
+<li><code>ph_below_poverty</code>:estimate percentage of households
+below poverty level in the past 12 months</li>
+<li><code>ph_above_poverty</code>: estimate percentage of households at
+or above poverty level in the past 12 months</li>
+<li><code>ph_disability</code>: estimate percentage of households with
+one or more people with disability</li>
+<li><code>ph_no_disability</code>: estimate percentage of households
+with no person with disability</li>
+<li><code>ph_white</code>: estimate percent households race and Hispanic
+or Latino origin of householder, White alone</li>
+<li><code>ph_black</code>: estimate percent households race and Hispanic
+or Latino origin of householder, Black or African American alone</li>
+<li><code>ph_asian</code>: estimate percent households race and Hispanic
+or Latino origin of householder, Asian alone</li>
+<li><code>ph_other race</code>: estimate percent households race and
+Hispanic or Latino origin of householder, other races (derived from the
+estimate value for White, Black and Asian race groups)</li>
+<li><code>ph_hispanic</code>: estimate percent households race and
+Hispanic or Latino origin of householder, Hispanic or Latino origin of
+any race</li>
+<li><code>ph_non_hispanic</code>: estimate percent households race and
+Hispanic or Latino origin of householder, not of Hispanic or Latino
+origin of any race (derived from the estimate value for Hispanic or
+Latino origin of any race)</li>
+<li><code>ph_no_work</code>:estimate percent of families with no workers
+in past 12 months</li>
+<li><code>ph_1_work</code>: estimate percent of families with 1 worker
+in past 12 months</li>
+<li><code>ph_2_work</code>: estimate percent of families with 2 or more
+workers in past 12 months</li>
+<li><code>ph_snap</code>: estimate percent of households receiving
+SNAP/Food Stamp</li>
+</ul>
+<pre class="r"><code>SNAP = 
+  read_csv(file = &quot;./Datasets/ACS_SNAP_ENROLLMENT.csv&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  select(
+    geo_id:s2201_c01_001e,
+    s2201_c02_009e,
+    s2201_c02_015e,
+    s2201_c02_021e:s2201_c02_028e,
+    s2201_c02_032e,
+    s2201_c02_036e:s2201_c02_038e,
+    s2201_c04_001e)|&gt;
+  select(-ends_with(&quot;m&quot;))|&gt;
+  slice(-1)|&gt;
+  mutate(geoid = str_remove(geo_id, &quot;.*US&quot;))|&gt;
+  rename(
+     total_ct_households = s2201_c01_001e,
+     ph_with_children = s2201_c02_009e,
+     ph_no_children = s2201_c02_015e,
+     ph_below_poverty = s2201_c02_021e,
+     ph_above_poverty = s2201_c02_022e,
+     ph_disability = s2201_c02_023e,
+     ph_no_disability = s2201_c02_024e,
+     ph_white = s2201_c02_025e,
+     ph_black = s2201_c02_026e,
+     ph_aian = s2201_c02_027e,
+     ph_asian = s2201_c02_028e,
+     ph_hispanic = s2201_c02_032e,
+     ph_no_work = s2201_c02_036e,
+     ph_1_work = s2201_c02_037e,
+     ph_2_work = s2201_c02_038e,
+     ph_snap = s2201_c04_001e
+  )|&gt;
+  mutate(across(total_ct_households:ph_snap, as.numeric),
+         ph_other_race = 100-ph_white-ph_black-ph_asian,
+         ph_non_hispanic = 100-ph_hispanic)|&gt;
+  select(geoid,name,ph_snap,everything())|&gt;
+  select(-geo_id)</code></pre>
 <pre><code>## Rows: 2330 Columns: 458
-## ── Column specification ──────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (458): ﻿&quot;GEO_ID&quot;, NAME, S2201_C01_001E, S2201_C01_001M, S2201_C01_002E, ...
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-## Warning: There were 19 warnings in `mutate()`.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>## Warning: There were 16 warnings in `mutate()`.
 ## The first warning was:
 ## ℹ In argument: `across(total_ct_households:ph_snap, as.numeric)`.
 ## Caused by warning:
 ## ! NAs introduced by coercion
-## ℹ Run `dplyr::last_dplyr_warnings()` to see the 18 remaining
-##   warnings.</code></pre>
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 15 remaining warnings.</code></pre>
+<pre class="r"><code>head(SNAP)|&gt;
+  knitr::kable()|&gt;
+  kableExtra::kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), font_size = 12) %&gt;% 
+  kableExtra::scroll_box(width = &quot;100%&quot;, height = &quot;300px&quot;)</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+geoid
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+name
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_snap
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+total_ct_households
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_with_children
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_no_children
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_below_poverty
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_above_poverty
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_disability
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_no_disability
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_white
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_black
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_aian
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_asian
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_hispanic
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_no_work
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_1_work
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_2_work
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_other_race
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_non_hispanic
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+36061000100
+</td>
+<td style="text-align:left;">
+Census Tract 1; New York County; New York
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+36061000201
+</td>
+<td style="text-align:left;">
+Census Tract 2.01; New York County; New York
+</td>
+<td style="text-align:right;">
+47.6
+</td>
+<td style="text-align:right;">
+878
+</td>
+<td style="text-align:right;">
+37.8
+</td>
+<td style="text-align:right;">
+62.2
+</td>
+<td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
+65.0
+</td>
+<td style="text-align:right;">
+22.2
+</td>
+<td style="text-align:right;">
+77.8
+</td>
+<td style="text-align:right;">
+28.4
+</td>
+<td style="text-align:right;">
+6.3
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+19.8
+</td>
+<td style="text-align:right;">
+57.5
+</td>
+<td style="text-align:right;">
+43.2
+</td>
+<td style="text-align:right;">
+18.8
+</td>
+<td style="text-align:right;">
+38.0
+</td>
+<td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
+42.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+36061000202
+</td>
+<td style="text-align:left;">
+Census Tract 2.02; New York County; New York
+</td>
+<td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
+3293
+</td>
+<td style="text-align:right;">
+17.6
+</td>
+<td style="text-align:right;">
+82.4
+</td>
+<td style="text-align:right;">
+34.5
+</td>
+<td style="text-align:right;">
+65.5
+</td>
+<td style="text-align:right;">
+25.1
+</td>
+<td style="text-align:right;">
+74.9
+</td>
+<td style="text-align:right;">
+39.9
+</td>
+<td style="text-align:right;">
+14.2
+</td>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+15.5
+</td>
+<td style="text-align:right;">
+40.4
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
+30.4
+</td>
+<td style="text-align:right;">
+59.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+36061000500
+</td>
+<td style="text-align:left;">
+Census Tract 5; New York County; New York
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+36061000600
+</td>
+<td style="text-align:left;">
+Census Tract 6; New York County; New York
+</td>
+<td style="text-align:right;">
+54.8
+</td>
+<td style="text-align:right;">
+5191
+</td>
+<td style="text-align:right;">
+13.1
+</td>
+<td style="text-align:right;">
+86.9
+</td>
+<td style="text-align:right;">
+42.3
+</td>
+<td style="text-align:right;">
+57.7
+</td>
+<td style="text-align:right;">
+24.1
+</td>
+<td style="text-align:right;">
+75.9
+</td>
+<td style="text-align:right;">
+15.3
+</td>
+<td style="text-align:right;">
+7.1
+</td>
+<td style="text-align:right;">
+0.3
+</td>
+<td style="text-align:right;">
+53.1
+</td>
+<td style="text-align:right;">
+25.3
+</td>
+<td style="text-align:right;">
+37.1
+</td>
+<td style="text-align:right;">
+26.9
+</td>
+<td style="text-align:right;">
+36.0
+</td>
+<td style="text-align:right;">
+24.5
+</td>
+<td style="text-align:right;">
+74.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+36061000700
+</td>
+<td style="text-align:left;">
+Census Tract 7; New York County; New York
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+4873
+</td>
+<td style="text-align:right;">
+11.8
+</td>
+<td style="text-align:right;">
+88.2
+</td>
+<td style="text-align:right;">
+4.1
+</td>
+<td style="text-align:right;">
+95.9
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+<td style="text-align:right;">
+97.8
+</td>
+<td style="text-align:right;">
+75.5
+</td>
+<td style="text-align:right;">
+4.5
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+15.8
+</td>
+<td style="text-align:right;">
+4.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+35.1
+</td>
+<td style="text-align:right;">
+64.9
+</td>
+<td style="text-align:right;">
+4.2
+</td>
+<td style="text-align:right;">
+96.0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>abbreviations for column_names:</p>
 <p>ct = count ph = percentage of households</p>
-<h2 id="redlining-data">redlining data</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>redlining <span class="ot">=</span> </span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">read_excel</span>(<span class="st">&quot;./Datasets/Historic Redlining Score 2020B.xlsx&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fip =</span> <span class="fu">substr</span>(geoid20, <span class="dv">1</span>, <span class="dv">5</span>))<span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">filter</span>(fip <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;36005&quot;</span>, <span class="st">&quot;36047&quot;</span>, <span class="st">&quot;36061&quot;</span>, <span class="st">&quot;36081&quot;</span>, <span class="st">&quot;36085&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> geoid20)</span></code></pre></div>
+</div>
+<div id="redlining-data" class="section level2">
+<h2>redlining data</h2>
+<pre class="r"><code>redlining = 
+  read_excel(&quot;./Datasets/Historic Redlining Score 2020B.xlsx&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  mutate(fip = substr(geoid20, 1, 5))|&gt;
+  filter(fip %in% c(&quot;36005&quot;, &quot;36047&quot;, &quot;36061&quot;, &quot;36081&quot;, &quot;36085&quot;))|&gt;
+  rename(geoid = geoid20)</code></pre>
 <p>matching the historic redlining score with snap enrollment data</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>redlining_snap <span class="ot">=</span> </span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  redlining<span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">left_join</span>(SNAP, <span class="at">by =</span> <span class="st">&quot;geoid&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(ph_snap)<span class="sc">==</span><span class="cn">FALSE</span>)</span></code></pre></div>
-<h2 id="healthy-store-data">healthy store data</h2>
+<pre class="r"><code>redlining_snap = 
+  redlining|&gt;
+  left_join(SNAP, by = &quot;geoid&quot;)|&gt;
+  filter(is.na(ph_snap)==FALSE)</code></pre>
+</div>
+<div id="healthy-store-data" class="section level2">
+<h2>healthy store data</h2>
 <p>We obtained the geoid for the census tracts based on the fip code of
 NYC, boroughs and specific census tract codes.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>nyc_healthy_store <span class="ot">=</span> </span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="st">&quot;./Datasets/Recognized_Shop_Healthy_Stores.csv&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">distinct</span>(bin, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fipcode =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    borough <span class="sc">==</span> <span class="st">&quot;Bronx&quot;</span> <span class="sc">~</span> <span class="st">&quot;36005&quot;</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    borough <span class="sc">==</span> <span class="st">&quot;Brooklyn&quot;</span> <span class="sc">~</span> <span class="st">&quot;36047&quot;</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    borough <span class="sc">==</span> <span class="st">&quot;New York&quot;</span> <span class="sc">~</span> <span class="st">&quot;36061&quot;</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  ),</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="at">ct_label =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">100</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;00&quot;</span>, census_tract_2020, <span class="st">&quot;00&quot;</span>),</span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;0&quot;</span>, census_tract_2020, <span class="st">&quot;00&quot;</span>),</span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">1200</span> <span class="sc">~</span> <span class="fu">paste0</span>(census_tract_2020, <span class="st">&quot;00&quot;</span>),</span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">10000</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;00&quot;</span>, census_tract_2020),</span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    census_tract_2020 <span class="sc">&lt;</span> <span class="dv">100000</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">&quot;0&quot;</span>, census_tract_2020)</span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  ))<span class="sc">|&gt;</span></span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="fu">select</span>(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)<span class="sc">|&gt;</span></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(ct_label))<span class="sc">|&gt;</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">paste</span>(fipcode, ct_label, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>fipcode, <span class="sc">-</span>ct_label)</span></code></pre></div>
+<pre class="r"><code>nyc_healthy_store = 
+  read_csv(&quot;./Datasets/Recognized_Shop_Healthy_Stores.csv&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  distinct(bin, .keep_all = TRUE)|&gt;
+  mutate(fipcode = case_when(
+    borough == &quot;Bronx&quot; ~ &quot;36005&quot;,
+    borough == &quot;Brooklyn&quot; ~ &quot;36047&quot;,
+    borough == &quot;New York&quot; ~ &quot;36061&quot;
+  ),
+  ct_label = case_when(
+    census_tract_2020 &lt; 100 ~ paste0(&quot;00&quot;, census_tract_2020, &quot;00&quot;),
+    census_tract_2020 &lt; 1000 ~ paste0(&quot;0&quot;, census_tract_2020, &quot;00&quot;),
+    census_tract_2020 &lt; 1200 ~ paste0(census_tract_2020, &quot;00&quot;),
+    census_tract_2020 &lt; 10000 ~ paste0(&quot;00&quot;, census_tract_2020),
+    census_tract_2020 &lt; 100000 ~ paste0(&quot;0&quot;, census_tract_2020)
+  ))|&gt;
+  select(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)|&gt;
+  filter(!is.na(ct_label))|&gt;
+  mutate(geoid = paste(fipcode, ct_label, sep = &quot;&quot;))|&gt;
+  select(-fipcode, -ct_label)</code></pre>
 <pre><code>## Rows: 675 Columns: 15
-## ── Column specification ──────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
 ## dbl (10): Zip 
 ## Code, Year Awarded, Program 
-## Wave, Latitude, Longitude, Com...
+## Wave, Latitude, Longitude, Commu...
 ## lgl  (1): Address
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
@@ -710,15 +909,15 @@ census tracts and matched that with the snap enrollment data for New
 York City, Bronx and Brooklyn Borough.</p>
 <p><strong>please note that healthy store count is only available in
 three boroughs so make sure you filter before the match</strong></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>health_store_count <span class="ot">=</span> </span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>nyc_healthy_store<span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">group_by</span>(geoid)<span class="sc">|&gt;</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count_healthy_stores=</span><span class="fu">n</span>())</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>redlining_snap<span class="sc">|&gt;</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_starts</span>(geoid, <span class="st">&quot;36005&quot;</span>) <span class="sc">|</span> <span class="fu">str_starts</span>(geoid, <span class="st">&quot;36047&quot;</span>)<span class="sc">|</span> <span class="fu">str_starts</span>(geoid, <span class="st">&quot;36061&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">left_join</span>(health_store_count,<span class="at">by=</span><span class="st">&quot;geoid&quot;</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 1,321 × 27
+<pre class="r"><code>health_store_count = 
+nyc_healthy_store|&gt;
+  group_by(geoid)|&gt;
+  summarise(count_healthy_stores=n())
+
+redlining_snap|&gt;
+  filter(str_starts(geoid, &quot;36005&quot;) | str_starts(geoid, &quot;36047&quot;)| str_starts(geoid, &quot;36061&quot;))|&gt;
+  left_join(health_store_count,by=&quot;geoid&quot;)</code></pre>
+<pre><code>## # A tibble: 1,321 × 26
 ##    geoid        cbsa metro_name         hrs2020 interval2020 fip   name  ph_snap
 ##    &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;
 ##  1 36061008603 35620 New York-Newark-J…       1            1 36061 Cens…     0  
@@ -732,20 +931,22 @@ three boroughs so make sure you filter before the match</strong></p>
 ##  9 36061013000 35620 New York-Newark-J…       1            1 36061 Cens…     1.1
 ## 10 36061014200 35620 New York-Newark-J…       1            1 36061 Cens…     0  
 ## # ℹ 1,311 more rows
-## # ℹ 19 more variables: total_ct_households &lt;dbl&gt;, ph_with_children &lt;dbl&gt;,
+## # ℹ 18 more variables: total_ct_households &lt;dbl&gt;, ph_with_children &lt;dbl&gt;,
 ## #   ph_no_children &lt;dbl&gt;, ph_below_poverty &lt;dbl&gt;, ph_above_poverty &lt;dbl&gt;,
 ## #   ph_disability &lt;dbl&gt;, ph_no_disability &lt;dbl&gt;, ph_white &lt;dbl&gt;,
-## #   ph_black &lt;dbl&gt;, ph_aian &lt;dbl&gt;, ph_asian &lt;dbl&gt;, ph_nhopi &lt;dbl&gt;,
-## #   ph_some_other_race &lt;dbl&gt;, ph_two_race &lt;dbl&gt;, ph_hispanic &lt;dbl&gt;,
-## #   ph_no_work &lt;dbl&gt;, ph_1_work &lt;dbl&gt;, ph_2_work &lt;dbl&gt;, …</code></pre>
-<h2 id="place-data">PLACE data</h2>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>place_crude <span class="ot">=</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="st">&quot;./Datasets/PLACES.csv&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> location_id)<span class="sc">|&gt;</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="fu">select</span>(geoid, measure<span class="sc">:</span>data_value, measure_id)</span></code></pre></div>
+## #   ph_black &lt;dbl&gt;, ph_aian &lt;dbl&gt;, ph_asian &lt;dbl&gt;, ph_hispanic &lt;dbl&gt;,
+## #   ph_no_work &lt;dbl&gt;, ph_1_work &lt;dbl&gt;, ph_2_work &lt;dbl&gt;, ph_other_race &lt;dbl&gt;,
+## #   ph_non_hispanic &lt;dbl&gt;, count_healthy_stores &lt;int&gt;</code></pre>
+</div>
+<div id="place-data" class="section level2">
+<h2>PLACE data</h2>
+<pre class="r"><code>place_crude =
+  read_csv(&quot;./Datasets/PLACES.csv&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  rename(geoid = location_id)|&gt;
+  select(geoid, measure:data_value, measure_id)</code></pre>
 <pre><code>## Rows: 73621 Columns: 25
-## ── Column specification ──────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
 ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
@@ -753,20 +954,27 @@ three boroughs so make sure you filter before the match</strong></p>
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>place_cleaned<span class="ot">=</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  place_crude<span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">filter</span>(measure_id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CANCER&quot;</span>,<span class="st">&quot;DIABETES&quot;</span>, <span class="st">&quot;HIGHCHOL&quot;</span>, <span class="st">&quot;OBESITY&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="at">id_cols =</span> geoid,</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">names_from =</span> measure_id,</span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">values_from =</span> data_value</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  )</span></code></pre></div>
+<pre class="r"><code>place_cleaned=
+  place_crude|&gt;
+  filter(measure_id %in% c(&quot;CANCER&quot;,&quot;DIABETES&quot;, &quot;HIGHCHOL&quot;, &quot;OBESITY&quot;))|&gt;
+  pivot_wider(
+    id_cols = geoid,
+    names_from = measure_id,
+    values_from = data_value
+  )|&gt;
+  mutate(geoid = as.character(geoid))|&gt;
+  janitor::clean_names()</code></pre>
 <p>code book for place measures</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>place_crude<span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">distinct</span>(measure, data_value_unit, measure_id)<span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">filter</span>(measure_id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CANCER&quot;</span>,<span class="st">&quot;DIABETES&quot;</span>, <span class="st">&quot;HIGHCHOL&quot;</span>, <span class="st">&quot;OBESITY&quot;</span>))<span class="sc">|&gt;</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div>
+<pre class="r"><code>place_crude|&gt;
+  distinct(measure, data_value_unit, measure_id)|&gt;
+  filter(measure_id %in% c(&quot;CANCER&quot;,&quot;DIABETES&quot;, &quot;HIGHCHOL&quot;, &quot;OBESITY&quot;))|&gt;
+  knitr::kable()</code></pre>
 <table>
+<colgroup>
+<col width="68%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">measure</th>
@@ -801,35 +1009,83 @@ screened</td>
 <p><strong>Comments: I think we may or may not need the following data
 in analysis, but if someone want to use that, we will include them in
 the data cleaning, or I will just delete them</strong></p>
-<h2 id="poverty-level-optional-for-use-">poverty level [optional for use
-]</h2>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>poverty <span class="ot">=</span> </span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;./Datasets/ACS-poverty-level.csv&quot;</span>, <span class="at">skip=</span><span class="dv">1</span>)<span class="sc">|&gt;</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geoid =</span> <span class="fu">str_remove</span>(geography, <span class="st">&quot;.*US&quot;</span>))</span></code></pre></div>
+</div>
+<div id="poverty-level-optional-for-use" class="section level2">
+<h2>poverty level [optional for use ]</h2>
+<pre class="r"><code>poverty = 
+  read_csv(file = &quot;./Datasets/ACS-poverty-level.csv&quot;, skip=1)|&gt;
+  janitor::clean_names()|&gt;
+  mutate(geoid = str_remove(geography, &quot;.*US&quot;))</code></pre>
 <pre><code>## New names:
 ## Rows: 2327 Columns: 375
 ## ── Column specification
-## ────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED
-## INDIV... dbl (228): Estimate!!Total!!Population for whom poverty
-## status is determined... lgl (1): ...375
-## ℹ Use `spec()` to retrieve the full column specification for this
-## data. ℹ Specify the column types or set `show_col_types = FALSE` to
-## quiet this message.
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED INDIV... dbl
+## (228): Estimate!!Total!!Population for whom poverty status is determined... lgl
+## (1): ...375
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...375`</code></pre>
-<h2 id="nyc-census-demographic-optional-for-use">NYC census demographic
-[optional for use]</h2>
-<p>**For this data we have more detailed demographic by age division,
-and slightly different way of measuring race and ethnicty (Hispanic
-White non-Hispanic,Black non-Hispanic, Asian non-Hispanic, Some other
-race non-Hispanic, Non-Hispanic of two or more races). In case this will
-be interesting for EDA or analysis **</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>demo <span class="ot">=</span> </span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">read_excel</span>(<span class="st">&quot;./Datasets/NYC_census_core_data.xlsx&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()<span class="sc">|&gt;</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="fu">filter</span>(geo_type <span class="sc">==</span> <span class="st">&quot;CT2020&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">geoid =</span> geo_id)</span></code></pre></div>
+</div>
+<div id="nyc-census-demographic-optional-for-use"
+class="section level2">
+<h2>NYC census demographic [optional for use]</h2>
+<p><strong>For this data we have more detailed demographic by age
+division, and slightly different way of measuring race and ethnicty
+(Hispanic White non-Hispanic,Black non-Hispanic, Asian non-Hispanic,
+Some other race non-Hispanic, Non-Hispanic of two or more races). In
+case this will be interesting for EDA or analysis </strong></p>
+<pre class="r"><code>demo = 
+  read_excel(&quot;./Datasets/NYC_census_core_data.xlsx&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  filter(geo_type == &quot;CT2020&quot;)|&gt;
+  rename(geoid = geo_id)</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

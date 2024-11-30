@@ -10,6 +10,29 @@ library(readxl)
 
 ## SNAP enrollment data 
 
+The SNAP enrollment data was acquired from the American Community Survey 5-year estimates of 2022 from the Census Bureau. The original dataset contained estimates for SNAP/Food stamp enrollment at the census tract level as well as other households attributes at the census tract level: estimate and percent for distribution of race and ethnicity, poverty status, disability status, presentation of children under age of 18, etc.
+
+We selected the variables that were relevant to our analysis to build the final dataset, the final variables included were the following:
+  
+  - ` r geoid`: the geographic id for identification of census tract 
+  - `total_ct_households`: estimate total count for number of households 
+  - `ph_with_children`: estimate percentage of households with children under 18 years
+  - `ph_no_children`: estimate percentage of households without children under 18 years 
+  - `ph_below_poverty`:estimate percentage of households below poverty level in the past 12 months
+  - `ph_above_poverty`: estimate percentage of households at or above poverty level in the past 12 months
+  - `ph_disability`: estimate percentage of households with one or more people with disability 
+  - `ph_no_disability`: estimate percentage of households with no person with disability 
+  - `ph_white`: estimate percent households race and Hispanic or Latino origin of householder, White alone
+  - `ph_black`: estimate percent households race and Hispanic or Latino origin of householder, Black or African American alone
+  - `ph_asian`: estimate percent households race and Hispanic or Latino origin of householder, Asian alone
+  - `ph_other race`: estimate percent households race and Hispanic or Latino origin of householder, other races (derived from the estimate value for White, Black and Asian race groups)
+  - `ph_hispanic`: estimate percent households race and Hispanic or Latino origin of householder, Hispanic or Latino origin of any race
+  - `ph_non_hispanic`: estimate percent households race and Hispanic or Latino origin of householder, not of Hispanic or Latino origin of any race  (derived from the estimate value for Hispanic or Latino origin of any race)
+  - `ph_no_work`:estimate percent of families with no workers in past 12 months 
+  - `ph_1_work`: estimate percent of families with 1 worker in past 12 months 
+  - `ph_2_work`: estimate percent of families with 2 or more workers in past 12 months 
+  - `ph_snap`: estimate percent of households receiving SNAP/Food Stamp 
+
 ```{r}
 SNAP = 
   read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
@@ -18,7 +41,8 @@ SNAP =
     geo_id:s2201_c01_001e,
     s2201_c02_009e,
     s2201_c02_015e,
-    s2201_c02_021e:s2201_c02_032e,
+    s2201_c02_021e:s2201_c02_028e,
+    s2201_c02_032e,
     s2201_c02_036e:s2201_c02_038e,
     s2201_c04_001e)|>
   select(-ends_with("m"))|>
@@ -36,26 +60,28 @@ SNAP =
      ph_black = s2201_c02_026e,
      ph_aian = s2201_c02_027e,
      ph_asian = s2201_c02_028e,
-     ph_nhopi = s2201_c02_029e,
-     ph_some_other_race = s2201_c02_030e,
-     ph_two_race = s2201_c02_031e,
      ph_hispanic = s2201_c02_032e,
      ph_no_work = s2201_c02_036e,
      ph_1_work = s2201_c02_037e,
      ph_2_work = s2201_c02_038e,
      ph_snap = s2201_c04_001e
   )|>
-  mutate(across(total_ct_households:ph_snap, as.numeric))|>
+  mutate(across(total_ct_households:ph_snap, as.numeric),
+         ph_other_race = 100-ph_white-ph_black-ph_asian,
+         ph_non_hispanic = 100-ph_hispanic)|>
   select(geoid,name,ph_snap,everything())|>
   select(-geo_id)
+
+head(SNAP)|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
 ```
-abbreviations for column_names:
-
-ct = count 
-ph = percentage of households 
 
 
-## redlining data 
+## Historic Redlining Score Data
+
+The historic redlining score was obtained from the calculation by the National Community Reinvestment Coalition(NCRC) based on the 
 
 ```{r}
 redlining = 
@@ -134,7 +160,9 @@ place_cleaned=
     id_cols = geoid,
     names_from = measure_id,
     values_from = data_value
-  )
+  )|>
+  mutate(geoid = as.character(geoid))|>
+  janitor::clean_names()
 ```
 code book for place measures
 

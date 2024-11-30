@@ -31,9 +31,7 @@ redlining_snap =
 
 health_data =
   place_cleaned |>
-  mutate(geoid = as.character(geoid)) |>
-  left_join(redlining_snap, by = "geoid") |>
-  janitor::clean_names()
+  left_join(redlining_snap, by = "geoid")
 ```
 
 Distribution of Redlining Scores:
