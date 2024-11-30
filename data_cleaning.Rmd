@@ -181,13 +181,13 @@ place_crude =
 
 place_cleaned=
   place_crude|>
-  janitor::clean_names()|>
   filter(measure_id %in% c("CANCER","DIABETES", "HIGHCHOL", "OBESITY"))|>
   pivot_wider(
     id_cols = geoid,
     names_from = measure_id,
     values_from = data_value
   )|>
+  janitor::clean_names()|>
   mutate(geoid = as.character(geoid))
 
 place_cleaned|>
