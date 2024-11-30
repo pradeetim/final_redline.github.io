@@ -58,7 +58,6 @@ SNAP =
      ph_no_disability = s2201_c02_024e,
      ph_white = s2201_c02_025e,
      ph_black = s2201_c02_026e,
-     ph_aian = s2201_c02_027e,
      ph_asian = s2201_c02_028e,
      ph_hispanic = s2201_c02_032e,
      ph_no_work = s2201_c02_036e,
