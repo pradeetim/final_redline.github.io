@@ -23,20 +23,31 @@ This project delves into the relationship between historical redlining and prese
 Explore our findings, interactive maps, and stories to better understand the ties between policy, place, and public health.
 
 
-### Project Overview: Questions
+### Website Overview:
 
-We started off our project with a few questions in mind:
+Our website will cover the following:
 
-- **Neighborhood:** What areas in NYC were most heavily impacted by redlining? How do the demograpics within these areas compare?
-- **Grocery:** Are there fewer healthy grocery stores in neighborhoods that were historically redlined compared to other areas? How does access to health grocery stores correlate with health outcomes in these neighborhoods?
-- **SNAP:** Is there a higher rate of SNAP enrollment in areas that were historically redlined? Do these areas face more challenges accessing SNAP benefits? 
-- **Analysis:**
-  - How does redlining classification (e.g., grade A, B, C, D) predict the density of healthy grocery stores in a neighborhood? What is the relationship between redlining and SNAP enrollment rates across neighborhoods in NYC?
-  - Are there other factors (e.g., income levels) that mediate the relationship between redlining and food access?
+- Meet the Team
+- Project Report (full description of project)
+- Data:
+  - Data sources/data cleaning
+  - Variable descriptions
+- Descriptive Analysis:
+  - Visualizations
+  - Distributions
+- Statistical Analysis:
+  - Regression on ___
+
 
 ### Project Overview: Screencast
 
+### Collaborators:
 
+- Sining Leng (sl5454)
+- Yan Li(yl5505)
+- Pradeeti Mainali (pm3260) 
+- Polly Wu(rw3031)
+- Shizhe Zhang (sz3214)
 
 We hope this website can be a good source to explore these trends between historical redlining and healthy food access in NYC. If you have any questions, please feel free to contact us.
 
