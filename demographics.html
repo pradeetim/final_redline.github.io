@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
@@ -221,6 +222,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -357,6 +361,14 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Code Red: Unpacking Inequality</h1>
@@ -364,7 +376,35 @@ div.tocify {
 </div>
 
 
-
+<pre><code>##   |                                                           |                                                   |   0%  |                                                           |..                                                 |   5%                     |                                                           |.....                                              |  10% [unnamed-chunk-3]   |                                                           |.......                                            |  14%                     |                                                           |..........                                         |  19% [unnamed-chunk-4]   |                                                           |............                                       |  24%                     |                                                           |...............                                    |  29% [unnamed-chunk-5]   |                                                           |.................                                  |  33%                     |                                                           |...................                                |  38% [unnamed-chunk-6]   |                                                           |......................                             |  43%                     |                                                           |........................                           |  48% [unnamed-chunk-7]   |                                                           |...........................                        |  52%                     |                                                           |.............................                      |  57% [unnamed-chunk-8]   |                                                           |................................                   |  62%                     |                                                           |..................................                 |  67% [unnamed-chunk-9]   |                                                           |....................................               |  71%                     |                                                           |.......................................            |  76% [unnamed-chunk-10]  |                                                           |.........................................          |  81%                     |                                                           |............................................       |  86% [unnamed-chunk-11]  |                                                           |..............................................     |  90%                     |                                                           |.................................................  |  95% [unnamed-chunk-12]  |                                                           |...................................................| 100%                                                                                                                                
+## &quot;C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/pandoc&quot; +RTS -K512m -RTS data_cleaning.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output data_cleaning.html --lua-filter &quot;C:\Users\prade\AppData\Local\R\win-library\4.4\rmarkdown\rmarkdown\lua\pagebreak.lua&quot; --lua-filter &quot;C:\Users\prade\AppData\Local\R\win-library\4.4\rmarkdown\rmarkdown\lua\latex-div.lua&quot; --embed-resources --standalone --variable bs3=TRUE --section-divs --template &quot;C:\Users\prade\AppData\Local\R\win-library\4.4\rmarkdown\rmd\h\default.html&quot; --no-highlight --variable highlightjs=1 --include-before-body &quot;C:\Users\prade\AppData\Local\Temp\RtmpIzHflk\rmarkdown-str7cbc6f3d4b27.html&quot; --variable navbar=1 --variable theme=yeti --mathjax --variable &quot;mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; --include-in-header &quot;C:\Users\prade\AppData\Local\Temp\RtmpIzHflk\rmarkdown-str7cbc779b959.html&quot;</code></pre>
+<div id="redlining-throughout-boroughs" class="section level3">
+<h3>Redlining throughout Boroughs:</h3>
+<div id="average-redlining-score-in-each-borough."
+class="section level4">
+<h4>Average Redlining score in each borough.</h4>
+</div>
+</div>
+<div id="snap-enrollment-count-throughout-boroughs"
+class="section level3">
+<h3>SNAP Enrollment Count throughout Boroughs:</h3>
+<div id="snap-enrollment-demographics" class="section level4">
+<h4>SNAP Enrollment Demographics</h4>
+</div>
+</div>
+<div id="grocery-stores-in-manhattan-brooklyn-and-bronx."
+class="section level3">
+<h3>Grocery Stores in Manhattan, Brooklyn, and Bronx.</h3>
+</div>
+<div id="redlining-scores-and-demographics" class="section level3">
+<h3>Redlining Scores and Demographics:</h3>
+</div>
+<div id="redlining-scores-and-snap-enrollment." class="section level3">
+<h3>Redlining Scores and SNAP Enrollment.</h3>
+</div>
+<div id="redlining-scores-and-grocery-stores." class="section level3">
+<h3>Redlining Scores and Grocery Stores.</h3>
+</div>
 
 
 
@@ -401,6 +441,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

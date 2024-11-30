@@ -7,13 +7,13 @@ output:
     toc_float: true
 ---
 
-```{r setup, echo=FALSE}
+```{r setup, echo=FALSE, message=FALSE}
 library(ggplot2)
 library(dplyr)
 library(plotly)
 ```
 
-```{r datacleaning, echo=FALSE}
+```{r datacleaning, echo=FALSE, message=FALSE}
 rmarkdown::render("data_cleaning.rmd")
 ```
 
