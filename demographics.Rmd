@@ -144,6 +144,35 @@ leaflet(redlining_sf) |>
 #### SNAP Enrollment Demographics
 
 ### Grocery Stores in Manhattan, Brooklyn, and Bronx.
+```{r}
+
+# Create the map to plot all grocery stores in Manhattan, Brooklyn, and Bronx
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = nyc_healthy_store,
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 5,
+    color = "blue",
+    stroke = FALSE,
+    fillOpacity = 0.8,
+    label = ~paste0("Store Name: ", store_name,
+                    "<br>Borough: ", borough,
+                    "<br>ZIP Code: ", zip_code),
+    labelOptions = labelOptions(
+      noHide = FALSE,
+      direction = "auto"
+    )
+  ) |>
+  addLegend(
+    position = "bottomright",
+    colors = "blue",
+    labels = "Grocery Store",
+    title = "Healthy Grocery Stores"
+  )
+
+```
 
 ### Redlining Scores and Demographics:
 
