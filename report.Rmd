@@ -5,6 +5,8 @@ output:
     code_folding: hide
     toc: true
     toc_float: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ### Motivation
@@ -22,6 +24,75 @@ This project is driven by a desire to shed light on the intersection of urban pl
 ### Data
 
 ### Exploratory Analysis
+```{r, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+```
+
+```{r, echo=FALSE}
+redlining_snap =
+  redlining_snap |>
+  mutate(borough = case_when(
+    str_detect(name, "Bronx") ~ "Bronx",
+    str_detect(name, "Kings") ~ "Brooklyn",
+    str_detect(name, "New York County") ~ "Manhattan",
+    str_detect(name, "Queens") ~ "Queens",
+    str_detect(name, "Richmond") ~ "Staten Island",
+    TRUE ~ "Other"
+  ))
+
+health_data =
+  place_cleaned |>
+  mutate(geoid = as.character(geoid)) |>
+  left_join(redlining_snap, by = "geoid") |>
+  janitor::clean_names()
+```
+
+Distribution of Redlining Scores:
+```{r}
+redlining_snap |>
+  plot_ly(y = ~hrs2020, color = ~borough, type = "box", colors = "viridis") |>
+  layout(title = "Distribution of Redlining Scores in Each Borough",
+         xaxis = list(title = 'Borough'),
+         yaxis = list(title = 'Redlining Score'),
+        showlegend = FALSE)
+```
+
+Obesity vs Redlining Score:
+```{r, echo=FALSE}
+health_data =
+  health_data |>
+  filter(!is.na(obesity) & !is.na(hrs2020))
+
+health_data |>
+  plot_ly(x = ~hrs2020,y = ~obesity, type = 'scatter', mode = 'markers', 
+             color = ~borough,
+             hoverinfo = 'text', 
+             text = ~paste('Borough:', borough, '<br>Obesity Rate:', obesity, '%', '<br>Redlining Score:', hrs2020)) |>
+  layout(
+    title = "Obesity Rate vs Redlining Score",
+    xaxis = list(title = "Redlining Score (HRS 2020)"),
+    yaxis = list(title = "Obesity Rate (%)"),
+    showlegend = FALSE
+  ) |>
+  facet_wrap(~borough)
+
+#This is another version
+health_data |>
+  ggplot(aes(y = obesity, x = hrs2020, color = borough)) +
+  geom_point() +
+  geom_smooth(color = "black") +
+  facet_wrap(~ borough, scales = "free") +
+  labs(
+    title = "Obesity Rate vs Redlining Score",
+    x = "Obesity Rate (%)",
+    y = "Redlining Score (HRS 2020)"
+  ) +
+  theme_minimal()
+```
+
+The exploratory analysis of obesity rates against redlining scores reveals a consistent positive trend across most of New York City's boroughs, with areas of historical redlining showing higher obesity rates. While Manhattan presents a weaker relationship, other boroughs like the Bronx, Brooklyn, Queens, and Staten Island demonstrate stronger associations, suggesting that the legacy of redlining may contribute to health disparities. 
 
 ### Regression Analysis
 
