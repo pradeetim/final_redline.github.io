@@ -2,20 +2,31 @@
 title: "Code Red: Unpacking Inequality"
 output: 
   html_document:
+    code_folding: hide
     toc: true
     toc_float: true
 ---
 
-
-```{r, echo=FALSE}
+```{r setup, echo=FALSE}
 library(ggplot2)
 library(dplyr)
 library(plotly)
 ```
 
-```{r}
-
+```{r datacleaning, echo=FALSE}
+rmarkdown::render("data_cleaning.rmd")
 ```
+
+### Redlining throughout Boroughs.
+
+### SNAP Enrollment Count throughout Boroughs
+
+### Grocery Stores in Manhattan, Brooklyn, and Bronx.
+
+### Redlining Scores and SNAP Enrollment.
+
+### Redlining Scores and Grocery Stores.
+
 
 ```{r, echo=FALSE}
 redlining_snap =
