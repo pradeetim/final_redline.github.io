@@ -3,9 +3,225 @@ title: "Statistical Analysis"
 output: github_document
 ---
 
-```{r}
+import the datasets and packages 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readxl)
+
+SNAP = 
+  read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
+  janitor::clean_names()|>
+  select(
+    geo_id:s2201_c01_001e,
+    s2201_c02_009e,
+    s2201_c02_015e,
+    s2201_c02_021e:s2201_c02_028e,
+    s2201_c02_032e,
+    s2201_c02_036e:s2201_c02_038e,
+    s2201_c04_001e)|>
+  select(-ends_with("m"))|>
+  slice(-1)|>
+  mutate(geoid = str_remove(geo_id, ".*US"))|>
+  rename(
+     total_ct_households = s2201_c01_001e,
+     ph_with_children = s2201_c02_009e,
+     ph_no_children = s2201_c02_015e,
+     ph_below_poverty = s2201_c02_021e,
+     ph_above_poverty = s2201_c02_022e,
+     ph_disability = s2201_c02_023e,
+     ph_no_disability = s2201_c02_024e,
+     ph_white = s2201_c02_025e,
+     ph_black = s2201_c02_026e,
+     ph_asian = s2201_c02_028e,
+     ph_hispanic = s2201_c02_032e,
+     ph_no_work = s2201_c02_036e,
+     ph_1_work = s2201_c02_037e,
+     ph_2_work = s2201_c02_038e,
+     ph_snap = s2201_c04_001e
+  )|>
+  mutate(across(total_ct_households:ph_snap, as.numeric),
+         ph_other_race = 100-ph_white-ph_black-ph_asian,
+         ph_non_hispanic = 100-ph_hispanic)|>
+  select(geoid,name,ph_snap,everything())|>
+  select(-geo_id)
+
+redlining = 
+  read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
+  janitor::clean_names()|>
+  select(-cbsa)|>
+  mutate(fip = substr(geoid20, 1, 5),
+         interval2020 = as.character(interval2020),
+         red_grade = case_when(
+           hrs2020 < 1.5 ~ "A",
+           hrs2020 < 2.5 ~ "B",
+           hrs2020 < 3.5 ~ "C",
+           TRUE ~ "D"
+         ))|>
+  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
+  rename(geoid = geoid20)
+
+redlining_snap = 
+  redlining|>
+  left_join(SNAP, by = "geoid")|>
+  filter(is.na(ph_snap)==FALSE)
+
+place_crude =
+  read_csv("./Datasets/PLACES.csv")|>
+  janitor::clean_names()|>
+  rename(geoid = location_id)|>
+  select(geoid, measure:data_value, measure_id)
+
+
+place_cleaned=
+  place_crude|>
+  filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
+  pivot_wider(
+    id_cols = geoid,
+    names_from = measure_id,
+    values_from = data_value
+  )|>
+  janitor::clean_names()|>
+  mutate(geoid = as.character(geoid))
+
+# match place data with redlining_snap 
+final_analysis = 
+  redlining_snap|>
+  left_join(place_cleaned, by = "geoid")|>
+  filter(!is.na(obesity))|>
+  mutate(
+    minority = 100-ph_white
+  )
+```
+
+### Desciptive Characteristics based on redlining grades
+
+```{r}
+redlining_quartile=
+final_analysis |>
+  group_by(red_grade) |>
+  summarise(
+    avg_snap = mean(ph_snap, na.rm = TRUE),
+    sd_snap = sd(ph_snap, na.rm = TRUE),
+    avg_poverty = mean(ph_below_poverty, na.rm = TRUE),
+    sd_poverty = sd(ph_below_poverty, na.rm = TRUE),
+    avg_disability = mean(ph_disability, na.rm = TRUE),
+    sd_disability = sd(ph_disability, na.rm = TRUE),
+    avg_white = mean(ph_white, na.rm = TRUE),
+    sd_white = sd(ph_white, na.rm = TRUE),
+    avg_black = mean(ph_black, na.rm = TRUE),
+    sd_black = sd(ph_black, na.rm = TRUE),
+    avg_asian = mean(ph_asian, na.rm = TRUE),
+    sd_asian = sd(ph_asian, na.rm = TRUE),
+    avg_otherrace = mean(ph_other_race, na.rm = TRUE),
+    sd_otherrace = sd(ph_other_race, na.rm = TRUE),
+    avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
+    sd_hispanic = sd(ph_hispanic, na.rm = TRUE),
+    avg_nowork = mean(ph_no_work, na.rm = TRUE),
+    sd_nowork = sd(ph_no_work, na.rm = TRUE),
+    avg_1work = mean(ph_1_work, na.rm = TRUE),
+    sd_1work = sd(ph_1_work, na.rm = TRUE),
+    avg_2work = mean(ph_2_work, na.rm = TRUE),
+    sd_2work = sd(ph_2_work, na.rm = TRUE),
+    avg_obesity = mean(obesity, na.rm = TRUE),
+    sd_obesity = sd(obesity, na.rm = TRUE),
+    avg_highchol = mean(highchol, na.rm = TRUE),
+    sd_highchol = sd(highchol, na.rm = TRUE),
+    avg_diabetes = mean(diabetes, na.rm = TRUE),
+    sd_diabetes = sd(diabetes, na.rm = TRUE)
+  )|> pivot_longer(
+    cols = -red_grade,
+    names_to = c("stat", "variable"),
+    names_sep = "_"
+  )|>
+  pivot_wider(
+    names_from = c(red_grade, stat), 
+    values_from = value,              
+    names_glue = "{red_grade}_{stat}"
+  )
+
+redlining_quartile|>
+  knitr::kable(digits = 2)
+
+final_analysis |>
+  group_by(red_grade)|>
+  summarise(count = n())|>
+   knitr::kable()
+```
+
+### Comparing census tracts with HRS in the first and fourth quartile
+
+```{r}
+q1_vs_q4 = 
+final_analysis|>
+  filter(red_grade %in%c("A","D"))
+
+q1q4_desc = 
+q1_vs_q4|>
+  group_by(red_grade)|>
+  summarise(
+    ph_snap = mean(ph_snap),
+    ph_below_poverty = mean(ph_below_poverty),
+    ph_disability = mean(ph_disability),
+    minority = mean(minority),
+    obesity = mean(obesity),
+    highchol = mean(highchol),
+    diabetes = mean(diabetes)
+  )|>
+ pivot_longer(cols = -red_grade, names_to = "variable", values_to = "value")|>
+ pivot_wider(names_from = red_grade, names_prefix = "grade_", values_from = value)|>
+ mutate(
+    mean_diff = grade_D - grade_A,
+  )|>
+  rename(outcome = variable)
+
+```
+
+
+```{r warning=FALSE, message=FALSE}
+uni_reg = function(dataset, outcomes, predictor) {
+  results = list() 
+  for (outcome in outcomes) {
+    formula = as.formula(paste(outcome, "~", predictor))
+    model= lm(
+      formula,
+      data = dataset
+    )
+    results[[outcome]] = broom::tidy(model)
+  }
+  
+  combined_results = bind_rows(results, .id = "outcome")
+  return(combined_results)
+}
+
+outcomes = c("ph_snap","ph_below_poverty", "ph_disability", "minority", "obesity", "highchol", "diabetes")
+
+
+uni_reg(q1_vs_q4, outcomes, "red_grade")|>
+  filter(term != "(Intercept)")|>
+  right_join(q1q4_desc, by="outcome")|>
+  select(outcome, grade_A, grade_D, mean_diff, p.value)|>
+  knitr::kable(digits = 3)
+```
+
+
+### regression analysis for hrs and the relevant variables 
+
+```{r}
+# univariate analysis
+lm(ph_snap~red_grade,final_analysis)|>
+  broom::tidy()
+
+## multivariate model 1
+lm(ph_snap~red_grade+minority+ph_disability,final_analysis)|>
+  broom::tidy()|>
+  knitr::kable(digits = 3)
+
+
+##multivariate model 2
+lm(ph_snap~red_grade+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|>
+  broom::tidy()|>
+  knitr::kable(digits = 3)
 ```
 
 

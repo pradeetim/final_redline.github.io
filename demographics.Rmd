@@ -287,17 +287,17 @@ leaflet() |>
 ### Redlining Scores and Demographics:
 
 ```{r}
-# Create a color palette for the interval2020 variable
+# Create a color palette for the red_grade variable
 pal <- colorFactor(
   palette = c("green", "blue", "yellow", "red"),
-  domain = redlining_sf$interval2020
+  domain = redlining_sf$red_grade
 )
 
 # Plot redlining data on a leaflet map
 leaflet(redlining_sf) |>
   addTiles() |>
   addPolygons(
-    fillColor = ~pal(interval2020),
+    fillColor = ~pal(red_grade),
     weight = 1,
     opacity = 1,
     color = "black",
@@ -312,7 +312,7 @@ leaflet(redlining_sf) |>
   ) |>
   addLegend(
     pal = pal,
-    values = ~interval2020,
+    values = ~red_grade,
     opacity = 0.7,
     title = "Redlining Category",
     position = "bottomright"
