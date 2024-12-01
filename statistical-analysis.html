@@ -289,12 +289,12 @@ $(document).ready(function () {
 
 
 <p>import the datasets and packages</p>
-<div id="desciptive-characteristics-based-on-hrs-quartiles"
+<div id="desciptive-characteristics-based-on-redlining-grades"
 class="section level3">
-<h3>Desciptive Characteristics based on hrs quartiles</h3>
+<h3>Desciptive Characteristics based on redlining grades</h3>
 <pre class="r"><code>redlining_quartile=
 final_analysis |&gt;
-  group_by(interval2020) |&gt;
+  group_by(red_grade) |&gt;
   summarise(
     avg_snap = mean(ph_snap, na.rm = TRUE),
     sd_snap = sd(ph_snap, na.rm = TRUE),
@@ -312,12 +312,12 @@ final_analysis |&gt;
     sd_otherrace = sd(ph_other_race, na.rm = TRUE),
     avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
     sd_hispanic = sd(ph_hispanic, na.rm = TRUE),
-    avg_ph_no_work = mean(ph_no_work, na.rm = TRUE),
-    sd_ph_no_work = sd(ph_no_work, na.rm = TRUE),
-    avg_ph_1_work = mean(ph_1_work, na.rm = TRUE),
-    sd_ph_1_work = sd(ph_1_work, na.rm = TRUE),
-    avg_ph_2_work = mean(ph_2_work, na.rm = TRUE),
-    sd_ph_2_work = sd(ph_2_work, na.rm = TRUE),
+    avg_nowork = mean(ph_no_work, na.rm = TRUE),
+    sd_nowork = sd(ph_no_work, na.rm = TRUE),
+    avg_1work = mean(ph_1_work, na.rm = TRUE),
+    sd_1work = sd(ph_1_work, na.rm = TRUE),
+    avg_2work = mean(ph_2_work, na.rm = TRUE),
+    sd_2work = sd(ph_2_work, na.rm = TRUE),
     avg_obesity = mean(obesity, na.rm = TRUE),
     sd_obesity = sd(obesity, na.rm = TRUE),
     avg_highchol = mean(highchol, na.rm = TRUE),
@@ -325,213 +325,216 @@ final_analysis |&gt;
     avg_diabetes = mean(diabetes, na.rm = TRUE),
     sd_diabetes = sd(diabetes, na.rm = TRUE)
   )|&gt; pivot_longer(
-    cols = -interval2020,
+    cols = -red_grade,
     names_to = c(&quot;stat&quot;, &quot;variable&quot;),
     names_sep = &quot;_&quot;
   )|&gt;
   pivot_wider(
-    names_from = c(interval2020, stat), 
+    names_from = c(red_grade, stat), 
     values_from = value,              
-    names_glue = &quot;{interval2020}_{stat}&quot;
-  )</code></pre>
-<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 6 rows [17, 18, 19, 20, 21,
-## 22].</code></pre>
-<pre><code>## Warning: Values from `value` are not uniquely identified; output will contain list-cols.
-## • Use `values_fn = list` to suppress this warning.
-## • Use `values_fn = {summary_fun}` to summarise duplicates.
-## • Use the following dplyr code to identify duplicates.
-##   {data} |&gt;
-##   dplyr::summarise(n = dplyr::n(), .by = c(variable, interval2020, stat)) |&gt;
-##   dplyr::filter(n &gt; 1L)</code></pre>
-<pre class="r"><code>redlining_quartile|&gt;
+    names_glue = &quot;{red_grade}_{stat}&quot;
+  )
+
+redlining_quartile|&gt;
   knitr::kable(digits = 2)</code></pre>
 <table>
-<colgroup>
-<col width="4%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-<col width="11%" />
-<col width="12%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th align="left">variable</th>
-<th align="left">1_avg</th>
-<th align="left">1_sd</th>
-<th align="left">2_avg</th>
-<th align="left">2_sd</th>
-<th align="left">3_avg</th>
-<th align="left">3_sd</th>
-<th align="left">4_avg</th>
-<th align="left">4_sd</th>
+<th align="right">A_avg</th>
+<th align="right">A_sd</th>
+<th align="right">B_avg</th>
+<th align="right">B_sd</th>
+<th align="right">C_avg</th>
+<th align="right">C_sd</th>
+<th align="right">D_avg</th>
+<th align="right">D_sd</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">snap</td>
-<td align="left">6.473171</td>
-<td align="left">8.319616</td>
-<td align="left">17.32651</td>
-<td align="left">13.59862</td>
-<td align="left">18.62217</td>
-<td align="left">13.28566</td>
-<td align="left">23.23281</td>
-<td align="left">17.65788</td>
+<td align="right">5.72</td>
+<td align="right">6.95</td>
+<td align="right">17.25</td>
+<td align="right">13.61</td>
+<td align="right">18.63</td>
+<td align="right">13.40</td>
+<td align="right">23.69</td>
+<td align="right">17.85</td>
 </tr>
 <tr class="even">
 <td align="left">poverty</td>
-<td align="left">8.402439</td>
-<td align="left">7.279474</td>
-<td align="left">14.17867</td>
-<td align="left">8.620748</td>
-<td align="left">15.54392</td>
-<td align="left">10.38514</td>
-<td align="left">20.11711</td>
-<td align="left">12.98889</td>
+<td align="right">7.58</td>
+<td align="right">6.03</td>
+<td align="right">14.18</td>
+<td align="right">8.67</td>
+<td align="right">15.56</td>
+<td align="right">10.41</td>
+<td align="right">20.56</td>
+<td align="right">13.11</td>
 </tr>
 <tr class="odd">
 <td align="left">disability</td>
-<td align="left">19.68293</td>
-<td align="left">8.786094</td>
-<td align="left">23.17147</td>
-<td align="left">8.789367</td>
-<td align="left">24.55906</td>
-<td align="left">9.749078</td>
-<td align="left">23.66266</td>
-<td align="left">11.25039</td>
+<td align="right">19.56</td>
+<td align="right">8.20</td>
+<td align="right">23.13</td>
+<td align="right">8.85</td>
+<td align="right">24.37</td>
+<td align="right">9.72</td>
+<td align="right">23.86</td>
+<td align="right">11.45</td>
 </tr>
 <tr class="even">
 <td align="left">white</td>
-<td align="left">73.85366</td>
-<td align="left">22.10788</td>
-<td align="left">45.85476</td>
-<td align="left">28.70284</td>
-<td align="left">36.0291</td>
-<td align="left">27.41011</td>
-<td align="left">38.09307</td>
-<td align="left">28.52424</td>
+<td align="right">74.51</td>
+<td align="right">23.05</td>
+<td align="right">46.19</td>
+<td align="right">28.67</td>
+<td align="right">36.94</td>
+<td align="right">27.73</td>
+<td align="right">36.87</td>
+<td align="right">28.20</td>
 </tr>
 <tr class="odd">
 <td align="left">black</td>
-<td align="left">6.2</td>
-<td align="left">13.33383</td>
-<td align="left">23.4562</td>
-<td align="left">28.53698</td>
-<td align="left">22.63742</td>
-<td align="left">28.03857</td>
-<td align="left">28.90085</td>
-<td align="left">27.63647</td>
+<td align="right">6.48</td>
+<td align="right">14.06</td>
+<td align="right">23.18</td>
+<td align="right">28.43</td>
+<td align="right">22.46</td>
+<td align="right">27.85</td>
+<td align="right">29.81</td>
+<td align="right">27.75</td>
 </tr>
 <tr class="even">
 <td align="left">asian</td>
-<td align="left">9.221951</td>
-<td align="left">7.772596</td>
-<td align="left">11.77954</td>
-<td align="left">13.34659</td>
-<td align="left">16.91098</td>
-<td align="left">18.28295</td>
-<td align="left">10.2645</td>
-<td align="left">13.80452</td>
+<td align="right">8.45</td>
+<td align="right">7.09</td>
+<td align="right">11.82</td>
+<td align="right">13.31</td>
+<td align="right">16.68</td>
+<td align="right">18.27</td>
+<td align="right">9.95</td>
+<td align="right">13.31</td>
 </tr>
 <tr class="odd">
 <td align="left">otherrace</td>
-<td align="left">10.72439</td>
-<td align="left">10.09026</td>
-<td align="left">18.90951</td>
-<td align="left">17.94931</td>
-<td align="left">24.42249</td>
-<td align="left">16.76812</td>
-<td align="left">22.74158</td>
-<td align="left">16.93145</td>
+<td align="right">10.56</td>
+<td align="right">9.86</td>
+<td align="right">18.81</td>
+<td align="right">17.89</td>
+<td align="right">23.92</td>
+<td align="right">16.65</td>
+<td align="right">23.36</td>
+<td align="right">17.18</td>
 </tr>
 <tr class="even">
 <td align="left">hispanic</td>
-<td align="left">13.6</td>
-<td align="left">12.95264</td>
-<td align="left">21.40836</td>
-<td align="left">22.98579</td>
-<td align="left">27.72026</td>
-<td align="left">21.18572</td>
-<td align="left">27.62801</td>
-<td align="left">22.74866</td>
+<td align="right">12.72</td>
+<td align="right">12.03</td>
+<td align="right">21.39</td>
+<td align="right">22.91</td>
+<td align="right">27.21</td>
+<td align="right">21.05</td>
+<td align="right">28.42</td>
+<td align="right">23.08</td>
 </tr>
 <tr class="odd">
-<td align="left">ph</td>
-<td align="left">17.01463, 30.37805, 52.61220</td>
-<td align="left">7.412542, 9.477513, 12.893917</td>
-<td align="left">12.44323, 32.97637, 54.57896</td>
-<td align="left">7.210235, 9.655081, 10.597818</td>
-<td align="left">12.22825, 32.62313, 55.14925</td>
-<td align="left">7.211957, 10.173792, 11.901081</td>
-<td align="left">13.82504, 34.16549, 52.01103</td>
-<td align="left">9.922752, 12.043980, 15.488854</td>
+<td align="left">nowork</td>
+<td align="right">17.45</td>
+<td align="right">7.60</td>
+<td align="right">12.46</td>
+<td align="right">7.18</td>
+<td align="right">12.22</td>
+<td align="right">7.23</td>
+<td align="right">14.00</td>
+<td align="right">10.12</td>
+</tr>
+<tr class="even">
+<td align="left">1work</td>
+<td align="right">31.11</td>
+<td align="right">9.24</td>
+<td align="right">32.87</td>
+<td align="right">9.70</td>
+<td align="right">32.61</td>
+<td align="right">10.13</td>
+<td align="right">34.33</td>
+<td align="right">12.26</td>
+</tr>
+<tr class="odd">
+<td align="left">2work</td>
+<td align="right">51.46</td>
+<td align="right">12.88</td>
+<td align="right">54.67</td>
+<td align="right">10.61</td>
+<td align="right">55.17</td>
+<td align="right">11.89</td>
+<td align="right">51.67</td>
+<td align="right">15.78</td>
 </tr>
 <tr class="even">
 <td align="left">obesity</td>
-<td align="left">20.87317</td>
-<td align="left">5.407635</td>
-<td align="left">25.98184</td>
-<td align="left">6.195382</td>
-<td align="left">27.56599</td>
-<td align="left">6.310565</td>
-<td align="left">28.52037</td>
-<td align="left">7.591594</td>
+<td align="right">20.74</td>
+<td align="right">5.61</td>
+<td align="right">25.92</td>
+<td align="right">6.18</td>
+<td align="right">27.51</td>
+<td align="right">6.37</td>
+<td align="right">28.71</td>
+<td align="right">7.61</td>
 </tr>
 <tr class="odd">
 <td align="left">highchol</td>
-<td align="left">37.0439</td>
-<td align="left">4.017154</td>
-<td align="left">34.48761</td>
-<td align="left">3.200865</td>
-<td align="left">34.19712</td>
-<td align="left">2.981892</td>
-<td align="left">32.38303</td>
-<td align="left">4.175111</td>
+<td align="right">37.27</td>
+<td align="right">3.24</td>
+<td align="right">34.50</td>
+<td align="right">3.30</td>
+<td align="right">34.14</td>
+<td align="right">3.05</td>
+<td align="right">32.29</td>
+<td align="right">4.20</td>
 </tr>
 <tr class="even">
 <td align="left">diabetes</td>
-<td align="left">9.263415</td>
-<td align="left">2.632846</td>
-<td align="left">11.13862</td>
-<td align="left">2.891368</td>
-<td align="left">12.45821</td>
-<td align="left">2.811571</td>
-<td align="left">11.51853</td>
-<td align="left">4.378693</td>
+<td align="right">9.25</td>
+<td align="right">2.48</td>
+<td align="right">11.11</td>
+<td align="right">2.91</td>
+<td align="right">12.36</td>
+<td align="right">2.92</td>
+<td align="right">11.58</td>
+<td align="right">4.42</td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>final_analysis |&gt;
-  group_by(interval2020) |&gt;
+  group_by(red_grade)|&gt;
   summarise(count = n())|&gt;
    knitr::kable()</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">interval2020</th>
+<th align="left">red_grade</th>
 <th align="right">count</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">1</td>
-<td align="right">41</td>
+<td align="left">A</td>
+<td align="right">36</td>
 </tr>
 <tr class="even">
-<td align="left">2</td>
-<td align="right">347</td>
+<td align="left">B</td>
+<td align="right">352</td>
 </tr>
 <tr class="odd">
-<td align="left">3</td>
-<td align="right">938</td>
+<td align="left">C</td>
+<td align="right">1003</td>
 </tr>
 <tr class="even">
-<td align="left">4</td>
-<td align="right">707</td>
+<td align="left">D</td>
+<td align="right">642</td>
 </tr>
 </tbody>
 </table>
@@ -543,11 +546,11 @@ class="section level3">
 quartile</h3>
 <pre class="r"><code>q1_vs_q4 = 
 final_analysis|&gt;
-  filter(interval2020 %in%c(&quot;1&quot;,&quot;4&quot;))
+  filter(red_grade %in%c(&quot;A&quot;,&quot;D&quot;))
 
 q1q4_desc = 
 q1_vs_q4|&gt;
-  group_by(interval2020)|&gt;
+  group_by(red_grade)|&gt;
   summarise(
     ph_snap = mean(ph_snap),
     ph_below_poverty = mean(ph_below_poverty),
@@ -557,10 +560,10 @@ q1_vs_q4|&gt;
     highchol = mean(highchol),
     diabetes = mean(diabetes)
   )|&gt;
- pivot_longer(cols = -interval2020, names_to = &quot;variable&quot;, values_to = &quot;value&quot;)|&gt;
- pivot_wider(names_from = interval2020, names_prefix = &quot;quartile_&quot;, values_from = value)|&gt;
+ pivot_longer(cols = -red_grade, names_to = &quot;variable&quot;, values_to = &quot;value&quot;)|&gt;
+ pivot_wider(names_from = red_grade, names_prefix = &quot;grade_&quot;, values_from = value)|&gt;
  mutate(
-    mean_diff = quartile_4-quartile_1,
+    mean_diff = grade_D - grade_A,
   )|&gt;
   rename(outcome = variable)</code></pre>
 <pre class="r"><code>uni_reg = function(dataset, outcomes, predictor) {
@@ -581,17 +584,17 @@ q1_vs_q4|&gt;
 outcomes = c(&quot;ph_snap&quot;,&quot;ph_below_poverty&quot;, &quot;ph_disability&quot;, &quot;minority&quot;, &quot;obesity&quot;, &quot;highchol&quot;, &quot;diabetes&quot;)
 
 
-uni_reg(q1_vs_q4, outcomes, &quot;interval2020&quot;)|&gt;
+uni_reg(q1_vs_q4, outcomes, &quot;red_grade&quot;)|&gt;
   filter(term != &quot;(Intercept)&quot;)|&gt;
   right_join(q1q4_desc, by=&quot;outcome&quot;)|&gt;
-  select(outcome, quartile_1, quartile_4, mean_diff, p.value)|&gt;
+  select(outcome, grade_A, grade_D, mean_diff, p.value)|&gt;
   knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
 <th align="left">outcome</th>
-<th align="right">quartile_1</th>
-<th align="right">quartile_4</th>
+<th align="right">grade_A</th>
+<th align="right">grade_D</th>
 <th align="right">mean_diff</th>
 <th align="right">p.value</th>
 </tr>
@@ -599,52 +602,52 @@ uni_reg(q1_vs_q4, outcomes, &quot;interval2020&quot;)|&gt;
 <tbody>
 <tr class="odd">
 <td align="left">ph_snap</td>
-<td align="right">6.473</td>
-<td align="right">23.233</td>
-<td align="right">16.760</td>
+<td align="right">5.722</td>
+<td align="right">23.695</td>
+<td align="right">17.972</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">ph_below_poverty</td>
-<td align="right">8.402</td>
-<td align="right">20.117</td>
-<td align="right">11.715</td>
+<td align="right">7.581</td>
+<td align="right">20.559</td>
+<td align="right">12.978</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_disability</td>
-<td align="right">19.683</td>
-<td align="right">23.663</td>
-<td align="right">3.980</td>
+<td align="right">19.556</td>
+<td align="right">23.863</td>
+<td align="right">4.307</td>
 <td align="right">0.026</td>
 </tr>
 <tr class="even">
 <td align="left">minority</td>
-<td align="right">26.146</td>
-<td align="right">61.907</td>
-<td align="right">35.761</td>
+<td align="right">25.494</td>
+<td align="right">63.126</td>
+<td align="right">37.632</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">obesity</td>
-<td align="right">20.873</td>
-<td align="right">28.520</td>
-<td align="right">7.647</td>
+<td align="right">20.736</td>
+<td align="right">28.710</td>
+<td align="right">7.974</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">highchol</td>
-<td align="right">37.044</td>
-<td align="right">32.383</td>
-<td align="right">-4.661</td>
+<td align="right">37.275</td>
+<td align="right">32.286</td>
+<td align="right">-4.989</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">diabetes</td>
-<td align="right">9.263</td>
-<td align="right">11.519</td>
-<td align="right">2.255</td>
-<td align="right">0.001</td>
+<td align="right">9.247</td>
+<td align="right">11.584</td>
+<td align="right">2.337</td>
+<td align="right">0.002</td>
 </tr>
 </tbody>
 </table>
@@ -653,17 +656,17 @@ uni_reg(q1_vs_q4, outcomes, &quot;interval2020&quot;)|&gt;
 class="section level3">
 <h3>regression analysis for hrs and the relevant variables</h3>
 <pre class="r"><code># univariate analysis
-lm(ph_snap~interval2020,final_analysis)|&gt;
+lm(ph_snap~red_grade,final_analysis)|&gt;
   broom::tidy()</code></pre>
 <pre><code>## # A tibble: 4 × 5
-##   term          estimate std.error statistic  p.value
-##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)       6.47      2.33      2.78 5.55e- 3
-## 2 interval20202    10.9       2.47      4.40 1.13e- 5
-## 3 interval20203    12.1       2.38      5.10 3.71e- 7
-## 4 interval20204    16.8       2.40      6.99 3.77e-12</code></pre>
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)     5.72      2.48      2.30 2.14e- 2
+## 2 red_gradeB     11.5       2.61      4.42 1.04e- 5
+## 3 red_gradeC     12.9       2.53      5.10 3.65e- 7
+## 4 red_gradeD     18.0       2.55      7.04 2.62e-12</code></pre>
 <pre class="r"><code>## multivariate model 1
-lm(ph_snap~interval2020+minority+ph_disability,final_analysis)|&gt;
+lm(ph_snap~red_grade+minority+ph_disability,final_analysis)|&gt;
   broom::tidy()|&gt;
   knitr::kable(digits = 3)</code></pre>
 <table>
@@ -679,50 +682,50 @@ lm(ph_snap~interval2020+minority+ph_disability,final_analysis)|&gt;
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-11.120</td>
-<td align="right">1.884</td>
-<td align="right">-5.901</td>
+<td align="right">-11.575</td>
+<td align="right">2.004</td>
+<td align="right">-5.776</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
-<td align="left">interval20202</td>
-<td align="right">4.130</td>
-<td align="right">1.937</td>
-<td align="right">2.133</td>
-<td align="right">0.033</td>
+<td align="left">red_gradeB</td>
+<td align="right">4.778</td>
+<td align="right">2.053</td>
+<td align="right">2.327</td>
+<td align="right">0.020</td>
 </tr>
 <tr class="odd">
-<td align="left">interval20203</td>
-<td align="right">2.954</td>
-<td align="right">1.887</td>
-<td align="right">1.566</td>
-<td align="right">0.118</td>
+<td align="left">red_gradeC</td>
+<td align="right">3.904</td>
+<td align="right">2.005</td>
+<td align="right">1.948</td>
+<td align="right">0.052</td>
 </tr>
 <tr class="even">
-<td align="left">interval20204</td>
-<td align="right">8.501</td>
-<td align="right">1.896</td>
-<td align="right">4.484</td>
+<td align="left">red_gradeD</td>
+<td align="right">9.313</td>
+<td align="right">2.024</td>
+<td align="right">4.602</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">minority</td>
-<td align="right">0.154</td>
+<td align="right">0.151</td>
 <td align="right">0.010</td>
-<td align="right">15.683</td>
+<td align="right">15.386</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">ph_disability</td>
-<td align="right">0.689</td>
+<td align="right">0.687</td>
 <td align="right">0.027</td>
-<td align="right">25.396</td>
+<td align="right">25.294</td>
 <td align="right">0.000</td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>##multivariate model 2
-lm(ph_snap~interval2020+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|&gt;
+lm(ph_snap~red_grade+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|&gt;
   broom::tidy()|&gt;
   knitr::kable(digits = 3)</code></pre>
 <table>
@@ -738,72 +741,72 @@ lm(ph_snap~interval2020+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">43.595</td>
-<td align="right">3.548</td>
-<td align="right">12.287</td>
+<td align="right">42.463</td>
+<td align="right">3.602</td>
+<td align="right">11.789</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
-<td align="left">interval20202</td>
-<td align="right">5.523</td>
-<td align="right">1.726</td>
-<td align="right">3.199</td>
-<td align="right">0.001</td>
+<td align="left">red_gradeB</td>
+<td align="right">6.636</td>
+<td align="right">1.832</td>
+<td align="right">3.622</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
-<td align="left">interval20203</td>
-<td align="right">4.379</td>
-<td align="right">1.688</td>
-<td align="right">2.594</td>
-<td align="right">0.010</td>
+<td align="left">red_gradeC</td>
+<td align="right">5.801</td>
+<td align="right">1.794</td>
+<td align="right">3.233</td>
+<td align="right">0.001</td>
 </tr>
 <tr class="even">
-<td align="left">interval20204</td>
-<td align="right">8.695</td>
-<td align="right">1.687</td>
-<td align="right">5.153</td>
+<td align="left">red_gradeD</td>
+<td align="right">9.792</td>
+<td align="right">1.802</td>
+<td align="right">5.434</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_disability</td>
-<td align="right">0.441</td>
+<td align="right">0.438</td>
 <td align="right">0.027</td>
-<td align="right">16.310</td>
+<td align="right">16.170</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">ph_white</td>
-<td align="right">-0.331</td>
+<td align="right">-0.326</td>
 <td align="right">0.015</td>
-<td align="right">-22.118</td>
+<td align="right">-21.816</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_black</td>
-<td align="right">-0.237</td>
+<td align="right">-0.234</td>
 <td align="right">0.016</td>
-<td align="right">-14.937</td>
+<td align="right">-14.755</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">ph_asian</td>
 <td align="right">-0.279</td>
 <td align="right">0.020</td>
-<td align="right">-13.883</td>
+<td align="right">-13.848</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_1_work</td>
 <td align="right">-0.011</td>
 <td align="right">0.035</td>
-<td align="right">-0.303</td>
-<td align="right">0.762</td>
+<td align="right">-0.314</td>
+<td align="right">0.754</td>
 </tr>
 <tr class="even">
 <td align="left">ph_2_work</td>
-<td align="right">-0.323</td>
+<td align="right">-0.326</td>
 <td align="right">0.030</td>
-<td align="right">-10.844</td>
+<td align="right">-10.891</td>
 <td align="right">0.000</td>
 </tr>
 </tbody>

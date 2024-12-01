@@ -33,7 +33,6 @@ SNAP =
      ph_no_disability = s2201_c02_024e,
      ph_white = s2201_c02_025e,
      ph_black = s2201_c02_026e,
-     ph_aian = s2201_c02_027e,
      ph_asian = s2201_c02_028e,
      ph_hispanic = s2201_c02_032e,
      ph_no_work = s2201_c02_036e,
@@ -47,13 +46,18 @@ SNAP =
   select(geoid,name,ph_snap,everything())|>
   select(-geo_id)
 
-
 redlining = 
   read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
   janitor::clean_names()|>
   select(-cbsa)|>
   mutate(fip = substr(geoid20, 1, 5),
-         interval2020 = as.character(interval2020))|>
+         interval2020 = as.character(interval2020),
+         red_grade = case_when(
+           hrs2020 < 1.5 ~ "A",
+           hrs2020 < 2.5 ~ "B",
+           hrs2020 < 3.5 ~ "C",
+           TRUE ~ "D"
+         ))|>
   filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
   rename(geoid = geoid20)
 
@@ -61,7 +65,6 @@ redlining_snap =
   redlining|>
   left_join(SNAP, by = "geoid")|>
   filter(is.na(ph_snap)==FALSE)
-
 
 place_crude =
   read_csv("./Datasets/PLACES.csv")|>
@@ -72,7 +75,7 @@ place_crude =
 
 place_cleaned=
   place_crude|>
-  filter(measure_id %in% c("CANCER","DIABETES", "HIGHCHOL", "OBESITY"))|>
+  filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
   pivot_wider(
     id_cols = geoid,
     names_from = measure_id,
@@ -80,7 +83,6 @@ place_cleaned=
   )|>
   janitor::clean_names()|>
   mutate(geoid = as.character(geoid))
-
 
 # match place data with redlining_snap 
 final_analysis = 
@@ -92,12 +94,12 @@ final_analysis =
   )
 ```
 
-### Desciptive Characteristics based on hrs quartiles
+### Desciptive Characteristics based on redlining grades
 
 ```{r}
 redlining_quartile=
 final_analysis |>
-  group_by(interval2020) |>
+  group_by(red_grade) |>
   summarise(
     avg_snap = mean(ph_snap, na.rm = TRUE),
     sd_snap = sd(ph_snap, na.rm = TRUE),
@@ -115,12 +117,12 @@ final_analysis |>
     sd_otherrace = sd(ph_other_race, na.rm = TRUE),
     avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
     sd_hispanic = sd(ph_hispanic, na.rm = TRUE),
-    avg_ph_no_work = mean(ph_no_work, na.rm = TRUE),
-    sd_ph_no_work = sd(ph_no_work, na.rm = TRUE),
-    avg_ph_1_work = mean(ph_1_work, na.rm = TRUE),
-    sd_ph_1_work = sd(ph_1_work, na.rm = TRUE),
-    avg_ph_2_work = mean(ph_2_work, na.rm = TRUE),
-    sd_ph_2_work = sd(ph_2_work, na.rm = TRUE),
+    avg_nowork = mean(ph_no_work, na.rm = TRUE),
+    sd_nowork = sd(ph_no_work, na.rm = TRUE),
+    avg_1work = mean(ph_1_work, na.rm = TRUE),
+    sd_1work = sd(ph_1_work, na.rm = TRUE),
+    avg_2work = mean(ph_2_work, na.rm = TRUE),
+    sd_2work = sd(ph_2_work, na.rm = TRUE),
     avg_obesity = mean(obesity, na.rm = TRUE),
     sd_obesity = sd(obesity, na.rm = TRUE),
     avg_highchol = mean(highchol, na.rm = TRUE),
@@ -128,21 +130,21 @@ final_analysis |>
     avg_diabetes = mean(diabetes, na.rm = TRUE),
     sd_diabetes = sd(diabetes, na.rm = TRUE)
   )|> pivot_longer(
-    cols = -interval2020,
+    cols = -red_grade,
     names_to = c("stat", "variable"),
     names_sep = "_"
   )|>
   pivot_wider(
-    names_from = c(interval2020, stat), 
+    names_from = c(red_grade, stat), 
     values_from = value,              
-    names_glue = "{interval2020}_{stat}"
+    names_glue = "{red_grade}_{stat}"
   )
 
 redlining_quartile|>
   knitr::kable(digits = 2)
 
 final_analysis |>
-  group_by(interval2020) |>
+  group_by(red_grade)|>
   summarise(count = n())|>
    knitr::kable()
 ```
@@ -152,11 +154,11 @@ final_analysis |>
 ```{r}
 q1_vs_q4 = 
 final_analysis|>
-  filter(interval2020 %in%c("1","4"))
+  filter(red_grade %in%c("A","D"))
 
 q1q4_desc = 
 q1_vs_q4|>
-  group_by(interval2020)|>
+  group_by(red_grade)|>
   summarise(
     ph_snap = mean(ph_snap),
     ph_below_poverty = mean(ph_below_poverty),
@@ -166,12 +168,13 @@ q1_vs_q4|>
     highchol = mean(highchol),
     diabetes = mean(diabetes)
   )|>
- pivot_longer(cols = -interval2020, names_to = "variable", values_to = "value")|>
- pivot_wider(names_from = interval2020, names_prefix = "quartile_", values_from = value)|>
+ pivot_longer(cols = -red_grade, names_to = "variable", values_to = "value")|>
+ pivot_wider(names_from = red_grade, names_prefix = "grade_", values_from = value)|>
  mutate(
-    mean_diff = quartile_4-quartile_1,
+    mean_diff = grade_D - grade_A,
   )|>
   rename(outcome = variable)
+
 ```
 
 
@@ -194,10 +197,10 @@ uni_reg = function(dataset, outcomes, predictor) {
 outcomes = c("ph_snap","ph_below_poverty", "ph_disability", "minority", "obesity", "highchol", "diabetes")
 
 
-uni_reg(q1_vs_q4, outcomes, "interval2020")|>
+uni_reg(q1_vs_q4, outcomes, "red_grade")|>
   filter(term != "(Intercept)")|>
   right_join(q1q4_desc, by="outcome")|>
-  select(outcome, quartile_1, quartile_4, mean_diff, p.value)|>
+  select(outcome, grade_A, grade_D, mean_diff, p.value)|>
   knitr::kable(digits = 3)
 ```
 
@@ -206,17 +209,17 @@ uni_reg(q1_vs_q4, outcomes, "interval2020")|>
 
 ```{r}
 # univariate analysis
-lm(ph_snap~interval2020,final_analysis)|>
+lm(ph_snap~red_grade,final_analysis)|>
   broom::tidy()
 
 ## multivariate model 1
-lm(ph_snap~interval2020+minority+ph_disability,final_analysis)|>
+lm(ph_snap~red_grade+minority+ph_disability,final_analysis)|>
   broom::tidy()|>
   knitr::kable(digits = 3)
 
 
 ##multivariate model 2
-lm(ph_snap~interval2020+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|>
+lm(ph_snap~red_grade+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|>
   broom::tidy()|>
   knitr::kable(digits = 3)
 ```
