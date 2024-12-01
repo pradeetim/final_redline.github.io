@@ -69,22 +69,17 @@ redlining_sf <-
 ## Redlining throughout Boroughs:
 
 ```{r}
-# Load required library for spatial aggregation
-library(dplyr)
-
 # Aggregate the census tract data to get borough-level geometries
 borough_boundaries <- nyc_tracts |>
   group_by(borough) |>
   summarize(geometry = st_union(geometry), .groups = 'drop')
 
-# Create a color palette for the hrs2020 variable (continuous scale)
 pal <- colorNumeric(
-  palette = "YlOrRd",  # Yellow-Orange-Red palette for a gradient effect
-  domain = redlining_sf$hrs2020,  # Define the domain using the hrs2020 variable
-  na.color = "grey"  # Use grey for NA values
+  palette = "YlOrRd",  
+  domain = redlining_sf$hrs2020, 
+  na.color = "grey"  
 )
 
-# Plot the map focusing on redlining scores (`hrs2020`) throughout the boroughs
 leaflet(redlining_sf) |>
   addTiles() |>
   addPolygons(
@@ -228,10 +223,10 @@ SNAP |>
 
 ```
 
-### SNAP Enrollment Demographics:
+### SNAP Enrollment Demographics(RACE):
 
 ```{r}
-SNAP |>
+borough_snap_map = redlining_sf |>
   separate(
     name,
     into = c("census_tract", "county", "state"),
@@ -252,11 +247,54 @@ SNAP |>
   group_by(borough)
 ```
 
+```{r}
+race_snap_data <- borough_snap_map |>
+  select(borough, ph_white, ph_black, ph_asian, ph_hispanic, ph_other_race, ph_snap) |>
+  group_by(borough) |>
+  summarise(
+    avg_white = mean(ph_white, na.rm = TRUE),
+    avg_black = mean(ph_black, na.rm = TRUE),
+    avg_asian = mean(ph_asian, na.rm = TRUE),
+    avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
+    avg_other_race = mean(ph_other_race, na.rm = TRUE)
+  ) |>
+  pivot_longer(
+    cols = starts_with("avg"),
+    names_to = "race",
+    values_to = "average_percentage"
+  ) |>
+  mutate(
+    race = case_when(
+      race == "avg_white" ~ "White",
+      race == "avg_black" ~ "Black",
+      race == "avg_asian" ~ "Asian",
+      race == "avg_hispanic" ~ "Hispanic",
+      race == "avg_other_race" ~ "Other Race",
+      TRUE ~ race
+    )
+  )
+
+
+ggplot(race_snap_data, aes(x = borough, y = average_percentage, fill = race)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(
+    title = "Distribution of Race Among SNAP Enrollment by Borough",
+    x = "Borough",
+    y = "Proportion of Households (%)",
+    fill = "Race"
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+
+```
+
 
 ## Grocery Stores in Manhattan, Brooklyn, and Bronx.
 ```{r}
-
-# Create the map to plot all grocery stores in Manhattan, Brooklyn, and Bronx
 leaflet() |>
   addTiles() |>
   addCircleMarkers(
@@ -284,16 +322,46 @@ leaflet() |>
 
 ```
 
+## Grocery Stores in Bronx Only.
+```{r}
+bronx_stores <- nyc_healthy_store |>
+  filter(borough == "Bronx")
+
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(
+    data = bronx_stores,
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 5,
+    color = "blue",
+    stroke = FALSE,
+    fillOpacity = 0.8,
+    label = ~paste0("Store Name: ", store_name,
+                    "<br>Borough: ", borough,
+                    "<br>ZIP Code: ", zip_code),
+    labelOptions = labelOptions(
+      noHide = FALSE,
+      direction = "auto"
+    )
+  ) |>
+  addLegend(
+    position = "bottomright",
+    colors = "blue",
+    labels = "Grocery Store",
+    title = "Healthy Grocery Stores in Bronx"
+  )
+
+```
+
 ### Redlining Scores and Demographics:
 
 ```{r}
-# Create a color palette for the red_grade variable
 pal <- colorFactor(
   palette = c("green", "blue", "yellow", "red"),
   domain = redlining_sf$red_grade
 )
 
-# Plot redlining data on a leaflet map
 leaflet(redlining_sf) |>
   addTiles() |>
   addPolygons(
@@ -320,7 +388,163 @@ leaflet(redlining_sf) |>
 ```
 
 ### Redlining Scores and SNAP Enrollment.
+```{r}
+borough_snap_map |>
+  ggplot(aes(x = hrs2020, y = ph_snap, color = borough)) +
+  geom_jitter(alpha = 0.6, size = 2, width = 0.1, height = 1) + 
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
+  facet_wrap(~ borough, scales = "free") +
+  labs(
+    title = "Correlation Between Redlining Scores and SNAP Enrollment Rates by Borough",
+    subtitle = "Analysis of SNAP enrollment rates relative to redlining scores (HRS 2020)",
+    x = "Redlining Score (HRS 2020)",
+    y = "SNAP Enrollment (%)",
+    color = "Borough"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "bottom"
+  )
 
-### Redlining Scores and Grocery Stores.
+```
+
+### Redlining and Grocery Stores in Bronx
+```{r}
+redlining_sf <- redlining_sf |>
+  mutate(
+    borough = case_when(
+      str_detect(NAME, "Bronx County") ~ "Bronx",
+      str_detect(NAME, "Kings County") ~ "Brooklyn",
+      str_detect(NAME, "New York County") ~ "Manhattan",
+      str_detect(NAME, "Queens County") ~ "Queens",
+      str_detect(NAME, "Richmond County") ~ "Staten Island",
+      TRUE ~ "Unknown"
+    )
+  )
+
+bronx_redlining <- redlining_sf |>
+  filter(borough == "Bronx")
+
+bronx_stores <- nyc_healthy_store |>
+  filter(borough == "Bronx")
+
+pal <- colorFactor(
+  palette = c("green", "blue", "yellow", "red"),
+  domain = bronx_redlining$red_grade
+)
+
+leaflet(bronx_redlining) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~pal(red_grade),
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    label = ~paste0("Census Tract: ", geoid, 
+                    "<br>Redlining Grade: ", red_grade)
+  ) |>
+  addCircleMarkers(
+    data = bronx_stores,
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 5,
+    color = "blue",
+    stroke = FALSE,
+    fillOpacity = 0.8,
+    label = ~paste0("Store Name: ", store_name,
+                    "<br>Borough: ", borough,
+                    "<br>ZIP Code: ", zip_code),
+    labelOptions = labelOptions(
+      noHide = FALSE,
+      direction = "auto"
+    )
+  ) |>
+  addLegend(
+    pal = pal,
+    values = ~red_grade,
+    opacity = 0.7,
+    title = "Redlining Grade",
+    position = "bottomright"
+  ) |>
+  addLegend(
+    position = "bottomleft",
+    colors = "blue",
+    labels = "Grocery Store",
+    title = "Healthy Grocery Stores in Bronx"
+  )
+
+```
+
+
+### SNAP Enrollment and Grocery Stores in Bronx.
+```{r}
+bronx_ <- borough_snap_map |>
+  filter(borough == "Bronx")
+
+bronx_stores <- nyc_healthy_store |>
+  filter(borough == "Bronx")
+
+snap_pal <- colorNumeric(
+  palette = "YlGnBu",
+  domain = bronx_$ph_snap,
+  na.color = "grey"
+)
+
+leaflet(bronx_) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~snap_pal(ph_snap),
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    label = ~paste0("Census Tract: ", geoid, 
+                    "<br>SNAP Enrollment (%): ", round(ph_snap, 2))
+  ) |>
+  addCircleMarkers(
+    data = bronx_stores,
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 5,
+    color = "blue",
+    stroke = FALSE,
+    fillOpacity = 0.8,
+    label = ~paste0("Store Name: ", store_name,
+                    "<br>Borough: ", borough,
+                    "<br>ZIP Code: ", zip_code),
+    labelOptions = labelOptions(
+      noHide = FALSE,
+      direction = "auto"
+    )
+  ) |>
+  addLegend(
+    pal = snap_pal,
+    values = ~ph_snap,
+    opacity = 0.7,
+    title = "SNAP Enrollment (%)",
+    position = "bottomright"
+  ) |>
+  addLegend(
+    position = "bottomleft",
+    colors = "blue",
+    labels = "Grocery Store",
+    title = "Healthy Grocery Stores in Bronx"
+  )
+
+```
 
 
