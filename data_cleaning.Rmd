@@ -84,20 +84,27 @@ head(SNAP)|>
 
 ## Historic Redlining Score Data
 
-The redilning data had the following measures `hrs2020` and `internal2020`. The historic redlining score(HRS) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. 
+The historic redlining score(HRS) (`hrs2020`) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. 
 
 <img src = "images/hrs calculation method.png">
 
 Figure 1 Method of calculating the historic redlining score.[source](https://ncrc.org/holc-health/#methods)
 
-We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. 
+We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined as "Best", B (hrs: 1.5~2.5) defined as "Still Desirable", C (hrs: 2.5~3.5) defined as "Definitely Declining” and D(hrs > 3.5) defined as "Hazardous”.
 
 ```{r}
 redlining = 
   read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
   janitor::clean_names()|>
   select(-cbsa)|>
-  mutate(fip = substr(geoid20, 1, 5))|>
+  mutate(fip = substr(geoid20, 1, 5),
+         interval2020 = as.character(interval2020),
+         red_grade = case_when(
+           hrs2020 < 1.5 ~ "A",
+           hrs2020 < 2.5 ~ "B",
+           hrs2020 < 3.5 ~ "C",
+           TRUE ~ "D"
+         ))|>
   filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
   rename(geoid = geoid20)
 ```
