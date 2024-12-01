@@ -10,9 +10,9 @@ navbar:
       - text: "Data Source"
         href: about.html
   right:
-    - text: "Demographics"
+    - text: "Descriptive Analysis"
       href: demographics.html
-    - text: "Analysis"
+    - text: "Statistical Analysis"
     - text: "Project Report"
       href: report.html
     - icon: fa-github fa-lg

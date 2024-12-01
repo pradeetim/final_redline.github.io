@@ -7,17 +7,17 @@ output:
     toc_float: true
 ---
 
-```{r setup, echo=FALSE, message=FALSE}
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(ggplot2)
 library(dplyr)
 library(plotly)
 ```
 
-```{r datacleaning, echo=FALSE, message=FALSE}
-rmarkdown::render("data_cleaning.rmd")
+```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+rmarkdown::render("data_cleaning.rmd", quiet = TRUE)
 ```
 
-```{r setup2, echo=FALSE, message=FALSE}
+```{r setup2, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 # Mapping set up
 # Load the packages
 library(sf)
@@ -66,7 +66,7 @@ redlining_sf <-
 ```
 
 
-### Redlining throughout Boroughs:
+## Redlining throughout Boroughs:
 
 ```{r}
 # Load required library for spatial aggregation
@@ -137,13 +137,123 @@ leaflet(redlining_sf) |>
 
 ```
 
-#### Average Redlining score in each borough.
+### Average Redlining score in each borough:
 
-### SNAP Enrollment Count throughout Boroughs:
+```{r}
+redlining |>
+  mutate(
+    borough = case_when(
+      fip == 36061 ~ "Manhattan",
+      fip == 36047 ~ "Brooklyn",
+      fip == 36081 ~ "Queens",
+      fip == 36005 ~ "Bronx",
+      fip == 36085 ~ "Staten Island",
+      TRUE ~ "Unknown")
+  ) |>
+  group_by(borough) |>
+  summarize(avg_redline_score =
+              mean(hrs2020, na.rm = TRUE)) |>
+  mutate(borough = fct_reorder(borough, avg_redline_score)) |>
+  ggplot(aes(x = borough, y = avg_redline_score, fill = borough)) +
+  geom_point() +
+  labs(
+    title = "Average Redlining Score by Borough",
+    x = "Borough",
+    y = "Average Redlining Score"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
 
-#### SNAP Enrollment Demographics
+```
 
-### Grocery Stores in Manhattan, Brooklyn, and Bronx.
+### Distribution of Redlining Scores in Boroughs:
+
+```{r}
+redlining |>
+  mutate(
+    borough = case_when(
+      fip == 36061 ~ "Manhattan",
+      fip == 36047 ~ "Brooklyn",
+      fip == 36081 ~ "Queens",
+      fip == 36005 ~ "Bronx",
+      fip == 36085 ~ "Staten Island",
+      TRUE ~ "Unknown")
+  ) |>
+ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Redlining Scores by Borough",
+    x = "Borough",
+    y = "Redlining Score"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## SNAP Total Household Count in Boroughs:
+
+```{r}
+SNAP |>
+  separate(
+    name,
+    into = c("census_tract", "county", "state"),
+    sep = "; ",
+    fill = "right",
+    remove = FALSE
+  ) |>
+  mutate(
+    borough = case_when(
+      county == "Queens County" ~ "Queens",
+      county == "Bronx County" ~ "Bronx",
+      county == "New York County" ~ "Manhattan",
+      county == "Kings County" ~ "Brooklyn",
+      county == "Richmond County" ~ "Staten Island",
+      TRUE ~ "Unknown"
+    )
+  ) |>
+  group_by(borough) |>
+  summarize(
+    total_household_count = sum(total_ct_households, na.rm = TRUE)
+  ) |>
+  filter(borough != "Unknown") |>
+  ggplot(aes(x = borough, y = total_household_count, fill = borough)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Total SNAP-Enrolled Households by Borough in 2022",
+    x = "Borough",
+    y = "Total Household Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+### SNAP Enrollment Demographics:
+
+```{r}
+SNAP |>
+  separate(
+    name,
+    into = c("census_tract", "county", "state"),
+    sep = "; ",
+    fill = "right",
+    remove = FALSE
+  ) |>
+  mutate(
+    borough = case_when(
+      county == "Queens County" ~ "Queens",
+      county == "Bronx County" ~ "Bronx",
+      county == "New York County" ~ "Manhattan",
+      county == "Kings County" ~ "Brooklyn",
+      county == "Richmond County" ~ "Staten Island",
+      TRUE ~ "Unknown"
+    )
+  ) |>
+  group_by(borough)
+```
+
+
+## Grocery Stores in Manhattan, Brooklyn, and Bronx.
 ```{r}
 
 # Create the map to plot all grocery stores in Manhattan, Brooklyn, and Bronx
