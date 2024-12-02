@@ -1,655 +1,342 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Statistical Analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
-@font-face {
-font-family: octicons-link;
-src: url(data:font/woff;charset=utf-8;base64,d09GRgABAAAAAAZwABAAAAAACFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEU0lHAAAGaAAAAAgAAAAIAAAAAUdTVUIAAAZcAAAACgAAAAoAAQAAT1MvMgAAAyQAAABJAAAAYFYEU3RjbWFwAAADcAAAAEUAAACAAJThvmN2dCAAAATkAAAABAAAAAQAAAAAZnBnbQAAA7gAAACyAAABCUM+8IhnYXNwAAAGTAAAABAAAAAQABoAI2dseWYAAAFsAAABPAAAAZwcEq9taGVhZAAAAsgAAAA0AAAANgh4a91oaGVhAAADCAAAABoAAAAkCA8DRGhtdHgAAAL8AAAADAAAAAwGAACfbG9jYQAAAsAAAAAIAAAACABiATBtYXhwAAACqAAAABgAAAAgAA8ASm5hbWUAAAToAAABQgAAAlXu73sOcG9zdAAABiwAAAAeAAAAME3QpOBwcmVwAAAEbAAAAHYAAAB/aFGpk3jaTY6xa8JAGMW/O62BDi0tJLYQincXEypYIiGJjSgHniQ6umTsUEyLm5BV6NDBP8Tpts6F0v+k/0an2i+itHDw3v2+9+DBKTzsJNnWJNTgHEy4BgG3EMI9DCEDOGEXzDADU5hBKMIgNPZqoD3SilVaXZCER3/I7AtxEJLtzzuZfI+VVkprxTlXShWKb3TBecG11rwoNlmmn1P2WYcJczl32etSpKnziC7lQyWe1smVPy/Lt7Kc+0vWY/gAgIIEqAN9we0pwKXreiMasxvabDQMM4riO+qxM2ogwDGOZTXxwxDiycQIcoYFBLj5K3EIaSctAq2kTYiw+ymhce7vwM9jSqO8JyVd5RH9gyTt2+J/yUmYlIR0s04n6+7Vm1ozezUeLEaUjhaDSuXHwVRgvLJn1tQ7xiuVv/ocTRF42mNgZGBgYGbwZOBiAAFGJBIMAAizAFoAAABiAGIAznjaY2BkYGAA4in8zwXi+W2+MjCzMIDApSwvXzC97Z4Ig8N/BxYGZgcgl52BCSQKAA3jCV8CAABfAAAAAAQAAEB42mNgZGBg4f3vACQZQABIMjKgAmYAKEgBXgAAeNpjYGY6wTiBgZWBg2kmUxoDA4MPhGZMYzBi1AHygVLYQUCaawqDA4PChxhmh/8ODDEsvAwHgMKMIDnGL0x7gJQCAwMAJd4MFwAAAHjaY2BgYGaA4DAGRgYQkAHyGMF8NgYrIM3JIAGVYYDT+AEjAwuDFpBmA9KMDEwMCh9i/v8H8sH0/4dQc1iAmAkALaUKLgAAAHjaTY9LDsIgEIbtgqHUPpDi3gPoBVyRTmTddOmqTXThEXqrob2gQ1FjwpDvfwCBdmdXC5AVKFu3e5MfNFJ29KTQT48Ob9/lqYwOGZxeUelN2U2R6+cArgtCJpauW7UQBqnFkUsjAY/kOU1cP+DAgvxwn1chZDwUbd6CFimGXwzwF6tPbFIcjEl+vvmM/byA48e6tWrKArm4ZJlCbdsrxksL1AwWn/yBSJKpYbq8AXaaTb8AAHja28jAwOC00ZrBeQNDQOWO//sdBBgYGRiYWYAEELEwMTE4uzo5Zzo5b2BxdnFOcALxNjA6b2ByTswC8jYwg0VlNuoCTWAMqNzMzsoK1rEhNqByEyerg5PMJlYuVueETKcd/89uBpnpvIEVomeHLoMsAAe1Id4AAAAAAAB42oWQT07CQBTGv0JBhagk7HQzKxca2sJCE1hDt4QF+9JOS0nbaaYDCQfwCJ7Au3AHj+LO13FMmm6cl7785vven0kBjHCBhfpYuNa5Ph1c0e2Xu3jEvWG7UdPDLZ4N92nOm+EBXuAbHmIMSRMs+4aUEd4Nd3CHD8NdvOLTsA2GL8M9PODbcL+hD7C1xoaHeLJSEao0FEW14ckxC+TU8TxvsY6X0eLPmRhry2WVioLpkrbp84LLQPGI7c6sOiUzpWIWS5GzlSgUzzLBSikOPFTOXqly7rqx0Z1Q5BAIoZBSFihQYQOOBEdkCOgXTOHA07HAGjGWiIjaPZNW13/+lm6S9FT7rLHFJ6fQbkATOG1j2OFMucKJJsxIVfQORl+9Jyda6Sl1dUYhSCm1dyClfoeDve4qMYdLEbfqHf3O/AdDumsjAAB42mNgYoAAZQYjBmyAGYQZmdhL8zLdDEydARfoAqIAAAABAAMABwAKABMAB///AA8AAQAAAAAAAAAAAAAAAAABAAAAAA==) format('woff');
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
-body {
--webkit-text-size-adjust: 100%;
-text-size-adjust: 100%;
-color: #333;
-font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-font-size: 16px;
-line-height: 1.6;
-word-wrap: break-word;
-}
-a {
-background-color: transparent;
-}
-a:active,
-a:hover {
-outline: 0;
-}
-strong {
-font-weight: bold;
-}
-h1 {
-font-size: 2em;
-margin: 0.67em 0;
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
 }
 img {
-border: 0;
+  max-width:100%;
 }
-hr {
-box-sizing: content-box;
-height: 0;
+.tabbed-pane {
+  padding-top: 12px;
 }
-pre {
-overflow: auto;
+.html-widget {
+  margin-bottom: 20px;
 }
-code,
-kbd,
-pre {
-font-family: monospace, monospace;
-font-size: 1em;
+button.code-folding-btn:focus {
+  outline: none;
 }
-input {
-color: inherit;
-font: inherit;
-margin: 0;
+summary {
+  display: list-item;
 }
-html input[disabled] {
-cursor: default;
-}
-input {
-line-height: normal;
-}
-input[type="checkbox"] {
-box-sizing: border-box;
-padding: 0;
-}
-table {
-border-collapse: collapse;
-border-spacing: 0;
-}
-td,
-th {
-padding: 0;
-}
-* {
-box-sizing: border-box;
-}
-input {
-font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-}
-a {
-color: #4078c0;
-text-decoration: none;
-}
-a:hover,
-a:active {
-text-decoration: underline;
-}
-hr {
-height: 0;
-margin: 15px 0;
-overflow: hidden;
-background: transparent;
-border: 0;
-border-bottom: 1px solid #ddd;
-}
-hr:before {
-display: table;
-content: "";
-}
-hr:after {
-display: table;
-clear: both;
-content: "";
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-margin-top: 15px;
-margin-bottom: 15px;
-line-height: 1.1;
-}
-h1 {
-font-size: 30px;
-}
-h2 {
-font-size: 21px;
-}
-h3 {
-font-size: 16px;
-}
-h4 {
-font-size: 14px;
-}
-h5 {
-font-size: 12px;
-}
-h6 {
-font-size: 11px;
-}
-blockquote {
-margin: 0;
-}
-ul,
-ol {
-padding: 0;
-margin-top: 0;
-margin-bottom: 0;
-}
-ol ol,
-ul ol {
-list-style-type: lower-roman;
-}
-ul ul ol,
-ul ol ol,
-ol ul ol,
-ol ol ol {
-list-style-type: lower-alpha;
-}
-dd {
-margin-left: 0;
-}
-code {
-font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-font-size: 12px;
-}
-pre {
-margin-top: 0;
-margin-bottom: 0;
-font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
-}
-.select::-ms-expand {
-opacity: 0;
-}
-.octicon {
-font: normal normal normal 16px/1 octicons-link;
-display: inline-block;
-text-decoration: none;
-text-rendering: auto;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-}
-.octicon-link:before {
-content: '\f05c';
-}
-.markdown-body:before {
-display: table;
-content: "";
-}
-.markdown-body:after {
-display: table;
-clear: both;
-content: "";
-}
-.markdown-body>*:first-child {
-margin-top: 0 !important;
-}
-.markdown-body>*:last-child {
-margin-bottom: 0 !important;
-}
-a:not([href]) {
-color: inherit;
-text-decoration: none;
-}
-.anchor {
-display: inline-block;
-padding-right: 2px;
-margin-left: -18px;
-}
-.anchor:focus {
-outline: none;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-margin-top: 1em;
-margin-bottom: 16px;
-font-weight: bold;
-line-height: 1.4;
-}
-h1 .octicon-link,
-h2 .octicon-link,
-h3 .octicon-link,
-h4 .octicon-link,
-h5 .octicon-link,
-h6 .octicon-link {
-color: #000;
-vertical-align: middle;
-visibility: hidden;
-}
-h1:hover .anchor,
-h2:hover .anchor,
-h3:hover .anchor,
-h4:hover .anchor,
-h5:hover .anchor,
-h6:hover .anchor {
-text-decoration: none;
-}
-h1:hover .anchor .octicon-link,
-h2:hover .anchor .octicon-link,
-h3:hover .anchor .octicon-link,
-h4:hover .anchor .octicon-link,
-h5:hover .anchor .octicon-link,
-h6:hover .anchor .octicon-link {
-visibility: visible;
-}
-h1 {
-padding-bottom: 0.3em;
-font-size: 2.25em;
-line-height: 1.2;
-border-bottom: 1px solid #eee;
-}
-h1 .anchor {
-line-height: 1;
-}
-h2 {
-padding-bottom: 0.3em;
-font-size: 1.75em;
-line-height: 1.225;
-border-bottom: 1px solid #eee;
-}
-h2 .anchor {
-line-height: 1;
-}
-h3 {
-font-size: 1.5em;
-line-height: 1.43;
-}
-h3 .anchor {
-line-height: 1.2;
-}
-h4 {
-font-size: 1.25em;
-}
-h4 .anchor {
-line-height: 1.2;
-}
-h5 {
-font-size: 1em;
-}
-h5 .anchor {
-line-height: 1.1;
-}
-h6 {
-font-size: 1em;
-color: #777;
-}
-h6 .anchor {
-line-height: 1.1;
-}
-p,
-blockquote,
-ul,
-ol,
-dl,
-table,
-pre {
-margin-top: 0;
-margin-bottom: 16px;
-}
-hr {
-height: 4px;
-padding: 0;
-margin: 16px 0;
-background-color: #e7e7e7;
-border: 0 none;
-}
-ul,
-ol {
-padding-left: 2em;
-}
-ul ul,
-ul ol,
-ol ol,
-ol ul {
-margin-top: 0;
-margin-bottom: 0;
-}
-li>p {
-margin-top: 16px;
-}
-dl {
-padding: 0;
-}
-dl dt {
-padding: 0;
-margin-top: 16px;
-font-size: 1em;
-font-style: italic;
-font-weight: bold;
-}
-dl dd {
-padding: 0 16px;
-margin-bottom: 16px;
-}
-blockquote {
-padding: 0 15px;
-color: #777;
-border-left: 4px solid #ddd;
-}
-blockquote>:first-child {
-margin-top: 0;
-}
-blockquote>:last-child {
-margin-bottom: 0;
-}
-table {
-display: block;
-width: 100%;
-overflow: auto;
-word-break: normal;
-word-break: keep-all;
-}
-table th {
-font-weight: bold;
-}
-table th,
-table td {
-padding: 6px 13px;
-border: 1px solid #ddd;
-}
-table tr {
-background-color: #fff;
-border-top: 1px solid #ccc;
-}
-table tr:nth-child(2n) {
-background-color: #f8f8f8;
-}
-img {
-max-width: 100%;
-box-sizing: content-box;
-background-color: #fff;
-}
-code {
-padding: 0;
-padding-top: 0.2em;
-padding-bottom: 0.2em;
-margin: 0;
-font-size: 85%;
-background-color: rgba(0,0,0,0.04);
-border-radius: 3px;
-}
-code:before,
-code:after {
-letter-spacing: -0.2em;
-content: "\00a0";
-}
-pre>code {
-padding: 0;
-margin: 0;
-font-size: 100%;
-word-break: normal;
-white-space: pre;
-background: transparent;
-border: 0;
-}
-.highlight {
-margin-bottom: 16px;
-}
-.highlight pre,
-pre {
-padding: 16px;
-overflow: auto;
-font-size: 85%;
-line-height: 1.45;
-background-color: #f7f7f7;
-border-radius: 3px;
-}
-.highlight pre {
-margin-bottom: 0;
-word-break: normal;
-}
-pre {
-word-wrap: normal;
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
-display: inline;
-max-width: initial;
-padding: 0;
-margin: 0;
-overflow: initial;
-line-height: inherit;
-word-wrap: normal;
-background-color: transparent;
-border: 0;
-}
-pre code:before,
-pre code:after {
-content: normal;
-}
-kbd {
-display: inline-block;
-padding: 3px 5px;
-font-size: 11px;
-line-height: 10px;
-color: #555;
-vertical-align: middle;
-background-color: #fcfcfc;
-border: solid 1px #ccc;
-border-bottom-color: #bbb;
-border-radius: 3px;
-box-shadow: inset 0 -1px 0 #bbb;
-}
-.pl-c {
-color: #969896;
-}
-.pl-c1,
-.pl-s .pl-v {
-color: #0086b3;
-}
-.pl-e,
-.pl-en {
-color: #795da3;
-}
-.pl-s .pl-s1,
-.pl-smi {
-color: #333;
-}
-.pl-ent {
-color: #63a35c;
-}
-.pl-k {
-color: #a71d5d;
-}
-.pl-pds,
-.pl-s,
-.pl-s .pl-pse .pl-s1,
-.pl-sr,
-.pl-sr .pl-cce,
-.pl-sr .pl-sra,
-.pl-sr .pl-sre {
-color: #183691;
-}
-.pl-v {
-color: #ed6a43;
-}
-.pl-id {
-color: #b52a1d;
-}
-.pl-ii {
-background-color: #b52a1d;
-color: #f8f8f8;
-}
-.pl-sr .pl-cce {
-color: #63a35c;
-font-weight: bold;
-}
-.pl-ml {
-color: #693a17;
-}
-.pl-mh,
-.pl-mh .pl-en,
-.pl-ms {
-color: #1d3e81;
-font-weight: bold;
-}
-.pl-mq {
-color: #008080;
-}
-.pl-mi {
-color: #333;
-font-style: italic;
-}
-.pl-mb {
-color: #333;
-font-weight: bold;
-}
-.pl-md {
-background-color: #ffecec;
-color: #bd2c00;
-}
-.pl-mi1 {
-background-color: #eaffea;
-color: #55a532;
-}
-.pl-mdr {
-color: #795da3;
-font-weight: bold;
-}
-.pl-mo {
-color: #1d3e81;
-}
-kbd {
-display: inline-block;
-padding: 3px 5px;
-font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
-line-height: 10px;
-color: #555;
-vertical-align: middle;
-background-color: #fcfcfc;
-border: solid 1px #ccc;
-border-bottom-color: #bbb;
-border-radius: 3px;
-box-shadow: inset 0 -1px 0 #bbb;
-}
-.task-list-item {
-list-style-type: none;
-}
-.task-list-item+.task-list-item {
-margin-top: 3px;
-}
-.task-list-item input {
-margin: 0 0.35em 0.25em -1.6em;
-vertical-align: middle;
-}
-:checked+.radio-label {
-z-index: 1;
-position: relative;
-border-color: #4078c0;
-}
-.sourceLine {
-display: inline-block;
-}
-code .kw { color: #000000; }
-code .dt { color: #ed6a43; }
-code .dv { color: #009999; }
-code .bn { color: #009999; }
-code .fl { color: #009999; }
-code .ch { color: #009999; }
-code .st { color: #183691; }
-code .co { color: #969896; }
-code .ot { color: #0086b3; }
-code .al { color: #a61717; }
-code .fu { color: #63a35c; }
-code .er { color: #a61717; background-color: #e3d2d2; }
-code .wa { color: #000000; }
-code .cn { color: #008080; }
-code .sc { color: #008080; }
-code .vs { color: #183691; }
-code .ss { color: #183691; }
-code .im { color: #000000; }
-code .va {color: #008080; }
-code .cf { color: #000000; }
-code .op { color: #000000; }
-code .bu { color: #000000; }
-code .ex { color: #000000; }
-code .pp { color: #999999; }
-code .at { color: #008080; }
-code .do { color: #969896; }
-code .an { color: #008080; }
-code .cv { color: #008080; }
-code .in { color: #008080; }
-</style>
-<style>
-body {
-box-sizing: border-box;
-min-width: 200px;
-max-width: 980px;
-margin: 0 auto;
-padding: 45px;
-padding-top: 0px;
+  padding: 0;
 }
 </style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
 
 
 </head>
 
 <body>
 
-<h1 id="statistical-analysis">Statistical Analysis</h1>
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="team.html">Meet the Team</a>
+    </li>
+    <li>
+      <a href="about.html">Data Source</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="demographics.html">Descriptive Analysis</a>
+</li>
+<li class="dropdown-header">Statistical Analysis</li>
+<li>
+  <a href="report.html">Project Report</a>
+</li>
+<li>
+  <a href="https://github.com/pradeetim/final_redline.github.io">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Statistical Analysis</h1>
+
+</div>
+
+
 <p>import the datasets and packages</p>
-<h3 id="desciptive-characteristics-based-on-redlining-grades">Desciptive
-Characteristics based on redlining grades</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>redlining_quartile<span class="ot">=</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>final_analysis <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">group_by</span>(red_grade) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="at">avg_snap =</span> <span class="fu">mean</span>(ph_snap, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="at">sd_snap =</span> <span class="fu">sd</span>(ph_snap, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="at">avg_poverty =</span> <span class="fu">mean</span>(ph_below_poverty, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="at">sd_poverty =</span> <span class="fu">sd</span>(ph_below_poverty, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="at">avg_disability =</span> <span class="fu">mean</span>(ph_disability, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="at">sd_disability =</span> <span class="fu">sd</span>(ph_disability, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    <span class="at">avg_white =</span> <span class="fu">mean</span>(ph_white, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    <span class="at">sd_white =</span> <span class="fu">sd</span>(ph_white, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="at">avg_black =</span> <span class="fu">mean</span>(ph_black, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="at">sd_black =</span> <span class="fu">sd</span>(ph_black, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>    <span class="at">avg_asian =</span> <span class="fu">mean</span>(ph_asian, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>    <span class="at">sd_asian =</span> <span class="fu">sd</span>(ph_asian, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="at">avg_otherrace =</span> <span class="fu">mean</span>(ph_other_race, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="at">sd_otherrace =</span> <span class="fu">sd</span>(ph_other_race, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>    <span class="at">avg_hispanic =</span> <span class="fu">mean</span>(ph_hispanic, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="at">sd_hispanic =</span> <span class="fu">sd</span>(ph_hispanic, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    <span class="at">avg_nowork =</span> <span class="fu">mean</span>(ph_no_work, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="at">sd_nowork =</span> <span class="fu">sd</span>(ph_no_work, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>    <span class="at">avg_1work =</span> <span class="fu">mean</span>(ph_1_work, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>    <span class="at">sd_1work =</span> <span class="fu">sd</span>(ph_1_work, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    <span class="at">avg_2work =</span> <span class="fu">mean</span>(ph_2_work, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>    <span class="at">sd_2work =</span> <span class="fu">sd</span>(ph_2_work, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>    <span class="at">avg_obesity =</span> <span class="fu">mean</span>(obesity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>    <span class="at">sd_obesity =</span> <span class="fu">sd</span>(obesity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>    <span class="at">avg_highchol =</span> <span class="fu">mean</span>(highchol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>    <span class="at">sd_highchol =</span> <span class="fu">sd</span>(highchol, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>    <span class="at">avg_diabetes =</span> <span class="fu">mean</span>(diabetes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>    <span class="at">sd_diabetes =</span> <span class="fu">sd</span>(diabetes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>  )<span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(</span>
-<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>red_grade,</span>
-<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;stat&quot;</span>, <span class="st">&quot;variable&quot;</span>),</span>
-<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span></span>
-<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
-<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="fu">c</span>(red_grade, stat), </span>
-<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>    <span class="at">values_from =</span> value,              </span>
-<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">&quot;{red_grade}_{stat}&quot;</span></span>
-<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a>  )</span>
-<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>redlining_quartile<span class="sc">|&gt;</span></span>
-<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div id="desciptive-characteristics-based-on-redlining-grades"
+class="section level3">
+<h3>Desciptive Characteristics based on redlining grades</h3>
+<pre class="r"><code>redlining_quartile=
+final_analysis |&gt;
+  group_by(red_grade) |&gt;
+  summarise(
+    avg_snap = mean(ph_snap, na.rm = TRUE),
+    sd_snap = sd(ph_snap, na.rm = TRUE),
+    avg_poverty = mean(ph_below_poverty, na.rm = TRUE),
+    sd_poverty = sd(ph_below_poverty, na.rm = TRUE),
+    avg_disability = mean(ph_disability, na.rm = TRUE),
+    sd_disability = sd(ph_disability, na.rm = TRUE),
+    avg_white = mean(ph_white, na.rm = TRUE),
+    sd_white = sd(ph_white, na.rm = TRUE),
+    avg_black = mean(ph_black, na.rm = TRUE),
+    sd_black = sd(ph_black, na.rm = TRUE),
+    avg_asian = mean(ph_asian, na.rm = TRUE),
+    sd_asian = sd(ph_asian, na.rm = TRUE),
+    avg_otherrace = mean(ph_other_race, na.rm = TRUE),
+    sd_otherrace = sd(ph_other_race, na.rm = TRUE),
+    avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
+    sd_hispanic = sd(ph_hispanic, na.rm = TRUE),
+    avg_nowork = mean(ph_no_work, na.rm = TRUE),
+    sd_nowork = sd(ph_no_work, na.rm = TRUE),
+    avg_1work = mean(ph_1_work, na.rm = TRUE),
+    sd_1work = sd(ph_1_work, na.rm = TRUE),
+    avg_2work = mean(ph_2_work, na.rm = TRUE),
+    sd_2work = sd(ph_2_work, na.rm = TRUE),
+    avg_obesity = mean(obesity, na.rm = TRUE),
+    sd_obesity = sd(obesity, na.rm = TRUE),
+    avg_highchol = mean(highchol, na.rm = TRUE),
+    sd_highchol = sd(highchol, na.rm = TRUE),
+    avg_diabetes = mean(diabetes, na.rm = TRUE),
+    sd_diabetes = sd(diabetes, na.rm = TRUE)
+  )|&gt; pivot_longer(
+    cols = -red_grade,
+    names_to = c(&quot;stat&quot;, &quot;variable&quot;),
+    names_sep = &quot;_&quot;
+  )|&gt;
+  pivot_wider(
+    names_from = c(red_grade, stat), 
+    values_from = value,              
+    names_glue = &quot;{red_grade}_{stat}&quot;
+  )
+
+redlining_quartile|&gt;
+  knitr::kable(digits = 2)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -821,10 +508,10 @@ Characteristics based on redlining grades</h3>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>final_analysis <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">group_by</span>(red_grade)<span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())<span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>   knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div>
+<pre class="r"><code>final_analysis |&gt;
+  group_by(red_grade)|&gt;
+  summarise(count = n())|&gt;
+   knitr::kable()</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -851,53 +538,57 @@ Characteristics based on redlining grades</h3>
 </tr>
 </tbody>
 </table>
-<h3 id="comparing-census-tracts-with-hrs-in-the-first-and-fourth-quartile">Comparing
-census tracts with HRS in the first and fourth quartile</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>q1_vs_q4 <span class="ot">=</span> </span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>final_analysis<span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">filter</span>(red_grade <span class="sc">%in%</span><span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;D&quot;</span>))</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>q1q4_desc <span class="ot">=</span> </span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>q1_vs_q4<span class="sc">|&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">group_by</span>(red_grade)<span class="sc">|&gt;</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">ph_snap =</span> <span class="fu">mean</span>(ph_snap),</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">ph_below_poverty =</span> <span class="fu">mean</span>(ph_below_poverty),</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">ph_disability =</span> <span class="fu">mean</span>(ph_disability),</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="at">minority =</span> <span class="fu">mean</span>(minority),</span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">obesity =</span> <span class="fu">mean</span>(obesity),</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">highchol =</span> <span class="fu">mean</span>(highchol),</span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="at">diabetes =</span> <span class="fu">mean</span>(diabetes)</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>red_grade, <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> red_grade, <span class="at">names_prefix =</span> <span class="st">&quot;grade_&quot;</span>, <span class="at">values_from =</span> value)<span class="sc">|&gt;</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a> <span class="fu">mutate</span>(</span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    <span class="at">mean_diff =</span> grade_D <span class="sc">-</span> grade_A,</span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">outcome =</span> variable)</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>uni_reg <span class="ot">=</span> <span class="cf">function</span>(dataset, outcomes, predictor) {</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  results <span class="ot">=</span> <span class="fu">list</span>() </span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="cf">for</span> (outcome <span class="cf">in</span> outcomes) {</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    formula <span class="ot">=</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(outcome, <span class="st">&quot;~&quot;</span>, predictor))</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    model<span class="ot">=</span> <span class="fu">lm</span>(</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>      formula,</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>      <span class="at">data =</span> dataset</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    )</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    results[[outcome]] <span class="ot">=</span> broom<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  }</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  </span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  combined_results <span class="ot">=</span> <span class="fu">bind_rows</span>(results, <span class="at">.id =</span> <span class="st">&quot;outcome&quot;</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="fu">return</span>(combined_results)</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>}</span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>outcomes <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;ph_snap&quot;</span>,<span class="st">&quot;ph_below_poverty&quot;</span>, <span class="st">&quot;ph_disability&quot;</span>, <span class="st">&quot;minority&quot;</span>, <span class="st">&quot;obesity&quot;</span>, <span class="st">&quot;highchol&quot;</span>, <span class="st">&quot;diabetes&quot;</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="fu">uni_reg</span>(q1_vs_q4, outcomes, <span class="st">&quot;red_grade&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">&quot;(Intercept)&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  <span class="fu">right_join</span>(q1q4_desc, <span class="at">by=</span><span class="st">&quot;outcome&quot;</span>)<span class="sc">|&gt;</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>  <span class="fu">select</span>(outcome, grade_A, grade_D, mean_diff, p.value)<span class="sc">|&gt;</span></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div
+id="comparing-census-tracts-with-hrs-in-the-first-and-fourth-quartile"
+class="section level3">
+<h3>Comparing census tracts with HRS in the first and fourth
+quartile</h3>
+<pre class="r"><code>q1_vs_q4 = 
+final_analysis|&gt;
+  filter(red_grade %in%c(&quot;A&quot;,&quot;D&quot;))
+
+q1q4_desc = 
+q1_vs_q4|&gt;
+  group_by(red_grade)|&gt;
+  summarise(
+    ph_snap = mean(ph_snap),
+    ph_below_poverty = mean(ph_below_poverty),
+    ph_disability = mean(ph_disability),
+    minority = mean(minority),
+    obesity = mean(obesity),
+    highchol = mean(highchol),
+    diabetes = mean(diabetes)
+  )|&gt;
+ pivot_longer(cols = -red_grade, names_to = &quot;variable&quot;, values_to = &quot;value&quot;)|&gt;
+ pivot_wider(names_from = red_grade, names_prefix = &quot;grade_&quot;, values_from = value)|&gt;
+ mutate(
+    mean_diff = grade_D - grade_A,
+  )|&gt;
+  rename(outcome = variable)</code></pre>
+<pre class="r"><code>uni_reg = function(dataset, outcomes, predictor) {
+  results = list() 
+  for (outcome in outcomes) {
+    formula = as.formula(paste(outcome, &quot;~&quot;, predictor))
+    model= lm(
+      formula,
+      data = dataset
+    )
+    results[[outcome]] = broom::tidy(model)
+  }
+  
+  combined_results = bind_rows(results, .id = &quot;outcome&quot;)
+  return(combined_results)
+}
+
+outcomes = c(&quot;ph_snap&quot;,&quot;ph_below_poverty&quot;, &quot;ph_disability&quot;, &quot;minority&quot;, &quot;obesity&quot;, &quot;highchol&quot;, &quot;diabetes&quot;)
+
+
+uni_reg(q1_vs_q4, outcomes, &quot;red_grade&quot;)|&gt;
+  filter(term != &quot;(Intercept)&quot;)|&gt;
+  right_join(q1q4_desc, by=&quot;outcome&quot;)|&gt;
+  select(outcome, grade_A, grade_D, mean_diff, p.value)|&gt;
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -960,11 +651,13 @@ census tracts with HRS in the first and fourth quartile</h3>
 </tr>
 </tbody>
 </table>
-<h3 id="regression-analysis-for-hrs-and-the-relevant-variables">regression
-analysis for hrs and the relevant variables</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># univariate analysis</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">lm</span>(ph_snap<span class="sc">~</span>red_grade,final_analysis)<span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()</span></code></pre></div>
+</div>
+<div id="regression-analysis-for-hrs-and-the-relevant-variables"
+class="section level3">
+<h3>regression analysis for hrs and the relevant variables</h3>
+<pre class="r"><code># univariate analysis
+lm(ph_snap~red_grade,final_analysis)|&gt;
+  broom::tidy()</code></pre>
 <pre><code>## # A tibble: 4 × 5
 ##   term        estimate std.error statistic  p.value
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
@@ -972,10 +665,10 @@ analysis for hrs and the relevant variables</h3>
 ## 2 red_gradeB     11.5       2.61      4.42 1.04e- 5
 ## 3 red_gradeC     12.9       2.53      5.10 3.65e- 7
 ## 4 red_gradeD     18.0       2.55      7.04 2.62e-12</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## multivariate model 1</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">lm</span>(ph_snap<span class="sc">~</span>red_grade<span class="sc">+</span>minority<span class="sc">+</span>ph_disability,final_analysis)<span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()<span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre class="r"><code>## multivariate model 1
+lm(ph_snap~red_grade+minority+ph_disability,final_analysis)|&gt;
+  broom::tidy()|&gt;
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1031,10 +724,10 @@ analysis for hrs and the relevant variables</h3>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="do">##multivariate model 2</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">lm</span>(ph_snap<span class="sc">~</span>red_grade<span class="sc">+</span>ph_disability<span class="sc">+</span>ph_white<span class="sc">+</span>ph_black<span class="sc">+</span>ph_asian<span class="sc">+</span>ph_1_work<span class="sc">+</span>ph_2_work,final_analysis)<span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>()<span class="sc">|&gt;</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre class="r"><code>##multivariate model 2
+lm(ph_snap~red_grade+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|&gt;
+  broom::tidy()|&gt;
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1118,6 +811,570 @@ analysis for hrs and the relevant variables</h3>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="statistical-analysis-of-obesity" class="section level2">
+<h2>Statistical Analysis of Obesity</h2>
+<div
+id="does-the-relationship-between-redlining-and-health-outcomes-depend-on-minority-percentage"
+class="section level3">
+<h3>Does the relationship between redlining and health outcomes depend
+on minority percentage?</h3>
+<pre class="r"><code>uni_ob = lm(obesity ~ red_grade, data = final_analysis) 
+uni_ob|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">20.736</td>
+<td align="right">1.124</td>
+<td align="right">18.444</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">5.187</td>
+<td align="right">1.180</td>
+<td align="right">4.394</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">6.770</td>
+<td align="right">1.144</td>
+<td align="right">5.917</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">7.974</td>
+<td align="right">1.155</td>
+<td align="right">6.901</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>mul_ob = lm(obesity ~ red_grade + minority, data = final_analysis) 
+mul_ob |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">17.122</td>
+<td align="right">0.917</td>
+<td align="right">18.682</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">1.173</td>
+<td align="right">0.963</td>
+<td align="right">1.218</td>
+<td align="right">0.224</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">1.446</td>
+<td align="right">0.940</td>
+<td align="right">1.538</td>
+<td align="right">0.124</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">2.639</td>
+<td align="right">0.949</td>
+<td align="right">2.781</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="odd">
+<td align="left">minority</td>
+<td align="right">0.142</td>
+<td align="right">0.004</td>
+<td align="right">32.717</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>int_ob = lm(obesity ~ red_grade + minority + red_grade * minority, data = final_analysis) 
+int_ob |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">15.764</td>
+<td align="right">1.341</td>
+<td align="right">11.752</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">1.646</td>
+<td align="right">1.473</td>
+<td align="right">1.118</td>
+<td align="right">0.264</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">5.209</td>
+<td align="right">1.406</td>
+<td align="right">3.706</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">1.066</td>
+<td align="right">1.438</td>
+<td align="right">0.741</td>
+<td align="right">0.459</td>
+</tr>
+<tr class="odd">
+<td align="left">minority</td>
+<td align="right">0.195</td>
+<td align="right">0.039</td>
+<td align="right">4.965</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB:minority</td>
+<td align="right">-0.037</td>
+<td align="right">0.041</td>
+<td align="right">-0.909</td>
+<td align="right">0.364</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC:minority</td>
+<td align="right">-0.091</td>
+<td align="right">0.040</td>
+<td align="right">-2.300</td>
+<td align="right">0.022</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD:minority</td>
+<td align="right">-0.007</td>
+<td align="right">0.040</td>
+<td align="right">-0.171</td>
+<td align="right">0.864</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>uni_dia = lm(diabetes ~ red_grade, data = final_analysis)
+uni_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">9.247</td>
+<td align="right">0.576</td>
+<td align="right">16.048</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">1.866</td>
+<td align="right">0.605</td>
+<td align="right">3.085</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">3.108</td>
+<td align="right">0.586</td>
+<td align="right">5.299</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">2.337</td>
+<td align="right">0.592</td>
+<td align="right">3.947</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>mul_dia = lm(diabetes ~ red_grade + minority, data = final_analysis) 
+mul_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">7.027</td>
+<td align="right">0.412</td>
+<td align="right">17.054</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">-0.600</td>
+<td align="right">0.433</td>
+<td align="right">-1.385</td>
+<td align="right">0.166</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">-0.163</td>
+<td align="right">0.423</td>
+<td align="right">-0.386</td>
+<td align="right">0.700</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">-0.940</td>
+<td align="right">0.427</td>
+<td align="right">-2.202</td>
+<td align="right">0.028</td>
+</tr>
+<tr class="odd">
+<td align="left">minority</td>
+<td align="right">0.087</td>
+<td align="right">0.002</td>
+<td align="right">44.701</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>int_dia = lm(diabetes ~ red_grade + minority + red_grade * minority, data = final_analysis) 
+int_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">7.075</td>
+<td align="right">0.601</td>
+<td align="right">11.777</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">-0.094</td>
+<td align="right">0.660</td>
+<td align="right">-0.142</td>
+<td align="right">0.887</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">0.683</td>
+<td align="right">0.630</td>
+<td align="right">1.085</td>
+<td align="right">0.278</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">-2.712</td>
+<td align="right">0.644</td>
+<td align="right">-4.211</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">minority</td>
+<td align="right">0.085</td>
+<td align="right">0.018</td>
+<td align="right">4.844</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB:minority</td>
+<td align="right">-0.008</td>
+<td align="right">0.018</td>
+<td align="right">-0.463</td>
+<td align="right">0.643</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC:minority</td>
+<td align="right">-0.012</td>
+<td align="right">0.018</td>
+<td align="right">-0.691</td>
+<td align="right">0.490</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD:minority</td>
+<td align="right">0.029</td>
+<td align="right">0.018</td>
+<td align="right">1.630</td>
+<td align="right">0.103</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-comparisons" class="section level3">
+<h3>Model Comparisons</h3>
+<pre class="r"><code>AIC(uni_ob, mul_ob, int_ob)</code></pre>
+<pre><code>##        df      AIC
+## uni_ob  5 13537.07
+## mul_ob  6 12677.42
+## int_ob  9 12602.76</code></pre>
+<pre class="r"><code>models_ob = list(Univariate = uni_ob, Multivariate = mul_ob, Interaction = int_ob)
+sapply(models_ob, function(model) summary(model)$adj.r.squared)</code></pre>
+<pre><code>##   Univariate Multivariate  Interaction 
+##   0.03471427   0.36787495   0.39156456</code></pre>
+<pre class="r"><code>AIC(uni_dia, mul_dia, int_dia)</code></pre>
+<pre><code>##         df       AIC
+## uni_dia  5 10819.141
+## mul_dia  6  9426.990
+## int_dia  9  9336.586</code></pre>
+<pre class="r"><code>models_dia = list(Univariate = uni_dia, Multivariate = mul_dia, Interaction = int_dia)
+sapply(models_dia, function(model) summary(model)$adj.r.squared)</code></pre>
+<pre><code>##   Univariate Multivariate  Interaction 
+##   0.02801253   0.51016168   0.53215532</code></pre>
+</div>
+<div id="logistic-regression" class="section level3">
+<h3>Logistic Regression</h3>
+<pre class="r"><code>final_analysis &lt;- final_analysis |&gt; 
+  mutate(high_obesity = ifelse(obesity &gt; 30, 1, 0),
+         high_diabetes = ifelse(diabetes &gt; 10, 1, 0))
+
+glm(high_obesity ~ red_grade + minority, data = final_analysis, family = binomial) |&gt;
+  broom::tidy() |&gt; 
+  mutate(odds_ratio = exp(estimate)) |&gt;
+  select(term, estimate, odds_ratio, statistic, std.error, p.value) |&gt;
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">odds_ratio</th>
+<th align="right">statistic</th>
+<th align="right">std.error</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-4.937</td>
+<td align="right">0.007</td>
+<td align="right">-6.333</td>
+<td align="right">0.780</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">-0.875</td>
+<td align="right">0.417</td>
+<td align="right">-1.112</td>
+<td align="right">0.787</td>
+<td align="right">0.266</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">-1.112</td>
+<td align="right">0.329</td>
+<td align="right">-1.428</td>
+<td align="right">0.779</td>
+<td align="right">0.153</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">-0.409</td>
+<td align="right">0.664</td>
+<td align="right">-0.525</td>
+<td align="right">0.779</td>
+<td align="right">0.599</td>
+</tr>
+<tr class="odd">
+<td align="left">minority</td>
+<td align="right">0.074</td>
+<td align="right">1.077</td>
+<td align="right">21.430</td>
+<td align="right">0.003</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>glm(high_diabetes ~ red_grade + minority, data = final_analysis, family = binomial) |&gt;
+  broom::tidy() |&gt; 
+  mutate(odds_ratio = exp(estimate)) |&gt;
+  select(term, estimate, odds_ratio, statistic, std.error, p.value) |&gt;
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">odds_ratio</th>
+<th align="right">statistic</th>
+<th align="right">std.error</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-2.696</td>
+<td align="right">0.067</td>
+<td align="right">-6.092</td>
+<td align="right">0.443</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">-0.265</td>
+<td align="right">0.768</td>
+<td align="right">-0.571</td>
+<td align="right">0.463</td>
+<td align="right">0.568</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">0.689</td>
+<td align="right">1.993</td>
+<td align="right">1.534</td>
+<td align="right">0.450</td>
+<td align="right">0.125</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">-0.922</td>
+<td align="right">0.398</td>
+<td align="right">-1.997</td>
+<td align="right">0.461</td>
+<td align="right">0.046</td>
+</tr>
+<tr class="odd">
+<td align="left">minority</td>
+<td align="right">0.071</td>
+<td align="right">1.074</td>
+<td align="right">22.288</td>
+<td align="right">0.003</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="residual-plots" class="section level3">
+<h3>residual plots</h3>
+<pre class="r"><code>library(ggplot2)
+
+ob_residual = data.frame(
+    fitted = fitted(int_ob),
+    residuals = residuals(int_ob)
+  ) 
+ob_residual |&gt;
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  theme_minimal() +
+  labs(
+    title = &quot;Residuals vs Fitted Values of Obesity Regression Model&quot;,
+    x = &quot;Fitted Values&quot;,
+    y = &quot;Residuals&quot;
+  )</code></pre>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>dia_residual = data.frame(
+    fitted = fitted(int_dia),
+    residuals = residuals(int_dia)
+  ) 
+dia_residual |&gt;
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  theme_minimal() +
+  labs(
+    title = &quot;Residuals vs Fitted Values of Diabetes Regression Model&quot;,
+    x = &quot;Fitted Values&quot;,
+    y = &quot;Residuals&quot;
+  )</code></pre>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

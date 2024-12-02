@@ -225,3 +225,103 @@ lm(ph_snap~red_grade+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_wor
 ```
 
 
+## Statistical Analysis of Obesity 
+
+### Does the relationship between redlining and health outcomes depend on minority percentage?
+
+```{r}
+uni_ob = lm(obesity ~ red_grade, data = final_analysis) 
+uni_ob|> broom::tidy() |> knitr::kable(digits = 3)
+
+mul_ob = lm(obesity ~ red_grade + minority, data = final_analysis) 
+mul_ob |> broom::tidy() |> knitr::kable(digits = 3)
+
+int_ob = lm(obesity ~ red_grade + minority + red_grade * minority, data = final_analysis) 
+int_ob |> broom::tidy() |> knitr::kable(digits = 3)
+
+
+uni_dia = lm(diabetes ~ red_grade, data = final_analysis)
+uni_dia |> broom::tidy() |> knitr::kable(digits = 3)
+
+mul_dia = lm(diabetes ~ red_grade + minority, data = final_analysis) 
+mul_dia |> broom::tidy() |> knitr::kable(digits = 3)
+
+int_dia = lm(diabetes ~ red_grade + minority + red_grade * minority, data = final_analysis) 
+int_dia |> broom::tidy() |> knitr::kable(digits = 3)
+```
+
+### Model Comparisons
+
+```{r}
+AIC(uni_ob, mul_ob, int_ob)
+models_ob = list(Univariate = uni_ob, Multivariate = mul_ob, Interaction = int_ob)
+sapply(models_ob, function(model) summary(model)$adj.r.squared)
+
+AIC(uni_dia, mul_dia, int_dia)
+models_dia = list(Univariate = uni_dia, Multivariate = mul_dia, Interaction = int_dia)
+sapply(models_dia, function(model) summary(model)$adj.r.squared)
+```
+
+### Logistic Regression 
+
+```{r}
+final_analysis <- final_analysis |> 
+  mutate(high_obesity = ifelse(obesity > 30, 1, 0),
+         high_diabetes = ifelse(diabetes > 10, 1, 0))
+
+glm(high_obesity ~ red_grade + minority, data = final_analysis, family = binomial) |>
+  broom::tidy() |> 
+  mutate(odds_ratio = exp(estimate)) |>
+  select(term, estimate, odds_ratio, statistic, std.error, p.value) |>
+  knitr::kable(digits = 3)
+
+glm(high_diabetes ~ red_grade + minority, data = final_analysis, family = binomial) |>
+  broom::tidy() |> 
+  mutate(odds_ratio = exp(estimate)) |>
+  select(term, estimate, odds_ratio, statistic, std.error, p.value) |>
+  knitr::kable(digits = 3)
+```
+
+### residual plots
+
+```{r}
+library(ggplot2)
+
+ob_residual = data.frame(
+    fitted = fitted(int_ob),
+    residuals = residuals(int_ob)
+  ) 
+ob_residual |>
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Residuals vs Fitted Values of Obesity Regression Model",
+    x = "Fitted Values",
+    y = "Residuals"
+  )
+
+dia_residual = data.frame(
+    fitted = fitted(int_dia),
+    residuals = residuals(int_dia)
+  ) 
+dia_residual |>
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Residuals vs Fitted Values of Diabetes Regression Model",
+    x = "Fitted Values",
+    y = "Residuals"
+  )
+```
+
+
+
+
+
+
+
+
