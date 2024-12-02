@@ -338,9 +338,9 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="demographics.html">Demographics</a>
+  <a href="demographics.html">Descriptive Analysis</a>
 </li>
-<li class="dropdown-header">Analysis</li>
+<li class="dropdown-header">Statistical Analysis</li>
 <li>
   <a href="report.html">Project Report</a>
 </li>
@@ -364,20 +364,90 @@ div.tocify {
 </div>
 
 
-<div id="motivation" class="section level2">
-<h2>Motivation</h2>
+<div id="snap-enrollment-data" class="section level4">
+<h4>SNAP enrollment data:</h4>
+<p>The SNAP enrollment data was acquired from the American Community
+Survey 5-year estimates of 2022 from the Census Bureau. The original
+dataset contained estimates for SNAP/Food stamp enrollment at the census
+tract level as well as other households attributes at the census tract
+level: estimate and percent for distribution of race and ethnicity,
+poverty status, disability status, presentation of children under age of
+18, etc.</p>
+<p>We selected the variables that were relevant to our analysis to build
+the final dataset, the final variables included were the following:</p>
+<ul>
+<li><code>r geoid</code>: the geographic id for identification of census
+tract</li>
+<li><code>total_ct_households</code>: estimate total count for number of
+households</li>
+<li><code>ph_with_children</code>: estimate percentage of households
+with children under 18 years</li>
+<li><code>ph_no_children</code>: estimate percentage of households
+without children under 18 years</li>
+<li><code>ph_below_poverty</code>:estimate percentage of households
+below poverty level in the past 12 months</li>
+<li><code>ph_above_poverty</code>: estimate percentage of households at
+or above poverty level in the past 12 months</li>
+<li><code>ph_disability</code>: estimate percentage of households with
+one or more people with disability</li>
+<li><code>ph_no_disability</code>: estimate percentage of households
+with no person with disability</li>
+<li><code>ph_white</code>: estimate percent households race and Hispanic
+or Latino origin of householder, White alone</li>
+<li><code>ph_black</code>: estimate percent households race and Hispanic
+or Latino origin of householder, Black or African American alone</li>
+<li><code>ph_asian</code>: estimate percent households race and Hispanic
+or Latino origin of householder, Asian alone</li>
+<li><code>ph_other race</code>: estimate percent households race and
+Hispanic or Latino origin of householder, other races (derived from the
+estimate value for White, Black and Asian race groups)</li>
+<li><code>ph_hispanic</code>: estimate percent households race and
+Hispanic or Latino origin of householder, Hispanic or Latino origin of
+any race</li>
+<li><code>ph_non_hispanic</code>: estimate percent households race and
+Hispanic or Latino origin of householder, not of Hispanic or Latino
+origin of any race (derived from the estimate value for Hispanic or
+Latino origin of any race)</li>
+<li><code>ph_no_work</code>:estimate percent of families with no workers
+in past 12 months</li>
+<li><code>ph_1_work</code>: estimate percent of families with 1 worker
+in past 12 months</li>
+<li><code>ph_2_work</code>: estimate percent of families with 2 or more
+workers in past 12 months</li>
+<li><code>ph_snap</code>: estimate percent of households receiving
+SNAP/Food Stamp</li>
+</ul>
 </div>
-<div id="questions" class="section level2">
-<h2>Questions</h2>
+<div id="historic-redlining-score-data" class="section level4">
+<h4>Historic Redlining Score Data</h4>
+<p>The historic redlining score(HRS) (<code>hrs2020</code>) was obtained
+from the calculation by the National Community Reinvestment
+Coalition(NCRC). It was a weighted score calculated based on the
+percentage of the area within each 2020 census tract according to HOLC
+grades. HRS ranged from 1-4, the higher the score indicated a greater
+level of historical redlining. The detailed method for calculating the
+HRS was indicated in the figure below. The hrs data was divided into
+quartiles and the division of quartiles is indicated by the
+<code>interval2020</code> variable. The more detailed methodology
+regarding coding for redlining grades can be found <a
+href="https://ncrc.org/holc-health/#methods">here</a>.</p>
+<p>We filtered based on the geoid to only keep the data for the census
+tracts within NYC based on the fipcodes for NYC counties. We recoded the
+census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined
+as “Best”, B (hrs: 1.5~2.5) defined as “Still Desirable”, C (hrs:
+2.5~3.5) defined as “Definitely Declining” and D(hrs &gt; 3.5) defined
+as “Hazardous”.</p>
 </div>
-<div id="data-sources" class="section level2">
-<h2>Data Sources</h2>
-<div id="data-cleaning-criteria" class="section level4">
-<h4>Data cleaning criteria:</h4>
-</div>
-<div id="variables" class="section level4">
-<h4>Variables:</h4>
-</div>
+<div id="recognized-healthy-store-in-nyc" class="section level4">
+<h4>Recognized Healthy Store in NYC</h4>
+<p>We obtained a data regarding recognized healthy store from the NYC
+Department of Health and Mental Hygiene. This dataset contained 675
+bodegas &amp; grocery stores receiving recognition from Borough
+President’s Office regarding providing healthy food choices to its
+customers. The original dataset contained variables describing basic
+information of the stores(name, store identifier), geographic
+location(address, census tract, zip code, borough, longitude and
+latitude), year awarded and the program wave.</p>
 </div>
 
 

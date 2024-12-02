@@ -33,8 +33,11 @@ Our website will cover the following:
   - Data sources/data cleaning
   - Variable descriptions
 - Descriptive Analysis:
-  - Visualizations
-  - Distributions
+  - Visualizations, such as:
+    - Redlining in the Boroughs
+    - SNAP total enrollment and demographics
+    - Healthy Grocery Stores in NYC
+    - Distributions including all three variables
 - Statistical Analysis:
   - Regression on ___
 

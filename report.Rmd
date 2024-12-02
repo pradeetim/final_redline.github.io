@@ -2,7 +2,6 @@
 title: "Final Report"
 output: 
   html_document:
-    code_folding: hide
     toc: true
     toc_float: true
 editor_options: 
@@ -30,21 +29,259 @@ This project is driven by a desire to shed light on the intersection of urban pl
 
 ### Data Source 
 
+#### SNAP enrollment data:
+
+The SNAP enrollment data was acquired from the American Community Survey 5-year estimates of 2022 from the Census Bureau. The original dataset contained estimates for SNAP/Food stamp enrollment at the census tract level as well as other households attributes at the census tract level: estimate and percent for distribution of race and ethnicity, poverty status, disability status, presentation of children under age of 18, etc.
+
+We selected the variables that were relevant to our analysis to build the final dataset, the final variables included were the following:
+  
+  - ` r geoid`: the geographic id for identification of census tract 
+  - `total_ct_households`: estimate total count for number of households 
+  - `ph_with_children`: estimate percentage of households with children under 18 years
+  - `ph_no_children`: estimate percentage of households without children under 18 years 
+  - `ph_below_poverty`:estimate percentage of households below poverty level in the past 12 months
+  - `ph_above_poverty`: estimate percentage of households at or above poverty level in the past 12 months
+  - `ph_disability`: estimate percentage of households with one or more people with disability 
+  - `ph_no_disability`: estimate percentage of households with no person with disability 
+  - `ph_white`: estimate percent households race and Hispanic or Latino origin of householder, White alone
+  - `ph_black`: estimate percent households race and Hispanic or Latino origin of householder, Black or African American alone
+  - `ph_asian`: estimate percent households race and Hispanic or Latino origin of householder, Asian alone
+  - `ph_other race`: estimate percent households race and Hispanic or Latino origin of householder, other races (derived from the estimate value for White, Black and Asian race groups)
+  - `ph_hispanic`: estimate percent households race and Hispanic or Latino origin of householder, Hispanic or Latino origin of any race
+  - `ph_non_hispanic`: estimate percent households race and Hispanic or Latino origin of householder, not of Hispanic or Latino origin of any race  (derived from the estimate value for Hispanic or Latino origin of any race)
+  - `ph_no_work`:estimate percent of families with no workers in past 12 months 
+  - `ph_1_work`: estimate percent of families with 1 worker in past 12 months 
+  - `ph_2_work`: estimate percent of families with 2 or more workers in past 12 months 
+  - `ph_snap`: estimate percent of households receiving SNAP/Food Stamp 
+
+#### Historic Redlining Score Data
+
+The historic redlining score(HRS) (`hrs2020`) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. The more detailed methodology regarding coding for redlining grades can be found [here](https://ncrc.org/holc-health/#methods).
+
+We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined as "Best", B (hrs: 1.5~2.5) defined as "Still Desirable", C (hrs: 2.5~3.5) defined as "Definitely Declining” and D(hrs > 3.5) defined as "Hazardous”.
+
+#### Recognized Healthy Store in NYC 
+
+We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
+
 ### Data Cleaning
 
-### Data Merge
+```{r overall_setup}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(stringr)
+```
+
+#### Cleaning SNAP data set: 
+
+```{r}
+SNAP = 
+  read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
+  janitor::clean_names()|>
+  select(
+    geo_id:s2201_c01_001e,
+    s2201_c02_009e,
+    s2201_c02_015e,
+    s2201_c02_021e:s2201_c02_028e,
+    s2201_c02_032e,
+    s2201_c02_036e:s2201_c02_038e,
+    s2201_c04_001e)|>
+  select(-ends_with("m"))|>
+  slice(-1)|>
+  mutate(geoid = str_remove(geo_id, ".*US"))|>
+  rename(
+     total_ct_households = s2201_c01_001e,
+     ph_with_children = s2201_c02_009e,
+     ph_no_children = s2201_c02_015e,
+     ph_below_poverty = s2201_c02_021e,
+     ph_above_poverty = s2201_c02_022e,
+     ph_disability = s2201_c02_023e,
+     ph_no_disability = s2201_c02_024e,
+     ph_white = s2201_c02_025e,
+     ph_black = s2201_c02_026e,
+     ph_asian = s2201_c02_028e,
+     ph_hispanic = s2201_c02_032e,
+     ph_no_work = s2201_c02_036e,
+     ph_1_work = s2201_c02_037e,
+     ph_2_work = s2201_c02_038e,
+     ph_snap = s2201_c04_001e
+  )|>
+  mutate(across(total_ct_households:ph_snap, as.numeric),
+         ph_other_race = 100-ph_white-ph_black-ph_asian,
+         ph_non_hispanic = 100-ph_hispanic)|>
+  select(geoid,name,ph_snap,everything())|>
+  select(-geo_id)
+```
+
+The window below is a preview of the SNAP data set. 
+
+```{r}
+head(SNAP)|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+
+#### Redlining dataset cleaning:
+
+```{r}
+redlining = 
+  read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
+  janitor::clean_names()|>
+  select(-cbsa)|>
+  mutate(fip = substr(geoid20, 1, 5),
+         interval2020 = as.character(interval2020),
+         red_grade = case_when(
+           hrs2020 < 1.5 ~ "A",
+           hrs2020 < 2.5 ~ "B",
+           hrs2020 < 3.5 ~ "C",
+           TRUE ~ "D"
+         ))|>
+  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
+  rename(geoid = geoid20)
+```
+
+We subsequently match the historic redlining score with snap enrollment data and our analysis based on geoid for the census tracts. 18 census tracts were removed for the final analysis due to missing value for snap enrollment data. Our final dataset contained 2034 observations and 25 variables. 
+
+```{r}
+redlining_snap = 
+  redlining|>
+  left_join(SNAP, by = "geoid")|>
+  filter(is.na(ph_snap)==FALSE)
+
+redlining_snap|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+
+#### Health stores data set cleaning:
+
+```{r}
+nyc_healthy_store = 
+  read_csv("./Datasets/Recognized_Shop_Healthy_Stores.csv")|>
+  janitor::clean_names()|>
+  distinct(bin, .keep_all = TRUE)|>
+  mutate(fipcode = case_when(
+    borough == "Bronx" ~ "36005",
+    borough == "Brooklyn" ~ "36047",
+    borough == "New York" ~ "36061"
+  ),
+  ct_label = case_when(
+    census_tract_2020 < 100 ~ paste0("00", census_tract_2020, "00"),
+    census_tract_2020 < 1000 ~ paste0("0", census_tract_2020, "00"),
+    census_tract_2020 < 1200 ~ paste0(census_tract_2020, "00"),
+    census_tract_2020 < 10000 ~ paste0("00", census_tract_2020),
+    census_tract_2020 < 100000 ~ paste0("0", census_tract_2020)
+  ))|>
+  select(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)|>
+  filter(!is.na(ct_label))|>
+  mutate(geoid = paste(fipcode, ct_label, sep = ""))|>
+  select(-fipcode, -ct_label)
+
+head(nyc_healthy_store)|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+
+The data only had stores from the Bronx, Brooklyn and New York County. We coded the geoid for the census tracts based on the fipcode of NYC, boroughs and specific census tract codes. Stores that does not provide the census tract level data were excluded.Eventually, we selected the variables that were relevant for our exploratory and statistical analysis. The variables included involve: `r names(nyc_healthy_store)`.
+
+We obtain the count for the number of healthy food stores within each census tracts and matched that with the snap enrollment data for New York City, Bronx and Brooklyn Borough based on geoid.  
+
+```{r}
+health_store_count = 
+nyc_healthy_store|>
+  group_by(geoid)|>
+  summarise(count_healthy_stores=n())
+
+#please note that healthy store count is only available in three boroughs so make sure you filter before the match
+#example code for the match
+
+redlining_snap|>
+  filter(str_starts(geoid, "36005") | str_starts(geoid, "36047")| str_starts(geoid, "36061"))|>
+  left_join(health_store_count,by="geoid")
+```
+
+## PLACE data 
+
+We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC census tracts from CDC to obtain the prevalence of a variety of health indicators that are likely associated with food insecurity. For the purpose of matching with other data sets, we pivoted the original data set into wide format to obtain the health measures as columns and rows as each census tracts. 
+
+```{r}
+place_crude =
+  read_csv("./Datasets/PLACES.csv")|>
+  janitor::clean_names()|>
+  rename(geoid = location_id)|>
+  select(geoid, measure:data_value, measure_id)
+
+
+place_cleaned=
+  place_crude|>
+  filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
+  pivot_wider(
+    id_cols = geoid,
+    names_from = measure_id,
+    values_from = data_value
+  )|>
+  janitor::clean_names()|>
+  mutate(geoid = as.character(geoid))
+
+head(place_cleaned)|>
+  knitr::kable()|>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+The description regarding the health indicators we have used for the analysis were indicated in the table below. 
+
+```{r}
+place_crude|>
+  distinct(measure, data_value_unit, measure_id)|>
+  filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
+  knitr::kable()
+```
+
+# optional section 
+
+**Comments: I think we may or may not need the following data in analysis, but if someone want to use that, we will include them in the data cleaning, or I will just delete them**
+
+
+## poverty level [optional for use ]
+
+```{r}
+poverty = 
+  read_csv(file = "./Datasets/ACS-poverty-level.csv", skip=1)|>
+  janitor::clean_names()|>
+  mutate(geoid = str_remove(geography, ".*US"))
+```
+
+## NYC census demographic [optional for use]
+
+**For this data we have more detailed demographic by age division, and slightly different way of measuring race and ethnicty (Hispanic
+White non-Hispanic,Black non-Hispanic, Asian non-Hispanic, Some other race non-Hispanic, Non-Hispanic of two or more races). In case this will be interesting for EDA or analysis **
+
+```{r}
+demo = 
+  read_excel("./Datasets/NYC_census_core_data.xlsx")|>
+  janitor::clean_names()|>
+  filter(geo_type == "CT2020")|>
+  rename(geoid = geo_id)
+```
 
 ## Exploratory Analysis
 
 ### Visualizations:
 
-```{r, echo=FALSE}
+```{r}
 library(ggplot2)
 library(dplyr)
 library(plotly)
+library(stringr)
 ```
 
-```{r, echo=FALSE}
+```{r}
 redlining_snap =
   redlining_snap |>
   mutate(borough = case_when(
@@ -65,7 +302,7 @@ health_data =
 
 #### Distribution of Redlining Scores:
 
-```{r}
+```{r, eval=FALSE}
 redlining_snap |>
   plot_ly(y = ~hrs2020, color = ~borough, type = "box", colors = "viridis") |>
   layout(title = "Distribution of Redlining Scores in Each Borough",
@@ -76,7 +313,7 @@ redlining_snap |>
 
 #### Obesity vs Redlining Score:
 
-```{r, echo=FALSE}
+```{r, eval=FALSE}
 health_data =
   health_data |>
   filter(!is.na(obesity) & !is.na(hrs2020))

@@ -2,7 +2,6 @@
 title: "Code Red: Unpacking Inequality"
 output: 
   html_document:
-    code_folding: hide
     toc: true
     toc_float: true
 ---
@@ -11,6 +10,8 @@ output:
 library(ggplot2)
 library(dplyr)
 library(plotly)
+library(stringr)
+
 ```
 
 ```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -23,7 +24,6 @@ rmarkdown::render("data_cleaning.rmd", quiet = TRUE)
 library(sf)
 library(leaflet)
 library(tidycensus)
-library(stringr)
 
 # Set your Census API key
 census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")
@@ -55,7 +55,7 @@ head(nyc_tracts)
 
 ```
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 nyc_tracts = nyc_tracts |>
   rename(geoid = GEOID)
 
@@ -65,12 +65,13 @@ redlining_sf =
 
 ```
 
+## Redlining Exploration:
 
-## Redlining throughout Boroughs:
+### Redlining Throughout Boroughs:
 
 Here is the map detailing the redlining scores (ranging from 1-4) given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 # Aggregate the census tract data to get borough-level geometries
 borough_boundaries <- nyc_tracts |>
   group_by(borough) |>
@@ -134,9 +135,11 @@ leaflet(redlining_sf) |>
 
 ```
 
-### Average Redlining score in each borough:
+### Average Redlining Score in Each Borough:
 
-```{r}
+Lets look at the average redlining score in each borough: 
+
+```{r, echo=FALSE, warning=FALSE}
 redlining = redlining |>
   mutate(
     borough = case_when(
@@ -165,11 +168,11 @@ redlining |>
 
 ```
 
-This graph shows the average redlining scores in each borough. Although it looks fairly different, the range is fairly low, between ~3.06 and ~3.24. This does not give us too much information. Lets look at the median score and its distribution: 
+This graph shows the average redlining scores in each borough. Although it looks fairly different, the range is fairly low, between ~3.06 and ~3.24. This does not give us too much information. Lets look at the distribution: 
 
-### Redlining Score Distributions in Each Borough:
+### Distribution of Redlining Scores in Boroughs:
 
-```{r}
+```{r, echo=FALSE}
 redlining |>
   ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
   geom_violin(trim = FALSE, alpha = 0.7) +
@@ -180,27 +183,13 @@ redlining |>
   ) +
   scale_fill_brewer(palette = "Set2") +
   theme_minimal()
-
 ```
 
 This graph shows more detail. The distribution of the scores are fairly different for the boroughs, which Manhattan having the most distribution and Queens having the smallest.
 
-### Distribution of Redlining Scores in Boroughs:
+### Redlining Grade Count by Borough:
 
-```{r}
-redlining |>
-ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
-  geom_boxplot() +
-  labs(
-    title = "Distribution of Redlining Scores by Borough",
-    x = "Borough",
-    y = "Redlining Score"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
-
-```{r}
+```{r, echo=FALSE}
 redlining |> 
   count(borough, red_grade) |>
   mutate(borough = fct_reorder(borough, n)) |>
@@ -219,10 +208,13 @@ redlining |>
 
 ```
 
+We can see here that Staten Island, Queens, and Bronx have the most C grade in their neighborhood. Manhattan and Brooklyn have the grade D as the most frequent. This is similar to what we saw in the violin plot previously. 
 
-## SNAP Total Household Count in Boroughs:
+## SNAP Exploration and Demographics:
 
-```{r}
+### SNAP Total Household Count in Boroughs:
+
+```{r, echo=FALSE}
 SNAP = SNAP |>
   separate(
     name,
@@ -265,7 +257,7 @@ SNAP |>
 
 ### SNAP Enrollment Demographics (RACE):
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 borough_snap_map = redlining_sf |>
   separate(
     name,
@@ -287,7 +279,7 @@ borough_snap_map = redlining_sf |>
   group_by(borough)
 ```
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 race_snap_data <- borough_snap_map |>
   select(borough, ph_white, ph_black, ph_asian, ph_hispanic, ph_other_race, ph_snap) |>
   group_by(borough) |>
@@ -314,7 +306,6 @@ race_snap_data <- borough_snap_map |>
     )
   )
 
-
 ggplot(race_snap_data, aes(x = borough, y = average_percentage, fill = race)) +
   geom_bar(stat = "identity", position = "fill") +
   labs(
@@ -332,9 +323,11 @@ ggplot(race_snap_data, aes(x = borough, y = average_percentage, fill = race)) +
 
 ```
 
+## Healthy Grocery Store Exploration:
 
-## Grocery Stores in Manhattan, Brooklyn, and Bronx.
-```{r}
+### Grocery Stores in Manhattan, Brooklyn, and Bronx:
+
+```{r, echo=FALSE}
 leaflet() |>
   addTiles() |>
   addCircleMarkers(
@@ -362,8 +355,9 @@ leaflet() |>
 
 ```
 
-## Grocery Stores in Bronx Only.
-```{r}
+### Grocery Stores in Bronx Only:
+
+```{r, echo=FALSE}
 bronx_stores <- nyc_healthy_store |>
   filter(borough == "Bronx")
 
@@ -393,6 +387,30 @@ leaflet() |>
   )
 
 ```
+
+## Health: Obesity vs Redlining Scores
+
+```{r, eval=FALSE}
+health_data =
+  health_data |>
+  filter(!is.na(obesity) & !is.na(hrs2020))
+
+health_data |>
+  ggplot(aes(y = obesity, x = hrs2020, color = borough)) +
+  geom_point() +
+  geom_smooth(color = "black") +
+  facet_wrap(~ borough, scales = "free") +
+  labs(
+    title = "Obesity Rate vs Redlining Score",
+    x = "Obesity Rate (%)",
+    y = "Redlining Score (HRS 2020)"
+  ) +
+  theme_minimal()
+```
+
+The exploratory analysis of obesity rates against redlining scores reveals a consistent positive trend across most of New York City's boroughs, with areas of historical redlining showing higher obesity rates. While Manhattan presents a weaker relationship, other boroughs like the Bronx, Brooklyn, Queens, and Staten Island demonstrate stronger associations, suggesting that the legacy of redlining may contribute to health disparities. 
+
+## Exploration of Redlining, SNAP, and Healthy Grocery Stores
 
 ### Redlining Scores and Demographics:
 
@@ -428,7 +446,8 @@ leaflet(redlining_sf) |>
 ```
 
 ### Redlining Scores and SNAP Enrollment.
-```{r}
+
+```{r, echo=FALSE}
 borough_snap_map |>
   ggplot(aes(x = hrs2020, y = ph_snap, color = borough)) +
   geom_jitter(alpha = 0.6, size = 2, width = 0.1, height = 1) + 
@@ -450,7 +469,8 @@ borough_snap_map |>
 ```
 
 ### Redlining and Grocery Stores in Bronx
-```{r}
+
+```{r, echo=FALSE}
 redlining_sf <- redlining_sf |>
   mutate(
     borough = case_when(
@@ -523,9 +543,9 @@ leaflet(bronx_redlining) |>
 
 ```
 
-
 ### SNAP Enrollment and Grocery Stores in Bronx.
-```{r}
+
+```{r, echo=FALSE}
 bronx_ <- borough_snap_map |>
   filter(borough == "Bronx")
 
