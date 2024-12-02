@@ -23,6 +23,7 @@ rmarkdown::render("data_cleaning.rmd", quiet = TRUE)
 library(sf)
 library(leaflet)
 library(tidycensus)
+library(stringr)
 
 # Set your Census API key
 census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")
@@ -55,11 +56,10 @@ head(nyc_tracts)
 ```
 
 ```{r}
-# Rename GEOID to geoid
-nyc_tracts <- nyc_tracts |>
+nyc_tracts = nyc_tracts |>
   rename(geoid = GEOID)
-# Join redlining data with census tract geometries
-redlining_sf <- 
+
+redlining_sf = 
   nyc_tracts |>
   left_join(redlining_snap, by = "geoid")
 
@@ -67,6 +67,8 @@ redlining_sf <-
 
 
 ## Redlining throughout Boroughs:
+
+Here is the map detailing the redlining scores (ranging from 1-4) given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
 ```{r}
 # Aggregate the census tract data to get borough-level geometries
@@ -135,7 +137,7 @@ leaflet(redlining_sf) |>
 ### Average Redlining score in each borough:
 
 ```{r}
-redlining |>
+redlining = redlining |>
   mutate(
     borough = case_when(
       fip == 36061 ~ "Manhattan",
@@ -144,7 +146,9 @@ redlining |>
       fip == 36005 ~ "Bronx",
       fip == 36085 ~ "Staten Island",
       TRUE ~ "Unknown")
-  ) |>
+  )
+
+redlining |>
   group_by(borough) |>
   summarize(avg_redline_score =
               mean(hrs2020, na.rm = TRUE)) |>
@@ -161,19 +165,30 @@ redlining |>
 
 ```
 
+This graph shows the average redlining scores in each borough. Although it looks fairly different, the range is fairly low, between ~3.06 and ~3.24. This does not give us too much information. Lets look at the median score and its distribution: 
+
+### Redlining Score Distributions in Each Borough:
+
+```{r}
+redlining |>
+  ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
+  geom_violin(trim = FALSE, alpha = 0.7) +
+  labs(
+    title = "Distribution of Redlining Scores by NYC Borough",
+    x = "Borough",
+    y = "Redlining Score"
+  ) +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal()
+
+```
+
+This graph shows more detail. The distribution of the scores are fairly different for the boroughs, which Manhattan having the most distribution and Queens having the smallest.
+
 ### Distribution of Redlining Scores in Boroughs:
 
 ```{r}
 redlining |>
-  mutate(
-    borough = case_when(
-      fip == 36061 ~ "Manhattan",
-      fip == 36047 ~ "Brooklyn",
-      fip == 36081 ~ "Queens",
-      fip == 36005 ~ "Bronx",
-      fip == 36085 ~ "Staten Island",
-      TRUE ~ "Unknown")
-  ) |>
 ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
   geom_boxplot() +
   labs(
@@ -185,10 +200,30 @@ ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
   theme(legend.position = "none")
 ```
 
+```{r}
+redlining |> 
+  count(borough, red_grade) |>
+  mutate(borough = fct_reorder(borough, n)) |>
+  plot_ly(
+    x = ~borough, 
+    y = ~n, 
+    color = ~red_grade, 
+    type = "bar", 
+    colors = "viridis"
+  ) |>
+  layout(
+    title = "Count of Redlining Grades by Borough",
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Count") 
+  )
+
+```
+
+
 ## SNAP Total Household Count in Boroughs:
 
 ```{r}
-SNAP |>
+SNAP = SNAP |>
   separate(
     name,
     into = c("census_tract", "county", "state"),
@@ -205,25 +240,30 @@ SNAP |>
       county == "Richmond County" ~ "Staten Island",
       TRUE ~ "Unknown"
     )
-  ) |>
+  )
+
+SNAP |>
   group_by(borough) |>
   summarize(
     total_household_count = sum(total_ct_households, na.rm = TRUE)
   ) |>
   filter(borough != "Unknown") |>
-  ggplot(aes(x = borough, y = total_household_count, fill = borough)) +
-  geom_bar(stat = "identity") +
-  labs(
+  plot_ly(
+    x = ~borough, 
+    y = ~total_household_count, 
+    color = ~borough, 
+    type = "bar", 
+    colors = "viridis"
+  ) |>
+  layout(
     title = "Total SNAP-Enrolled Households by Borough in 2022",
-    x = "Borough",
-    y = "Total Household Count"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Total Household Count"),
+    showlegend = FALSE
+  )
 ```
 
-### SNAP Enrollment Demographics(RACE):
+### SNAP Enrollment Demographics (RACE):
 
 ```{r}
 borough_snap_map = redlining_sf |>
