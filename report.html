@@ -366,8 +366,8 @@ div.tocify {
 </div>
 
 
-<div id="motivation" class="section level2">
-<h2>Motivation</h2>
+<div id="motivation" class="section level1">
+<h1>Motivation</h1>
 <p>The practice of redlining, where certain neighborhoods were
 systematically denied access to resources based on racial and economic
 factors, has had long-lasting effects on urban communities. In New York
@@ -396,8 +396,8 @@ broader conversation about equity in urban environments and the
 long-term impacts of discriminatory practices on marginalized
 populations.</p>
 </div>
-<div id="initial-questions" class="section level2">
-<h2>Initial Questions</h2>
+<div id="initial-questions" class="section level1">
+<h1>Initial Questions</h1>
 <ul>
 <li><strong>Neighborhood:</strong> What areas in NYC were most heavily
 impacted by redlining? How do the demograpics within these areas
@@ -420,12 +420,12 @@ relationship between redlining and food access?</li>
 </ul></li>
 </ul>
 </div>
-<div id="data" class="section level2">
-<h2>Data</h2>
-<div id="data-source" class="section level3">
-<h3>Data Source</h3>
-<div id="snap-enrollment-data" class="section level4">
-<h4>SNAP enrollment data:</h4>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<div id="data-sources" class="section level2">
+<h2>Data Sources</h2>
+<div id="snap-enrollment-data" class="section level3">
+<h3>SNAP enrollment data:</h3>
 <p>The SNAP enrollment data was acquired from the American Community
 Survey 5-year estimates of 2022 from the Census Bureau. The original
 dataset contained estimates for SNAP/Food stamp enrollment at the census
@@ -478,8 +478,8 @@ workers in past 12 months</li>
 SNAP/Food Stamp</li>
 </ul>
 </div>
-<div id="historic-redlining-score-data" class="section level4">
-<h4>Historic Redlining Score Data</h4>
+<div id="historic-redlining-score-data" class="section level3">
+<h3>Historic Redlining Score Data</h3>
 <p>The historic redlining score(HRS) (<code>hrs2020</code>) was obtained
 from the calculation by the National Community Reinvestment
 Coalition(NCRC). It was a weighted score calculated based on the
@@ -498,8 +498,8 @@ as “Best”, B (hrs: 1.5~2.5) defined as “Still Desirable”, C (hrs:
 2.5~3.5) defined as “Definitely Declining” and D(hrs &gt; 3.5) defined
 as “Hazardous”.</p>
 </div>
-<div id="recognized-healthy-store-in-nyc" class="section level4">
-<h4>Recognized Healthy Store in NYC</h4>
+<div id="recognized-healthy-store-in-nyc" class="section level3">
+<h3>Recognized Healthy Store in NYC</h3>
 <p>We obtained a data regarding recognized healthy store from the NYC
 Department of Health and Mental Hygiene. This dataset contained 675
 bodegas &amp; grocery stores receiving recognition from Borough
@@ -510,16 +510,16 @@ location(address, census tract, zip code, borough, longitude and
 latitude), year awarded and the program wave.</p>
 </div>
 </div>
-<div id="data-cleaning" class="section level3">
-<h3>Data Cleaning</h3>
+<div id="data-cleaning" class="section level2">
+<h2>Data Cleaning</h2>
 <pre class="r"><code>library(tidyverse)
 library(readxl)
 library(ggplot2)
 library(dplyr)
 library(plotly)
 library(stringr)</code></pre>
-<div id="cleaning-snap-data-set" class="section level4">
-<h4>Cleaning SNAP data set:</h4>
+<div id="cleaning-snap-data-set" class="section level3">
+<h3>Cleaning SNAP data set:</h3>
 <pre class="r"><code>SNAP = 
   read_csv(file = &quot;./Datasets/ACS_SNAP_ENROLLMENT.csv&quot;)|&gt;
   janitor::clean_names()|&gt;
@@ -557,7 +557,7 @@ library(stringr)</code></pre>
   select(geoid,name,ph_snap,everything())|&gt;
   select(-geo_id)</code></pre>
 <pre><code>## Rows: 2330 Columns: 458
-## ── Column specification ────────────────────────────────────────────────
+## ── Column specification ─────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (458): ﻿&quot;GEO_ID&quot;, NAME, S2201_C01_001E, S2201_C01_001M, S2201_C01_002E, ...
 ## 
@@ -565,10 +565,12 @@ library(stringr)</code></pre>
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre><code>## Warning: There were 16 warnings in `mutate()`.
 ## The first warning was:
-## ℹ In argument: `across(total_ct_households:ph_snap, as.numeric)`.
+## ℹ In argument: `across(total_ct_households:ph_snap,
+##   as.numeric)`.
 ## Caused by warning:
 ## ! NAs introduced by coercion
-## ℹ Run `dplyr::last_dplyr_warnings()` to see the 15 remaining warnings.</code></pre>
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 15 remaining
+##   warnings.</code></pre>
 <p>The window below is a preview of the SNAP data set.</p>
 <pre class="r"><code>head(SNAP)|&gt;
   knitr::kable()|&gt;
@@ -1018,8 +1020,8 @@ Census Tract 7; New York County; New York
 </table>
 </div>
 </div>
-<div id="redlining-dataset-cleaning" class="section level4">
-<h4>Redlining dataset cleaning:</h4>
+<div id="redlining-dataset-cleaning" class="section level3">
+<h3>Redlining dataset cleaning:</h3>
 <pre class="r"><code>redlining = 
   read_excel(&quot;./Datasets/Historic Redlining Score 2020B.xlsx&quot;)|&gt;
   janitor::clean_names()|&gt;
@@ -157753,8 +157755,8 @@ Census Tract 319.02; Richmond County; New York
 </table>
 </div>
 </div>
-<div id="health-stores-data-set-cleaning" class="section level4">
-<h4>Health stores data set cleaning:</h4>
+<div id="health-stores-data-set-cleaning" class="section level3">
+<h3>Health stores data set cleaning:</h3>
 <pre class="r"><code>nyc_healthy_store = 
   read_csv(&quot;./Datasets/Recognized_Shop_Healthy_Stores.csv&quot;)|&gt;
   janitor::clean_names()|&gt;
@@ -157776,7 +157778,7 @@ Census Tract 319.02; Richmond County; New York
   mutate(geoid = paste(fipcode, ct_label, sep = &quot;&quot;))|&gt;
   select(-fipcode, -ct_label)</code></pre>
 <pre><code>## Rows: 675 Columns: 15
-## ── Column specification ────────────────────────────────────────────────
+## ── Column specification ─────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
 ## dbl (10): Zip 
@@ -157982,7 +157984,6 @@ redlining_snap|&gt;
 ## #   ph_non_hispanic &lt;dbl&gt;, count_healthy_stores &lt;int&gt;</code></pre>
 </div>
 </div>
-</div>
 <div id="place-data" class="section level2">
 <h2>PLACE data</h2>
 <p>We also extracted the PLACES: Local Data for Better Health, 2024
@@ -157997,7 +157998,7 @@ columns and rows as each census tracts.</p>
   rename(geoid = location_id)|&gt;
   select(geoid, measure:data_value, measure_id)</code></pre>
 <pre><code>## Rows: 73621 Columns: 25
-## ── Column specification ────────────────────────────────────────────────
+## ── Column specification ─────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
 ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
@@ -158166,6 +158167,7 @@ screened</td>
 </tbody>
 </table>
 </div>
+</div>
 <div id="optional-section" class="section level1">
 <h1>optional section</h1>
 <p><strong>Comments: I think we may or may not need the following data
@@ -158180,13 +158182,14 @@ the data cleaning, or I will just delete them</strong></p>
 <pre><code>## New names:
 ## Rows: 2327 Columns: 375
 ## ── Column specification
-## ──────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED
-## INDIV... dbl (228): Estimate!!Total!!Population for whom poverty status
-## is determined... lgl (1): ...375
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet
-## this message.
+## ───────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic Area Name,
+## Estimate!!Total!!UNRELATED INDIV... dbl (228):
+## Estimate!!Total!!Population for whom poverty status is
+## determined... lgl (1): ...375
+## ℹ Use `spec()` to retrieve the full column specification for
+## this data. ℹ Specify the column types or set `show_col_types
+## = FALSE` to quiet this message.
 ## • `` -&gt; `...375`</code></pre>
 </div>
 <div id="nyc-census-demographic-optional-for-use"

@@ -11,7 +11,6 @@ library(ggplot2)
 library(dplyr)
 library(plotly)
 library(stringr)
-
 ```
 
 ```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -25,10 +24,8 @@ library(sf)
 library(leaflet)
 library(tidycensus)
 
-# Set your Census API key
 census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")
 install = TRUE
-# Get NYC census tract geometries
 nyc_tracts <- get_acs(
   geography = "tract",
   variables = "B19013_001",  # Median household income as an example (this is just to pull the geometry)
@@ -39,7 +36,6 @@ nyc_tracts <- get_acs(
 ) |>
   st_transform(crs = 4326)  # Transform to WGS84 for compatibility with Leaflet
 
-# Extract borough names based on the NAME column
 nyc_tracts <- nyc_tracts |>
   mutate(borough = case_when(
     str_detect(NAME, "Bronx County") ~ "Bronx",
@@ -50,7 +46,6 @@ nyc_tracts <- nyc_tracts |>
     TRUE ~ "Unknown"  # This is a fallback in case there are other values
   ))
 
-# Preview the structure of the object
 head(nyc_tracts)
 
 ```
@@ -72,7 +67,7 @@ redlining_sf =
 Here is the map detailing the redlining scores (ranging from 1-4) given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
 ```{r, echo=FALSE, warning=FALSE}
-# Aggregate the census tract data to get borough-level geometries
+
 borough_boundaries <- nyc_tracts |>
   group_by(borough) |>
   summarize(geometry = st_union(geometry), .groups = 'drop')
@@ -390,20 +385,32 @@ leaflet() |>
 
 ## Health: Obesity vs Redlining Scores
 
-```{r, eval=FALSE}
+```{r, echo=FALSE, message=FALSE}
 health_data =
-  health_data |>
-  filter(!is.na(obesity) & !is.na(hrs2020))
+  place_cleaned |>
+  mutate(geoid = as.character(geoid)) |>
+  left_join(redlining_snap, by = "geoid") |>
+  janitor::clean_names() |>
+  mutate(
+    borough = case_when(
+      fip == 36061 ~ "Manhattan",
+      fip == 36047 ~ "Brooklyn",
+      fip == 36081 ~ "Queens",
+      fip == 36005 ~ "Bronx",
+      fip == 36085 ~ "Staten Island",
+      TRUE ~ "Unknown")
+  )
 
 health_data |>
+  filter(!is.na(obesity) & !is.na(hrs2020)) |>
   ggplot(aes(y = obesity, x = hrs2020, color = borough)) +
   geom_point() +
   geom_smooth(color = "black") +
-  facet_wrap(~ borough, scales = "free") +
+  facet_wrap(~borough, scales = "free") +
   labs(
     title = "Obesity Rate vs Redlining Score",
-    x = "Obesity Rate (%)",
-    y = "Redlining Score (HRS 2020)"
+    x = "Redlining Score (HRS 2020)",
+    y = "Obesity Rate (%)"
   ) +
   theme_minimal()
 ```
@@ -414,7 +421,7 @@ The exploratory analysis of obesity rates against redlining scores reveals a con
 
 ### Redlining Scores and Demographics:
 
-```{r}
+```{r, echo=FALSE}
 pal <- colorFactor(
   palette = c("green", "blue", "yellow", "red"),
   domain = redlining_sf$red_grade
@@ -447,7 +454,7 @@ leaflet(redlining_sf) |>
 
 ### Redlining Scores and SNAP Enrollment.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 borough_snap_map |>
   ggplot(aes(x = hrs2020, y = ph_snap, color = borough)) +
   geom_jitter(alpha = 0.6, size = 2, width = 0.1, height = 1) + 

@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Motivation
+# Motivation
 
 The practice of redlining, where certain neighborhoods were systematically denied access to resources based on racial and economic factors, has had long-lasting effects on urban communities. In New York City, the legacy of redlining continues to shape access to vital services such as healthy food and public assistance programs. The motivation for this project is to explore how these historical practices have impacted modern-day disparities in access to healthy grocery stores and enrollment in the Supplemental Nutrition Assistance Program (SNAP).
 
@@ -16,7 +16,7 @@ Our primary goal is to investigate the relationship between the neighborhoods th
 
 This project is driven by a desire to shed light on the intersection of urban planning, socioeconomic disparities, and public health, and to highlight the role of policy in creating both opportunities and barriers for communities that continue to experience the effects of redlining. Through this exploration, we hope to contribute valuable insights to the broader conversation about equity in urban environments and the long-term impacts of discriminatory practices on marginalized populations.
 
-## Initial Questions
+# Initial Questions
 
 - **Neighborhood:** What areas in NYC were most heavily impacted by redlining? How do the demograpics within these areas compare?
 - **Grocery:** Are there fewer healthy grocery stores in neighborhoods that were historically redlined compared to other areas? How does access to health grocery stores correlate with health outcomes in these neighborhoods?
@@ -25,11 +25,11 @@ This project is driven by a desire to shed light on the intersection of urban pl
   - How does redlining classification (e.g., grade A, B, C, D) predict the density of healthy grocery stores in a neighborhood? What is the relationship between redlining and SNAP enrollment rates across neighborhoods in NYC?
   - Are there other factors (e.g., income levels) that mediate the relationship between redlining and food access?
 
-## Data
+# Data
 
-### Data Source 
+## Data Sources 
 
-#### SNAP enrollment data:
+### SNAP enrollment data:
 
 The SNAP enrollment data was acquired from the American Community Survey 5-year estimates of 2022 from the Census Bureau. The original dataset contained estimates for SNAP/Food stamp enrollment at the census tract level as well as other households attributes at the census tract level: estimate and percent for distribution of race and ethnicity, poverty status, disability status, presentation of children under age of 18, etc.
 
@@ -54,17 +54,17 @@ We selected the variables that were relevant to our analysis to build the final 
   - `ph_2_work`: estimate percent of families with 2 or more workers in past 12 months 
   - `ph_snap`: estimate percent of households receiving SNAP/Food Stamp 
 
-#### Historic Redlining Score Data
+### Historic Redlining Score Data
 
 The historic redlining score(HRS) (`hrs2020`) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. The more detailed methodology regarding coding for redlining grades can be found [here](https://ncrc.org/holc-health/#methods).
 
 We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined as "Best", B (hrs: 1.5~2.5) defined as "Still Desirable", C (hrs: 2.5~3.5) defined as "Definitely Declining” and D(hrs > 3.5) defined as "Hazardous”.
 
-#### Recognized Healthy Store in NYC 
+### Recognized Healthy Store in NYC 
 
 We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
 
-### Data Cleaning
+## Data Cleaning
 
 ```{r overall_setup}
 library(tidyverse)
@@ -75,7 +75,7 @@ library(plotly)
 library(stringr)
 ```
 
-#### Cleaning SNAP data set: 
+### Cleaning SNAP data set: 
 
 ```{r}
 SNAP = 
@@ -125,7 +125,7 @@ head(SNAP)|>
   kableExtra::scroll_box(width = "100%", height = "300px")
 ```
 
-#### Redlining dataset cleaning:
+### Redlining dataset cleaning:
 
 ```{r}
 redlining = 
@@ -158,7 +158,7 @@ redlining_snap|>
   kableExtra::scroll_box(width = "100%", height = "300px")
 ```
 
-#### Health stores data set cleaning:
+### Health stores data set cleaning:
 
 ```{r}
 nyc_healthy_store = 

@@ -6,7 +6,7 @@ output:
     toc_float: true
 ---
 
-#### SNAP enrollment data:
+## SNAP enrollment data:
 
 The SNAP enrollment data was acquired from the American Community Survey 5-year estimates of 2022 from the Census Bureau. The original dataset contained estimates for SNAP/Food stamp enrollment at the census tract level as well as other households attributes at the census tract level: estimate and percent for distribution of race and ethnicity, poverty status, disability status, presentation of children under age of 18, etc.
 
@@ -31,12 +31,12 @@ We selected the variables that were relevant to our analysis to build the final 
   - `ph_2_work`: estimate percent of families with 2 or more workers in past 12 months 
   - `ph_snap`: estimate percent of households receiving SNAP/Food Stamp 
 
-#### Historic Redlining Score Data
+## Historic Redlining Score Data
 
 The historic redlining score(HRS) (`hrs2020`) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. The more detailed methodology regarding coding for redlining grades can be found [here](https://ncrc.org/holc-health/#methods).
 
 We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined as "Best", B (hrs: 1.5~2.5) defined as "Still Desirable", C (hrs: 2.5~3.5) defined as "Definitely Declining” and D(hrs > 3.5) defined as "Hazardous”.
 
-#### Recognized Healthy Store in NYC 
+## Recognized Healthy Store in NYC 
 
 We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
