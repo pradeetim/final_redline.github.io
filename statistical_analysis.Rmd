@@ -6,8 +6,6 @@ output:
     toc_float: true
 ---
 
-import the datasets and packages 
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readxl)

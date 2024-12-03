@@ -21,6 +21,8 @@ the final dataset, the final variables included were the following:
 
 - `r geoid`: the geographic id for identification of census tract
 - `total_ct_households`: estimate total count for number of households
+- `ph_elderly`: estimate percentage of households with one or more
+  people in the household to be 60 or over
 - `ph_with_children`: estimate percentage of households with children
   under 18 years
 - `ph_no_children`: estimate percentage of households without children
@@ -62,6 +64,7 @@ SNAP =
   janitor::clean_names()|>
   select(
     geo_id:s2201_c01_001e,
+    s2201_c02_002e,
     s2201_c02_009e,
     s2201_c02_015e,
     s2201_c02_021e:s2201_c02_028e,
@@ -73,6 +76,7 @@ SNAP =
   mutate(geoid = str_remove(geo_id, ".*US"))|>
   rename(
      total_ct_households = s2201_c01_001e,
+     ph_elderly = s2201_c02_002e,
      ph_with_children = s2201_c02_009e,
      ph_no_children = s2201_c02_015e,
      ph_below_poverty = s2201_c02_021e,
@@ -103,13 +107,13 @@ SNAP =
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-    ## Warning: There were 16 warnings in `mutate()`.
+    ## Warning: There were 17 warnings in `mutate()`.
     ## The first warning was:
     ## ℹ In argument: `across(total_ct_households:ph_snap,
     ##   as.numeric)`.
     ## Caused by warning:
     ## ! NAs introduced by coercion
-    ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 15 remaining
+    ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 16 remaining
     ##   warnings.
 
 The window below is a preview of the SNAP data set.
@@ -137,6 +141,9 @@ ph_snap
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 total_ct_households
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_elderly
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 ph_with_children
@@ -250,6 +257,9 @@ NA
 <td style="text-align:right;">
 NA
 </td>
+<td style="text-align:right;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -263,6 +273,9 @@ Census Tract 2.01; New York County; New York
 </td>
 <td style="text-align:right;">
 878
+</td>
+<td style="text-align:right;">
+28.7
 </td>
 <td style="text-align:right;">
 37.8
@@ -325,6 +338,9 @@ Census Tract 2.02; New York County; New York
 </td>
 <td style="text-align:right;">
 3293
+</td>
+<td style="text-align:right;">
+40.2
 </td>
 <td style="text-align:right;">
 17.6
@@ -436,6 +452,9 @@ NA
 <td style="text-align:right;">
 NA
 </td>
+<td style="text-align:right;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -449,6 +468,9 @@ Census Tract 6; New York County; New York
 </td>
 <td style="text-align:right;">
 5191
+</td>
+<td style="text-align:right;">
+53.1
 </td>
 <td style="text-align:right;">
 13.1
@@ -511,6 +533,9 @@ Census Tract 7; New York County; New York
 </td>
 <td style="text-align:right;">
 4873
+</td>
+<td style="text-align:right;">
+4.3
 </td>
 <td style="text-align:right;">
 11.8
@@ -654,6 +679,9 @@ ph_snap
 total_ct_households
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+ph_elderly
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 ph_with_children
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
@@ -733,6 +761,9 @@ Census Tract 86.03; New York County; New York
 2550
 </td>
 <td style="text-align:right;">
+63.8
+</td>
+<td style="text-align:right;">
 13.0
 </td>
 <td style="text-align:right;">
@@ -808,6 +839,9 @@ Census Tract 102; New York County; New York
 </td>
 <td style="text-align:right;">
 160
+</td>
+<td style="text-align:right;">
+81.3
 </td>
 <td style="text-align:right;">
 6.9
@@ -887,6 +921,9 @@ Census Tract 106.01; New York County; New York
 4158
 </td>
 <td style="text-align:right;">
+62.1
+</td>
+<td style="text-align:right;">
 16.6
 </td>
 <td style="text-align:right;">
@@ -962,6 +999,9 @@ Census Tract 114.01; New York County; New York
 </td>
 <td style="text-align:right;">
 582
+</td>
+<td style="text-align:right;">
+48.1
 </td>
 <td style="text-align:right;">
 14.9
@@ -1041,6 +1081,9 @@ Census Tract 114.02; New York County; New York
 1118
 </td>
 <td style="text-align:right;">
+45.2
+</td>
+<td style="text-align:right;">
 20.2
 </td>
 <td style="text-align:right;">
@@ -1116,6 +1159,9 @@ Census Tract 120; New York County; New York
 </td>
 <td style="text-align:right;">
 1673
+</td>
+<td style="text-align:right;">
+62.7
 </td>
 <td style="text-align:right;">
 12.1
@@ -1195,6 +1241,9 @@ Census Tract 122; New York County; New York
 1291
 </td>
 <td style="text-align:right;">
+68.3
+</td>
+<td style="text-align:right;">
 14.7
 </td>
 <td style="text-align:right;">
@@ -1270,6 +1319,9 @@ Census Tract 128; New York County; New York
 </td>
 <td style="text-align:right;">
 2414
+</td>
+<td style="text-align:right;">
+62.3
 </td>
 <td style="text-align:right;">
 20.3
@@ -1349,6 +1401,9 @@ Census Tract 130; New York County; New York
 1805
 </td>
 <td style="text-align:right;">
+66.4
+</td>
+<td style="text-align:right;">
 16.5
 </td>
 <td style="text-align:right;">
@@ -1424,6 +1479,9 @@ Census Tract 142; New York County; New York
 </td>
 <td style="text-align:right;">
 1910
+</td>
+<td style="text-align:right;">
+65.4
 </td>
 <td style="text-align:right;">
 19.6
@@ -1503,6 +1561,9 @@ Census Tract 150.01; New York County; New York
 935
 </td>
 <td style="text-align:right;">
+55.2
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -1578,6 +1639,9 @@ Census Tract 150.02; New York County; New York
 </td>
 <td style="text-align:right;">
 2132
+</td>
+<td style="text-align:right;">
+60.1
 </td>
 <td style="text-align:right;">
 26.5
@@ -1657,6 +1721,9 @@ Census Tract 160.01; New York County; New York
 1374
 </td>
 <td style="text-align:right;">
+54.1
+</td>
+<td style="text-align:right;">
 20.2
 </td>
 <td style="text-align:right;">
@@ -1732,6 +1799,9 @@ Census Tract 739; Queens County; New York
 </td>
 <td style="text-align:right;">
 2584
+</td>
+<td style="text-align:right;">
+41.4
 </td>
 <td style="text-align:right;">
 21.2
@@ -1811,6 +1881,9 @@ Census Tract 741; Queens County; New York
 1547
 </td>
 <td style="text-align:right;">
+46.5
+</td>
+<td style="text-align:right;">
 12.0
 </td>
 <td style="text-align:right;">
@@ -1886,6 +1959,9 @@ Census Tract 757.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2426
+</td>
+<td style="text-align:right;">
+55.1
 </td>
 <td style="text-align:right;">
 18.2
@@ -1965,6 +2041,9 @@ Census Tract 293.01; Bronx County; New York
 859
 </td>
 <td style="text-align:right;">
+69.3
+</td>
+<td style="text-align:right;">
 15.7
 </td>
 <td style="text-align:right;">
@@ -2040,6 +2119,9 @@ Census Tract 323; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2656
+</td>
+<td style="text-align:right;">
+60.6
 </td>
 <td style="text-align:right;">
 9.6
@@ -2119,6 +2201,9 @@ Census Tract 39; Richmond County; New York
 1018
 </td>
 <td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
 23.5
 </td>
 <td style="text-align:right;">
@@ -2194,6 +2279,9 @@ Census Tract 44; Kings County; New York
 </td>
 <td style="text-align:right;">
 937
+</td>
+<td style="text-align:right;">
+53.0
 </td>
 <td style="text-align:right;">
 22.9
@@ -2273,6 +2361,9 @@ Census Tract 273; New York County; New York
 3321
 </td>
 <td style="text-align:right;">
+32.1
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -2348,6 +2439,9 @@ Census Tract 309; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1353
+</td>
+<td style="text-align:right;">
+74.6
 </td>
 <td style="text-align:right;">
 15.5
@@ -2427,6 +2521,9 @@ Census Tract 210.01; Bronx County; New York
 3562
 </td>
 <td style="text-align:right;">
+34.3
+</td>
+<td style="text-align:right;">
 24.1
 </td>
 <td style="text-align:right;">
@@ -2502,6 +2599,9 @@ Census Tract 275; New York County; New York
 </td>
 <td style="text-align:right;">
 1720
+</td>
+<td style="text-align:right;">
+44.2
 </td>
 <td style="text-align:right;">
 17.0
@@ -2581,6 +2681,9 @@ Census Tract 46; Kings County; New York
 507
 </td>
 <td style="text-align:right;">
+62.7
+</td>
+<td style="text-align:right;">
 28.2
 </td>
 <td style="text-align:right;">
@@ -2656,6 +2759,9 @@ Census Tract 177.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1502
+</td>
+<td style="text-align:right;">
+51.7
 </td>
 <td style="text-align:right;">
 43.0
@@ -2735,6 +2841,9 @@ Census Tract 287; New York County; New York
 1659
 </td>
 <td style="text-align:right;">
+41.4
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -2810,6 +2919,9 @@ Census Tract 281; New York County; New York
 </td>
 <td style="text-align:right;">
 1520
+</td>
+<td style="text-align:right;">
+26.2
 </td>
 <td style="text-align:right;">
 25.1
@@ -2889,6 +3001,9 @@ Census Tract 335; Bronx County; New York
 727
 </td>
 <td style="text-align:right;">
+41.8
+</td>
+<td style="text-align:right;">
 32.2
 </td>
 <td style="text-align:right;">
@@ -2964,6 +3079,9 @@ Census Tract 301; Bronx County; New York
 </td>
 <td style="text-align:right;">
 657
+</td>
+<td style="text-align:right;">
+48.6
 </td>
 <td style="text-align:right;">
 15.8
@@ -3043,6 +3161,9 @@ Census Tract 307.01; Bronx County; New York
 2326
 </td>
 <td style="text-align:right;">
+59.9
+</td>
+<td style="text-align:right;">
 22.4
 </td>
 <td style="text-align:right;">
@@ -3118,6 +3239,9 @@ Census Tract 140; New York County; New York
 </td>
 <td style="text-align:right;">
 4015
+</td>
+<td style="text-align:right;">
+46.7
 </td>
 <td style="text-align:right;">
 16.3
@@ -3197,6 +3321,9 @@ Census Tract 212; Bronx County; New York
 2294
 </td>
 <td style="text-align:right;">
+51.0
+</td>
+<td style="text-align:right;">
 27.9
 </td>
 <td style="text-align:right;">
@@ -3272,6 +3399,9 @@ Census Tract 112.03; New York County; New York
 </td>
 <td style="text-align:right;">
 582
+</td>
+<td style="text-align:right;">
+34.9
 </td>
 <td style="text-align:right;">
 16.3
@@ -3351,6 +3481,9 @@ Census Tract 210.02; Bronx County; New York
 3182
 </td>
 <td style="text-align:right;">
+38.6
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -3426,6 +3559,9 @@ Census Tract 50; Kings County; New York
 </td>
 <td style="text-align:right;">
 1052
+</td>
+<td style="text-align:right;">
+47.1
 </td>
 <td style="text-align:right;">
 26.3
@@ -3505,6 +3641,9 @@ Census Tract 52.02; Kings County; New York
 1507
 </td>
 <td style="text-align:right;">
+48.7
+</td>
+<td style="text-align:right;">
 21.6
 </td>
 <td style="text-align:right;">
@@ -3580,6 +3719,9 @@ Census Tract 351; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1338
+</td>
+<td style="text-align:right;">
+34.0
 </td>
 <td style="text-align:right;">
 25.5
@@ -3659,6 +3801,9 @@ Census Tract 100; New York County; New York
 1091
 </td>
 <td style="text-align:right;">
+44.9
+</td>
+<td style="text-align:right;">
 3.6
 </td>
 <td style="text-align:right;">
@@ -3734,6 +3879,9 @@ Census Tract 52.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 969
+</td>
+<td style="text-align:right;">
+63.5
 </td>
 <td style="text-align:right;">
 8.8
@@ -3813,6 +3961,9 @@ Census Tract 56.01; Kings County; New York
 1405
 </td>
 <td style="text-align:right;">
+41.9
+</td>
+<td style="text-align:right;">
 25.8
 </td>
 <td style="text-align:right;">
@@ -3888,6 +4039,9 @@ Census Tract 56.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 915
+</td>
+<td style="text-align:right;">
+41.6
 </td>
 <td style="text-align:right;">
 14.0
@@ -3967,6 +4121,9 @@ Census Tract 38; Kings County; New York
 563
 </td>
 <td style="text-align:right;">
+56.3
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -4042,6 +4199,9 @@ Census Tract 54; Kings County; New York
 </td>
 <td style="text-align:right;">
 1673
+</td>
+<td style="text-align:right;">
+44.3
 </td>
 <td style="text-align:right;">
 14.8
@@ -4121,6 +4281,9 @@ Census Tract 36; Kings County; New York
 1942
 </td>
 <td style="text-align:right;">
+43.0
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -4196,6 +4359,9 @@ Census Tract 59.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1190
+</td>
+<td style="text-align:right;">
+37.9
 </td>
 <td style="text-align:right;">
 31.0
@@ -4275,6 +4441,9 @@ Census Tract 216.02; Bronx County; New York
 2361
 </td>
 <td style="text-align:right;">
+48.5
+</td>
+<td style="text-align:right;">
 35.6
 </td>
 <td style="text-align:right;">
@@ -4350,6 +4519,9 @@ Census Tract 67; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1169
+</td>
+<td style="text-align:right;">
+40.5
 </td>
 <td style="text-align:right;">
 24.0
@@ -4429,6 +4601,9 @@ Census Tract 337; Bronx County; New York
 941
 </td>
 <td style="text-align:right;">
+56.1
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -4504,6 +4679,9 @@ Census Tract 343; Bronx County; New York
 </td>
 <td style="text-align:right;">
 595
+</td>
+<td style="text-align:right;">
+45.9
 </td>
 <td style="text-align:right;">
 36.6
@@ -4583,6 +4761,9 @@ Census Tract 59.02; Bronx County; New York
 1247
 </td>
 <td style="text-align:right;">
+45.2
+</td>
+<td style="text-align:right;">
 23.9
 </td>
 <td style="text-align:right;">
@@ -4658,6 +4839,9 @@ Census Tract 183.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2016
+</td>
+<td style="text-align:right;">
+49.2
 </td>
 <td style="text-align:right;">
 21.9
@@ -4737,6 +4921,9 @@ Census Tract 235.01; Bronx County; New York
 1236
 </td>
 <td style="text-align:right;">
+50.6
+</td>
+<td style="text-align:right;">
 26.9
 </td>
 <td style="text-align:right;">
@@ -4812,6 +4999,9 @@ Census Tract 245.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1224
+</td>
+<td style="text-align:right;">
+36.2
 </td>
 <td style="text-align:right;">
 36.9
@@ -4891,6 +5081,9 @@ Census Tract 293.02; Bronx County; New York
 2582
 </td>
 <td style="text-align:right;">
+48.3
+</td>
+<td style="text-align:right;">
 27.4
 </td>
 <td style="text-align:right;">
@@ -4966,6 +5159,9 @@ Census Tract 297; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1816
+</td>
+<td style="text-align:right;">
+63.9
 </td>
 <td style="text-align:right;">
 20.6
@@ -5045,6 +5241,9 @@ Census Tract 345; Bronx County; New York
 1484
 </td>
 <td style="text-align:right;">
+43.9
+</td>
+<td style="text-align:right;">
 31.3
 </td>
 <td style="text-align:right;">
@@ -5120,6 +5319,9 @@ Census Tract 403.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1619
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 46.6
@@ -5199,6 +5401,9 @@ Census Tract 403.03; Bronx County; New York
 1406
 </td>
 <td style="text-align:right;">
+37.3
+</td>
+<td style="text-align:right;">
 38.1
 </td>
 <td style="text-align:right;">
@@ -5274,6 +5479,9 @@ Census Tract 403.04; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1286
+</td>
+<td style="text-align:right;">
+41.5
 </td>
 <td style="text-align:right;">
 43.9
@@ -5353,6 +5561,9 @@ Census Tract 405.01; Bronx County; New York
 1441
 </td>
 <td style="text-align:right;">
+38.0
+</td>
+<td style="text-align:right;">
 36.7
 </td>
 <td style="text-align:right;">
@@ -5428,6 +5639,9 @@ Census Tract 405.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2477
+</td>
+<td style="text-align:right;">
+27.7
 </td>
 <td style="text-align:right;">
 40.1
@@ -5507,6 +5721,9 @@ Census Tract 407.01; Bronx County; New York
 1258
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 35.7
 </td>
 <td style="text-align:right;">
@@ -5582,6 +5799,9 @@ Census Tract 407.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2882
+</td>
+<td style="text-align:right;">
+36.2
 </td>
 <td style="text-align:right;">
 32.3
@@ -5661,6 +5881,9 @@ Census Tract 411; Bronx County; New York
 1453
 </td>
 <td style="text-align:right;">
+42.1
+</td>
+<td style="text-align:right;">
 29.2
 </td>
 <td style="text-align:right;">
@@ -5736,6 +5959,9 @@ Census Tract 413; Bronx County; New York
 </td>
 <td style="text-align:right;">
 3053
+</td>
+<td style="text-align:right;">
+23.1
 </td>
 <td style="text-align:right;">
 34.0
@@ -5815,6 +6041,9 @@ Census Tract 415; Bronx County; New York
 2386
 </td>
 <td style="text-align:right;">
+27.1
+</td>
+<td style="text-align:right;">
 30.3
 </td>
 <td style="text-align:right;">
@@ -5890,6 +6119,9 @@ Census Tract 419; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2674
+</td>
+<td style="text-align:right;">
+24.7
 </td>
 <td style="text-align:right;">
 27.0
@@ -5969,6 +6201,9 @@ Census Tract 421; Bronx County; New York
 2020
 </td>
 <td style="text-align:right;">
+22.6
+</td>
+<td style="text-align:right;">
 33.3
 </td>
 <td style="text-align:right;">
@@ -6044,6 +6279,9 @@ Census Tract 423; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1359
+</td>
+<td style="text-align:right;">
+24.8
 </td>
 <td style="text-align:right;">
 46.7
@@ -6123,6 +6361,9 @@ Census Tract 425; Bronx County; New York
 2248
 </td>
 <td style="text-align:right;">
+33.7
+</td>
+<td style="text-align:right;">
 32.0
 </td>
 <td style="text-align:right;">
@@ -6198,6 +6439,9 @@ Census Tract 429.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1246
+</td>
+<td style="text-align:right;">
+28.6
 </td>
 <td style="text-align:right;">
 40.8
@@ -6277,6 +6521,9 @@ Census Tract 429.02; Bronx County; New York
 1700
 </td>
 <td style="text-align:right;">
+29.4
+</td>
+<td style="text-align:right;">
 30.4
 </td>
 <td style="text-align:right;">
@@ -6352,6 +6599,9 @@ Census Tract 431.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1860
+</td>
+<td style="text-align:right;">
+40.3
 </td>
 <td style="text-align:right;">
 35.8
@@ -6431,6 +6681,9 @@ Census Tract 431.02; Bronx County; New York
 1785
 </td>
 <td style="text-align:right;">
+39.7
+</td>
+<td style="text-align:right;">
 32.0
 </td>
 <td style="text-align:right;">
@@ -6506,6 +6759,9 @@ Census Tract 449.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 795
+</td>
+<td style="text-align:right;">
+46.7
 </td>
 <td style="text-align:right;">
 15.6
@@ -6585,6 +6841,9 @@ Census Tract 449.02; Bronx County; New York
 889
 </td>
 <td style="text-align:right;">
+30.6
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -6660,6 +6919,9 @@ Census Tract 451.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 905
+</td>
+<td style="text-align:right;">
+28.1
 </td>
 <td style="text-align:right;">
 13.8
@@ -6739,6 +7001,9 @@ Census Tract 451.02; Bronx County; New York
 902
 </td>
 <td style="text-align:right;">
+41.0
+</td>
+<td style="text-align:right;">
 24.4
 </td>
 <td style="text-align:right;">
@@ -6814,6 +7079,9 @@ Census Tract 30; Kings County; New York
 </td>
 <td style="text-align:right;">
 754
+</td>
+<td style="text-align:right;">
+43.5
 </td>
 <td style="text-align:right;">
 23.3
@@ -6893,6 +7161,9 @@ Census Tract 34; Kings County; New York
 1388
 </td>
 <td style="text-align:right;">
+42.4
+</td>
+<td style="text-align:right;">
 28.0
 </td>
 <td style="text-align:right;">
@@ -6968,6 +7239,9 @@ Census Tract 58; Kings County; New York
 </td>
 <td style="text-align:right;">
 1380
+</td>
+<td style="text-align:right;">
+41.4
 </td>
 <td style="text-align:right;">
 18.7
@@ -7047,6 +7321,9 @@ Census Tract 60; Kings County; New York
 1135
 </td>
 <td style="text-align:right;">
+47.8
+</td>
+<td style="text-align:right;">
 36.3
 </td>
 <td style="text-align:right;">
@@ -7122,6 +7399,9 @@ Census Tract 62; Kings County; New York
 </td>
 <td style="text-align:right;">
 1051
+</td>
+<td style="text-align:right;">
+37.1
 </td>
 <td style="text-align:right;">
 28.4
@@ -7201,6 +7481,9 @@ Census Tract 64; Kings County; New York
 1361
 </td>
 <td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
 29.7
 </td>
 <td style="text-align:right;">
@@ -7276,6 +7559,9 @@ Census Tract 66; Kings County; New York
 </td>
 <td style="text-align:right;">
 1705
+</td>
+<td style="text-align:right;">
+33.5
 </td>
 <td style="text-align:right;">
 24.1
@@ -7355,6 +7641,9 @@ Census Tract 68; Kings County; New York
 1582
 </td>
 <td style="text-align:right;">
+52.4
+</td>
+<td style="text-align:right;">
 23.3
 </td>
 <td style="text-align:right;">
@@ -7430,6 +7719,9 @@ Census Tract 126; Kings County; New York
 </td>
 <td style="text-align:right;">
 806
+</td>
+<td style="text-align:right;">
+50.5
 </td>
 <td style="text-align:right;">
 29.4
@@ -7509,6 +7801,9 @@ Census Tract 130; Kings County; New York
 1715
 </td>
 <td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
 31.9
 </td>
 <td style="text-align:right;">
@@ -7584,6 +7879,9 @@ Census Tract 132; Kings County; New York
 </td>
 <td style="text-align:right;">
 716
+</td>
+<td style="text-align:right;">
+59.4
 </td>
 <td style="text-align:right;">
 30.7
@@ -7663,6 +7961,9 @@ Census Tract 134; Kings County; New York
 1380
 </td>
 <td style="text-align:right;">
+36.5
+</td>
+<td style="text-align:right;">
 38.3
 </td>
 <td style="text-align:right;">
@@ -7738,6 +8039,9 @@ Census Tract 136; Kings County; New York
 </td>
 <td style="text-align:right;">
 1489
+</td>
+<td style="text-align:right;">
+30.8
 </td>
 <td style="text-align:right;">
 32.2
@@ -7817,6 +8121,9 @@ Census Tract 138; Kings County; New York
 1286
 </td>
 <td style="text-align:right;">
+32.4
+</td>
+<td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
@@ -7892,6 +8199,9 @@ Census Tract 140; Kings County; New York
 </td>
 <td style="text-align:right;">
 767
+</td>
+<td style="text-align:right;">
+49.4
 </td>
 <td style="text-align:right;">
 21.3
@@ -7971,6 +8281,9 @@ Census Tract 142; Kings County; New York
 1290
 </td>
 <td style="text-align:right;">
+36.7
+</td>
+<td style="text-align:right;">
 32.7
 </td>
 <td style="text-align:right;">
@@ -8046,6 +8359,9 @@ Census Tract 152; Kings County; New York
 </td>
 <td style="text-align:right;">
 974
+</td>
+<td style="text-align:right;">
+48.5
 </td>
 <td style="text-align:right;">
 21.4
@@ -8125,6 +8441,9 @@ Census Tract 160; Kings County; New York
 1767
 </td>
 <td style="text-align:right;">
+34.2
+</td>
+<td style="text-align:right;">
 20.9
 </td>
 <td style="text-align:right;">
@@ -8200,6 +8519,9 @@ Census Tract 162; Kings County; New York
 </td>
 <td style="text-align:right;">
 1127
+</td>
+<td style="text-align:right;">
+41.9
 </td>
 <td style="text-align:right;">
 15.8
@@ -8279,6 +8601,9 @@ Census Tract 165; Kings County; New York
 2450
 </td>
 <td style="text-align:right;">
+30.7
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -8354,6 +8679,9 @@ Census Tract 166; Kings County; New York
 </td>
 <td style="text-align:right;">
 686
+</td>
+<td style="text-align:right;">
+59.3
 </td>
 <td style="text-align:right;">
 21.4
@@ -8433,6 +8761,9 @@ Census Tract 204; Kings County; New York
 695
 </td>
 <td style="text-align:right;">
+51.5
+</td>
+<td style="text-align:right;">
 25.5
 </td>
 <td style="text-align:right;">
@@ -8508,6 +8839,9 @@ Census Tract 206; Kings County; New York
 </td>
 <td style="text-align:right;">
 812
+</td>
+<td style="text-align:right;">
+33.5
 </td>
 <td style="text-align:right;">
 35.7
@@ -8587,6 +8921,9 @@ Census Tract 207; Kings County; New York
 2296
 </td>
 <td style="text-align:right;">
+30.2
+</td>
+<td style="text-align:right;">
 18.6
 </td>
 <td style="text-align:right;">
@@ -8662,6 +8999,9 @@ Census Tract 246; Kings County; New York
 </td>
 <td style="text-align:right;">
 879
+</td>
+<td style="text-align:right;">
+45.4
 </td>
 <td style="text-align:right;">
 49.5
@@ -8741,6 +9081,9 @@ Census Tract 266; Kings County; New York
 1118
 </td>
 <td style="text-align:right;">
+44.3
+</td>
+<td style="text-align:right;">
 41.5
 </td>
 <td style="text-align:right;">
@@ -8816,6 +9159,9 @@ Census Tract 268; Kings County; New York
 </td>
 <td style="text-align:right;">
 1602
+</td>
+<td style="text-align:right;">
+47.7
 </td>
 <td style="text-align:right;">
 26.8
@@ -8895,6 +9241,9 @@ Census Tract 270; Kings County; New York
 866
 </td>
 <td style="text-align:right;">
+47.1
+</td>
+<td style="text-align:right;">
 32.1
 </td>
 <td style="text-align:right;">
@@ -8970,6 +9319,9 @@ Census Tract 272; Kings County; New York
 </td>
 <td style="text-align:right;">
 1386
+</td>
+<td style="text-align:right;">
+45.7
 </td>
 <td style="text-align:right;">
 23.0
@@ -9049,6 +9401,9 @@ Census Tract 274; Kings County; New York
 943
 </td>
 <td style="text-align:right;">
+50.8
+</td>
+<td style="text-align:right;">
 29.9
 </td>
 <td style="text-align:right;">
@@ -9124,6 +9479,9 @@ Census Tract 319; Kings County; New York
 </td>
 <td style="text-align:right;">
 1252
+</td>
+<td style="text-align:right;">
+32.3
 </td>
 <td style="text-align:right;">
 31.9
@@ -9203,6 +9561,9 @@ Census Tract 327; Kings County; New York
 1352
 </td>
 <td style="text-align:right;">
+41.6
+</td>
+<td style="text-align:right;">
 15.5
 </td>
 <td style="text-align:right;">
@@ -9278,6 +9639,9 @@ Census Tract 333; Kings County; New York
 </td>
 <td style="text-align:right;">
 1347
+</td>
+<td style="text-align:right;">
+35.2
 </td>
 <td style="text-align:right;">
 36.6
@@ -9357,6 +9721,9 @@ Census Tract 335; Kings County; New York
 918
 </td>
 <td style="text-align:right;">
+41.1
+</td>
+<td style="text-align:right;">
 32.0
 </td>
 <td style="text-align:right;">
@@ -9432,6 +9799,9 @@ Census Tract 337.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 476
+</td>
+<td style="text-align:right;">
+45.2
 </td>
 <td style="text-align:right;">
 16.8
@@ -9511,6 +9881,9 @@ Census Tract 349.02; Kings County; New York
 1587
 </td>
 <td style="text-align:right;">
+38.0
+</td>
+<td style="text-align:right;">
 38.2
 </td>
 <td style="text-align:right;">
@@ -9586,6 +9959,9 @@ Census Tract 351.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1029
+</td>
+<td style="text-align:right;">
+57.5
 </td>
 <td style="text-align:right;">
 33.2
@@ -9665,6 +10041,9 @@ Census Tract 353.02; Kings County; New York
 987
 </td>
 <td style="text-align:right;">
+47.3
+</td>
+<td style="text-align:right;">
 39.1
 </td>
 <td style="text-align:right;">
@@ -9740,6 +10119,9 @@ Census Tract 508.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1435
+</td>
+<td style="text-align:right;">
+36.7
 </td>
 <td style="text-align:right;">
 24.5
@@ -9819,6 +10201,9 @@ Census Tract 508.03; Kings County; New York
 1092
 </td>
 <td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
 19.0
 </td>
 <td style="text-align:right;">
@@ -9894,6 +10279,9 @@ Census Tract 508.04; Kings County; New York
 </td>
 <td style="text-align:right;">
 2660
+</td>
+<td style="text-align:right;">
+33.2
 </td>
 <td style="text-align:right;">
 18.3
@@ -9973,6 +10361,9 @@ Census Tract 510.01; Kings County; New York
 1636
 </td>
 <td style="text-align:right;">
+38.4
+</td>
+<td style="text-align:right;">
 29.6
 </td>
 <td style="text-align:right;">
@@ -10048,6 +10439,9 @@ Census Tract 510.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1783
+</td>
+<td style="text-align:right;">
+37.9
 </td>
 <td style="text-align:right;">
 29.8
@@ -10127,6 +10521,9 @@ Census Tract 512; Kings County; New York
 2397
 </td>
 <td style="text-align:right;">
+32.3
+</td>
+<td style="text-align:right;">
 23.5
 </td>
 <td style="text-align:right;">
@@ -10202,6 +10599,9 @@ Census Tract 514; Kings County; New York
 </td>
 <td style="text-align:right;">
 2707
+</td>
+<td style="text-align:right;">
+35.1
 </td>
 <td style="text-align:right;">
 30.9
@@ -10281,6 +10681,9 @@ Census Tract 518; Kings County; New York
 1563
 </td>
 <td style="text-align:right;">
+34.2
+</td>
+<td style="text-align:right;">
 18.1
 </td>
 <td style="text-align:right;">
@@ -10356,6 +10759,9 @@ Census Tract 520; Kings County; New York
 </td>
 <td style="text-align:right;">
 1296
+</td>
+<td style="text-align:right;">
+46.8
 </td>
 <td style="text-align:right;">
 28.9
@@ -10435,6 +10841,9 @@ Census Tract 526; Kings County; New York
 1806
 </td>
 <td style="text-align:right;">
+32.2
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -10510,6 +10919,9 @@ Census Tract 546; Kings County; New York
 </td>
 <td style="text-align:right;">
 2006
+</td>
+<td style="text-align:right;">
+38.5
 </td>
 <td style="text-align:right;">
 29.0
@@ -10589,6 +11001,9 @@ Census Tract 548; Kings County; New York
 794
 </td>
 <td style="text-align:right;">
+46.7
+</td>
+<td style="text-align:right;">
 41.6
 </td>
 <td style="text-align:right;">
@@ -10664,6 +11079,9 @@ Census Tract 550; Kings County; New York
 </td>
 <td style="text-align:right;">
 1476
+</td>
+<td style="text-align:right;">
+47.3
 </td>
 <td style="text-align:right;">
 28.3
@@ -10743,6 +11161,9 @@ Census Tract 560; Kings County; New York
 1449
 </td>
 <td style="text-align:right;">
+61.8
+</td>
+<td style="text-align:right;">
 24.4
 </td>
 <td style="text-align:right;">
@@ -10818,6 +11239,9 @@ Census Tract 562; Kings County; New York
 </td>
 <td style="text-align:right;">
 545
+</td>
+<td style="text-align:right;">
+64.2
 </td>
 <td style="text-align:right;">
 39.4
@@ -10897,6 +11321,9 @@ Census Tract 564; Kings County; New York
 1044
 </td>
 <td style="text-align:right;">
+58.3
+</td>
+<td style="text-align:right;">
 21.7
 </td>
 <td style="text-align:right;">
@@ -10972,6 +11399,9 @@ Census Tract 616; Kings County; New York
 </td>
 <td style="text-align:right;">
 519
+</td>
+<td style="text-align:right;">
+59.2
 </td>
 <td style="text-align:right;">
 17.7
@@ -11051,6 +11481,9 @@ Census Tract 620; Kings County; New York
 638
 </td>
 <td style="text-align:right;">
+57.5
+</td>
+<td style="text-align:right;">
 29.9
 </td>
 <td style="text-align:right;">
@@ -11126,6 +11559,9 @@ Census Tract 636; Kings County; New York
 </td>
 <td style="text-align:right;">
 372
+</td>
+<td style="text-align:right;">
+48.1
 </td>
 <td style="text-align:right;">
 40.1
@@ -11205,6 +11641,9 @@ Census Tract 640; Kings County; New York
 521
 </td>
 <td style="text-align:right;">
+59.7
+</td>
+<td style="text-align:right;">
 35.1
 </td>
 <td style="text-align:right;">
@@ -11280,6 +11719,9 @@ Census Tract 642; Kings County; New York
 </td>
 <td style="text-align:right;">
 889
+</td>
+<td style="text-align:right;">
+49.6
 </td>
 <td style="text-align:right;">
 31.4
@@ -11359,6 +11801,9 @@ Census Tract 644; Kings County; New York
 806
 </td>
 <td style="text-align:right;">
+42.7
+</td>
+<td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
@@ -11434,6 +11879,9 @@ Census Tract 646; Kings County; New York
 </td>
 <td style="text-align:right;">
 713
+</td>
+<td style="text-align:right;">
+52.3
 </td>
 <td style="text-align:right;">
 54.8
@@ -11513,6 +11961,9 @@ Census Tract 648; Kings County; New York
 647
 </td>
 <td style="text-align:right;">
+61.5
+</td>
+<td style="text-align:right;">
 31.7
 </td>
 <td style="text-align:right;">
@@ -11588,6 +12039,9 @@ Census Tract 650; Kings County; New York
 </td>
 <td style="text-align:right;">
 547
+</td>
+<td style="text-align:right;">
+52.8
 </td>
 <td style="text-align:right;">
 19.7
@@ -11667,6 +12121,9 @@ Census Tract 654; Kings County; New York
 513
 </td>
 <td style="text-align:right;">
+53.6
+</td>
+<td style="text-align:right;">
 41.9
 </td>
 <td style="text-align:right;">
@@ -11742,6 +12199,9 @@ Census Tract 656; Kings County; New York
 </td>
 <td style="text-align:right;">
 672
+</td>
+<td style="text-align:right;">
+43.2
 </td>
 <td style="text-align:right;">
 29.6
@@ -11821,6 +12281,9 @@ Census Tract 658; Kings County; New York
 610
 </td>
 <td style="text-align:right;">
+52.5
+</td>
+<td style="text-align:right;">
 35.7
 </td>
 <td style="text-align:right;">
@@ -11896,6 +12359,9 @@ Census Tract 674; Kings County; New York
 </td>
 <td style="text-align:right;">
 563
+</td>
+<td style="text-align:right;">
+67.5
 </td>
 <td style="text-align:right;">
 28.6
@@ -11975,6 +12441,9 @@ Census Tract 722; Kings County; New York
 1026
 </td>
 <td style="text-align:right;">
+64.9
+</td>
+<td style="text-align:right;">
 20.2
 </td>
 <td style="text-align:right;">
@@ -12050,6 +12519,9 @@ Census Tract 724; Kings County; New York
 </td>
 <td style="text-align:right;">
 788
+</td>
+<td style="text-align:right;">
+68.0
 </td>
 <td style="text-align:right;">
 23.5
@@ -12129,6 +12601,9 @@ Census Tract 726; Kings County; New York
 704
 </td>
 <td style="text-align:right;">
+55.8
+</td>
+<td style="text-align:right;">
 30.4
 </td>
 <td style="text-align:right;">
@@ -12204,6 +12679,9 @@ Census Tract 728; Kings County; New York
 </td>
 <td style="text-align:right;">
 1624
+</td>
+<td style="text-align:right;">
+54.9
 </td>
 <td style="text-align:right;">
 31.7
@@ -12283,6 +12761,9 @@ Census Tract 730; Kings County; New York
 836
 </td>
 <td style="text-align:right;">
+67.2
+</td>
+<td style="text-align:right;">
 28.8
 </td>
 <td style="text-align:right;">
@@ -12358,6 +12839,9 @@ Census Tract 732; Kings County; New York
 </td>
 <td style="text-align:right;">
 774
+</td>
+<td style="text-align:right;">
+49.9
 </td>
 <td style="text-align:right;">
 38.6
@@ -12437,6 +12921,9 @@ Census Tract 734; Kings County; New York
 554
 </td>
 <td style="text-align:right;">
+65.7
+</td>
+<td style="text-align:right;">
 15.9
 </td>
 <td style="text-align:right;">
@@ -12512,6 +12999,9 @@ Census Tract 736; Kings County; New York
 </td>
 <td style="text-align:right;">
 1121
+</td>
+<td style="text-align:right;">
+53.5
 </td>
 <td style="text-align:right;">
 19.9
@@ -12591,6 +13081,9 @@ Census Tract 738; Kings County; New York
 1279
 </td>
 <td style="text-align:right;">
+49.4
+</td>
+<td style="text-align:right;">
 36.3
 </td>
 <td style="text-align:right;">
@@ -12666,6 +13159,9 @@ Census Tract 740; Kings County; New York
 </td>
 <td style="text-align:right;">
 1114
+</td>
+<td style="text-align:right;">
+43.2
 </td>
 <td style="text-align:right;">
 43.5
@@ -12745,6 +13241,9 @@ Census Tract 742; Kings County; New York
 953
 </td>
 <td style="text-align:right;">
+51.2
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -12820,6 +13319,9 @@ Census Tract 744; Kings County; New York
 </td>
 <td style="text-align:right;">
 625
+</td>
+<td style="text-align:right;">
+44.5
 </td>
 <td style="text-align:right;">
 52.6
@@ -12899,6 +13401,9 @@ Census Tract 746; Kings County; New York
 698
 </td>
 <td style="text-align:right;">
+54.7
+</td>
+<td style="text-align:right;">
 34.5
 </td>
 <td style="text-align:right;">
@@ -12974,6 +13479,9 @@ Census Tract 748; Kings County; New York
 </td>
 <td style="text-align:right;">
 670
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 30.4
@@ -13053,6 +13561,9 @@ Census Tract 750; Kings County; New York
 912
 </td>
 <td style="text-align:right;">
+41.1
+</td>
+<td style="text-align:right;">
 39.1
 </td>
 <td style="text-align:right;">
@@ -13128,6 +13639,9 @@ Census Tract 752; Kings County; New York
 </td>
 <td style="text-align:right;">
 281
+</td>
+<td style="text-align:right;">
+57.3
 </td>
 <td style="text-align:right;">
 60.9
@@ -13207,6 +13721,9 @@ Census Tract 754; Kings County; New York
 450
 </td>
 <td style="text-align:right;">
+68.9
+</td>
+<td style="text-align:right;">
 34.4
 </td>
 <td style="text-align:right;">
@@ -13282,6 +13799,9 @@ Census Tract 756; Kings County; New York
 </td>
 <td style="text-align:right;">
 789
+</td>
+<td style="text-align:right;">
+38.1
 </td>
 <td style="text-align:right;">
 24.8
@@ -13361,6 +13881,9 @@ Census Tract 758; Kings County; New York
 640
 </td>
 <td style="text-align:right;">
+68.0
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -13436,6 +13959,9 @@ Census Tract 760; Kings County; New York
 </td>
 <td style="text-align:right;">
 1162
+</td>
+<td style="text-align:right;">
+51.5
 </td>
 <td style="text-align:right;">
 20.0
@@ -13515,6 +14041,9 @@ Census Tract 762; Kings County; New York
 1548
 </td>
 <td style="text-align:right;">
+39.8
+</td>
+<td style="text-align:right;">
 32.1
 </td>
 <td style="text-align:right;">
@@ -13590,6 +14119,9 @@ Census Tract 764; Kings County; New York
 </td>
 <td style="text-align:right;">
 1578
+</td>
+<td style="text-align:right;">
+41.8
 </td>
 <td style="text-align:right;">
 33.2
@@ -13669,6 +14201,9 @@ Census Tract 766; Kings County; New York
 669
 </td>
 <td style="text-align:right;">
+47.8
+</td>
+<td style="text-align:right;">
 31.4
 </td>
 <td style="text-align:right;">
@@ -13744,6 +14279,9 @@ Census Tract 772; Kings County; New York
 </td>
 <td style="text-align:right;">
 1170
+</td>
+<td style="text-align:right;">
+48.1
 </td>
 <td style="text-align:right;">
 27.4
@@ -13823,6 +14361,9 @@ Census Tract 774; Kings County; New York
 1284
 </td>
 <td style="text-align:right;">
+26.9
+</td>
+<td style="text-align:right;">
 31.7
 </td>
 <td style="text-align:right;">
@@ -13898,6 +14439,9 @@ Census Tract 776; Kings County; New York
 </td>
 <td style="text-align:right;">
 1761
+</td>
+<td style="text-align:right;">
+61.1
 </td>
 <td style="text-align:right;">
 13.3
@@ -13977,6 +14521,9 @@ Census Tract 780; Kings County; New York
 621
 </td>
 <td style="text-align:right;">
+67.3
+</td>
+<td style="text-align:right;">
 35.4
 </td>
 <td style="text-align:right;">
@@ -14052,6 +14599,9 @@ Census Tract 782; Kings County; New York
 </td>
 <td style="text-align:right;">
 1612
+</td>
+<td style="text-align:right;">
+48.4
 </td>
 <td style="text-align:right;">
 23.0
@@ -14131,6 +14681,9 @@ Census Tract 784; Kings County; New York
 822
 </td>
 <td style="text-align:right;">
+57.4
+</td>
+<td style="text-align:right;">
 23.8
 </td>
 <td style="text-align:right;">
@@ -14206,6 +14759,9 @@ Census Tract 786.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 812
+</td>
+<td style="text-align:right;">
+46.8
 </td>
 <td style="text-align:right;">
 32.3
@@ -14285,6 +14841,9 @@ Census Tract 788.02; Kings County; New York
 531
 </td>
 <td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
 45.0
 </td>
 <td style="text-align:right;">
@@ -14360,6 +14919,9 @@ Census Tract 796.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1525
+</td>
+<td style="text-align:right;">
+39.9
 </td>
 <td style="text-align:right;">
 17.9
@@ -14439,6 +15001,9 @@ Census Tract 796.02; Kings County; New York
 2234
 </td>
 <td style="text-align:right;">
+32.1
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -14514,6 +15079,9 @@ Census Tract 798.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1512
+</td>
+<td style="text-align:right;">
+31.3
 </td>
 <td style="text-align:right;">
 18.3
@@ -14593,6 +15161,9 @@ Census Tract 798.02; Kings County; New York
 2591
 </td>
 <td style="text-align:right;">
+25.6
+</td>
+<td style="text-align:right;">
 11.8
 </td>
 <td style="text-align:right;">
@@ -14668,6 +15239,9 @@ Census Tract 832; Kings County; New York
 </td>
 <td style="text-align:right;">
 759
+</td>
+<td style="text-align:right;">
+57.0
 </td>
 <td style="text-align:right;">
 38.7
@@ -14747,6 +15321,9 @@ Census Tract 834; Kings County; New York
 582
 </td>
 <td style="text-align:right;">
+60.0
+</td>
+<td style="text-align:right;">
 27.7
 </td>
 <td style="text-align:right;">
@@ -14822,6 +15399,9 @@ Census Tract 836; Kings County; New York
 </td>
 <td style="text-align:right;">
 640
+</td>
+<td style="text-align:right;">
+54.7
 </td>
 <td style="text-align:right;">
 33.6
@@ -14901,6 +15481,9 @@ Census Tract 838; Kings County; New York
 729
 </td>
 <td style="text-align:right;">
+57.5
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -14976,6 +15559,9 @@ Census Tract 840; Kings County; New York
 </td>
 <td style="text-align:right;">
 850
+</td>
+<td style="text-align:right;">
+67.6
 </td>
 <td style="text-align:right;">
 37.4
@@ -15055,6 +15641,9 @@ Census Tract 846; Kings County; New York
 683
 </td>
 <td style="text-align:right;">
+62.5
+</td>
+<td style="text-align:right;">
 31.5
 </td>
 <td style="text-align:right;">
@@ -15130,6 +15719,9 @@ Census Tract 848; Kings County; New York
 </td>
 <td style="text-align:right;">
 558
+</td>
+<td style="text-align:right;">
+62.2
 </td>
 <td style="text-align:right;">
 21.1
@@ -15209,6 +15801,9 @@ Census Tract 850; Kings County; New York
 468
 </td>
 <td style="text-align:right;">
+73.7
+</td>
+<td style="text-align:right;">
 28.8
 </td>
 <td style="text-align:right;">
@@ -15284,6 +15879,9 @@ Census Tract 862; Kings County; New York
 </td>
 <td style="text-align:right;">
 1278
+</td>
+<td style="text-align:right;">
+55.3
 </td>
 <td style="text-align:right;">
 28.9
@@ -15363,6 +15961,9 @@ Census Tract 864; Kings County; New York
 884
 </td>
 <td style="text-align:right;">
+54.0
+</td>
+<td style="text-align:right;">
 29.2
 </td>
 <td style="text-align:right;">
@@ -15438,6 +16039,9 @@ Census Tract 870; Kings County; New York
 </td>
 <td style="text-align:right;">
 1107
+</td>
+<td style="text-align:right;">
+48.9
 </td>
 <td style="text-align:right;">
 36.0
@@ -15517,6 +16121,9 @@ Census Tract 932; Kings County; New York
 706
 </td>
 <td style="text-align:right;">
+69.7
+</td>
+<td style="text-align:right;">
 9.9
 </td>
 <td style="text-align:right;">
@@ -15592,6 +16199,9 @@ Census Tract 934; Kings County; New York
 </td>
 <td style="text-align:right;">
 1045
+</td>
+<td style="text-align:right;">
+53.9
 </td>
 <td style="text-align:right;">
 26.7
@@ -15671,6 +16281,9 @@ Census Tract 936; Kings County; New York
 724
 </td>
 <td style="text-align:right;">
+59.3
+</td>
+<td style="text-align:right;">
 21.8
 </td>
 <td style="text-align:right;">
@@ -15746,6 +16359,9 @@ Census Tract 938; Kings County; New York
 </td>
 <td style="text-align:right;">
 1005
+</td>
+<td style="text-align:right;">
+55.1
 </td>
 <td style="text-align:right;">
 24.3
@@ -15825,6 +16441,9 @@ Census Tract 946; Kings County; New York
 729
 </td>
 <td style="text-align:right;">
+59.5
+</td>
+<td style="text-align:right;">
 25.5
 </td>
 <td style="text-align:right;">
@@ -15900,6 +16519,9 @@ Census Tract 1142.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 633
+</td>
+<td style="text-align:right;">
+64.8
 </td>
 <td style="text-align:right;">
 27.3
@@ -15979,6 +16601,9 @@ Census Tract 1142.02; Kings County; New York
 954
 </td>
 <td style="text-align:right;">
+44.9
+</td>
+<td style="text-align:right;">
 40.9
 </td>
 <td style="text-align:right;">
@@ -16054,6 +16679,9 @@ Census Tract 59; New York County; New York
 </td>
 <td style="text-align:right;">
 2433
+</td>
+<td style="text-align:right;">
+41.7
 </td>
 <td style="text-align:right;">
 10.2
@@ -16133,6 +16761,9 @@ Census Tract 61; New York County; New York
 2305
 </td>
 <td style="text-align:right;">
+29.9
+</td>
+<td style="text-align:right;">
 13.4
 </td>
 <td style="text-align:right;">
@@ -16208,6 +16839,9 @@ Census Tract 82; New York County; New York
 </td>
 <td style="text-align:right;">
 1850
+</td>
+<td style="text-align:right;">
+21.4
 </td>
 <td style="text-align:right;">
 15.5
@@ -16287,6 +16921,9 @@ Census Tract 104; New York County; New York
 502
 </td>
 <td style="text-align:right;">
+38.2
+</td>
+<td style="text-align:right;">
 2.0
 </td>
 <td style="text-align:right;">
@@ -16362,6 +16999,9 @@ Census Tract 112.01; New York County; New York
 </td>
 <td style="text-align:right;">
 530
+</td>
+<td style="text-align:right;">
+47.0
 </td>
 <td style="text-align:right;">
 11.3
@@ -16441,6 +17081,9 @@ Census Tract 137; New York County; New York
 3414
 </td>
 <td style="text-align:right;">
+38.8
+</td>
+<td style="text-align:right;">
 11.3
 </td>
 <td style="text-align:right;">
@@ -16516,6 +17159,9 @@ Census Tract 161; New York County; New York
 </td>
 <td style="text-align:right;">
 3803
+</td>
+<td style="text-align:right;">
+33.1
 </td>
 <td style="text-align:right;">
 12.8
@@ -16595,6 +17241,9 @@ Census Tract 163; New York County; New York
 3287
 </td>
 <td style="text-align:right;">
+50.1
+</td>
+<td style="text-align:right;">
 21.6
 </td>
 <td style="text-align:right;">
@@ -16670,6 +17319,9 @@ Census Tract 165; New York County; New York
 </td>
 <td style="text-align:right;">
 3244
+</td>
+<td style="text-align:right;">
+37.3
 </td>
 <td style="text-align:right;">
 20.2
@@ -16749,6 +17401,9 @@ Census Tract 167; New York County; New York
 3231
 </td>
 <td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
 29.7
 </td>
 <td style="text-align:right;">
@@ -16824,6 +17479,9 @@ Census Tract 169; New York County; New York
 </td>
 <td style="text-align:right;">
 4116
+</td>
+<td style="text-align:right;">
+37.8
 </td>
 <td style="text-align:right;">
 17.2
@@ -16903,6 +17561,9 @@ Census Tract 171; New York County; New York
 4171
 </td>
 <td style="text-align:right;">
+44.3
+</td>
+<td style="text-align:right;">
 19.3
 </td>
 <td style="text-align:right;">
@@ -16978,6 +17639,9 @@ Census Tract 199; New York County; New York
 </td>
 <td style="text-align:right;">
 3219
+</td>
+<td style="text-align:right;">
+42.0
 </td>
 <td style="text-align:right;">
 12.3
@@ -17057,6 +17721,9 @@ Census Tract 201.01; New York County; New York
 278
 </td>
 <td style="text-align:right;">
+39.6
+</td>
+<td style="text-align:right;">
 19.4
 </td>
 <td style="text-align:right;">
@@ -17132,6 +17799,9 @@ Census Tract 203; New York County; New York
 </td>
 <td style="text-align:right;">
 446
+</td>
+<td style="text-align:right;">
+36.8
 </td>
 <td style="text-align:right;">
 22.4
@@ -17211,6 +17881,9 @@ Census Tract 205; New York County; New York
 1292
 </td>
 <td style="text-align:right;">
+53.7
+</td>
+<td style="text-align:right;">
 21.4
 </td>
 <td style="text-align:right;">
@@ -17286,6 +17959,9 @@ Census Tract 207.01; New York County; New York
 </td>
 <td style="text-align:right;">
 1106
+</td>
+<td style="text-align:right;">
+17.9
 </td>
 <td style="text-align:right;">
 15.4
@@ -17365,6 +18041,9 @@ Census Tract 247; New York County; New York
 2785
 </td>
 <td style="text-align:right;">
+59.6
+</td>
+<td style="text-align:right;">
 12.7
 </td>
 <td style="text-align:right;">
@@ -17440,6 +18119,9 @@ Census Tract 255; New York County; New York
 </td>
 <td style="text-align:right;">
 2013
+</td>
+<td style="text-align:right;">
+34.4
 </td>
 <td style="text-align:right;">
 18.2
@@ -17519,6 +18201,9 @@ Census Tract 267; New York County; New York
 556
 </td>
 <td style="text-align:right;">
+44.1
+</td>
+<td style="text-align:right;">
 24.5
 </td>
 <td style="text-align:right;">
@@ -17594,6 +18279,9 @@ Census Tract 277; New York County; New York
 </td>
 <td style="text-align:right;">
 2133
+</td>
+<td style="text-align:right;">
+56.5
 </td>
 <td style="text-align:right;">
 31.5
@@ -17673,6 +18361,9 @@ Census Tract 279; New York County; New York
 4388
 </td>
 <td style="text-align:right;">
+32.9
+</td>
+<td style="text-align:right;">
 25.6
 </td>
 <td style="text-align:right;">
@@ -17748,6 +18439,9 @@ Census Tract 283; New York County; New York
 </td>
 <td style="text-align:right;">
 3346
+</td>
+<td style="text-align:right;">
+47.9
 </td>
 <td style="text-align:right;">
 24.6
@@ -17827,6 +18521,9 @@ Census Tract 285; New York County; New York
 2597
 </td>
 <td style="text-align:right;">
+45.0
+</td>
+<td style="text-align:right;">
 34.5
 </td>
 <td style="text-align:right;">
@@ -17902,6 +18599,9 @@ Census Tract 291; New York County; New York
 </td>
 <td style="text-align:right;">
 4141
+</td>
+<td style="text-align:right;">
+37.0
 </td>
 <td style="text-align:right;">
 30.2
@@ -17981,6 +18681,9 @@ Census Tract 293; New York County; New York
 3135
 </td>
 <td style="text-align:right;">
+37.2
+</td>
+<td style="text-align:right;">
 41.5
 </td>
 <td style="text-align:right;">
@@ -18056,6 +18759,9 @@ Census Tract 295; New York County; New York
 </td>
 <td style="text-align:right;">
 3294
+</td>
+<td style="text-align:right;">
+27.5
 </td>
 <td style="text-align:right;">
 21.9
@@ -18135,6 +18841,9 @@ Census Tract 303; New York County; New York
 1772
 </td>
 <td style="text-align:right;">
+41.4
+</td>
+<td style="text-align:right;">
 24.0
 </td>
 <td style="text-align:right;">
@@ -18210,6 +18919,9 @@ Census Tract 307; New York County; New York
 </td>
 <td style="text-align:right;">
 1743
+</td>
+<td style="text-align:right;">
+39.3
 </td>
 <td style="text-align:right;">
 25.0
@@ -18289,6 +19001,9 @@ Census Tract 309; New York County; New York
 3926
 </td>
 <td style="text-align:right;">
+33.2
+</td>
+<td style="text-align:right;">
 42.5
 </td>
 <td style="text-align:right;">
@@ -18364,6 +19079,9 @@ Census Tract 281; Queens County; New York
 </td>
 <td style="text-align:right;">
 2443
+</td>
+<td style="text-align:right;">
+46.3
 </td>
 <td style="text-align:right;">
 23.9
@@ -18443,6 +19161,9 @@ Census Tract 283; Queens County; New York
 3294
 </td>
 <td style="text-align:right;">
+38.5
+</td>
+<td style="text-align:right;">
 20.9
 </td>
 <td style="text-align:right;">
@@ -18518,6 +19239,9 @@ Census Tract 285; Queens County; New York
 </td>
 <td style="text-align:right;">
 2208
+</td>
+<td style="text-align:right;">
+40.6
 </td>
 <td style="text-align:right;">
 21.8
@@ -18597,6 +19321,9 @@ Census Tract 464; Queens County; New York
 579
 </td>
 <td style="text-align:right;">
+45.1
+</td>
+<td style="text-align:right;">
 38.3
 </td>
 <td style="text-align:right;">
@@ -18672,6 +19399,9 @@ Census Tract 472; Queens County; New York
 </td>
 <td style="text-align:right;">
 1363
+</td>
+<td style="text-align:right;">
+47.2
 </td>
 <td style="text-align:right;">
 24.1
@@ -18751,6 +19481,9 @@ Census Tract 476; Queens County; New York
 541
 </td>
 <td style="text-align:right;">
+59.9
+</td>
+<td style="text-align:right;">
 13.1
 </td>
 <td style="text-align:right;">
@@ -18826,6 +19559,9 @@ Census Tract 478.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1882
+</td>
+<td style="text-align:right;">
+50.4
 </td>
 <td style="text-align:right;">
 10.1
@@ -18905,6 +19641,9 @@ Census Tract 723; Queens County; New York
 848
 </td>
 <td style="text-align:right;">
+51.5
+</td>
+<td style="text-align:right;">
 35.4
 </td>
 <td style="text-align:right;">
@@ -18980,6 +19719,9 @@ Census Tract 737; Queens County; New York
 </td>
 <td style="text-align:right;">
 1124
+</td>
+<td style="text-align:right;">
+38.5
 </td>
 <td style="text-align:right;">
 13.5
@@ -19059,6 +19801,9 @@ Census Tract 749; Queens County; New York
 550
 </td>
 <td style="text-align:right;">
+50.9
+</td>
+<td style="text-align:right;">
 40.7
 </td>
 <td style="text-align:right;">
@@ -19134,6 +19879,9 @@ Census Tract 769.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 2403
+</td>
+<td style="text-align:right;">
+35.8
 </td>
 <td style="text-align:right;">
 18.4
@@ -19213,6 +19961,9 @@ Census Tract 769.02; Queens County; New York
 585
 </td>
 <td style="text-align:right;">
+19.0
+</td>
+<td style="text-align:right;">
 25.3
 </td>
 <td style="text-align:right;">
@@ -19288,6 +20039,9 @@ Census Tract 775; Queens County; New York
 </td>
 <td style="text-align:right;">
 1022
+</td>
+<td style="text-align:right;">
+40.4
 </td>
 <td style="text-align:right;">
 14.4
@@ -19367,6 +20121,9 @@ Census Tract 922; Queens County; New York
 822
 </td>
 <td style="text-align:right;">
+48.2
+</td>
+<td style="text-align:right;">
 29.0
 </td>
 <td style="text-align:right;">
@@ -19442,6 +20199,9 @@ Census Tract 928; Queens County; New York
 </td>
 <td style="text-align:right;">
 1173
+</td>
+<td style="text-align:right;">
+54.1
 </td>
 <td style="text-align:right;">
 31.7
@@ -19521,6 +20281,9 @@ Census Tract 934.01; Queens County; New York
 1467
 </td>
 <td style="text-align:right;">
+44.0
+</td>
+<td style="text-align:right;">
 30.7
 </td>
 <td style="text-align:right;">
@@ -19596,6 +20359,9 @@ Census Tract 997.03; Queens County; New York
 </td>
 <td style="text-align:right;">
 1754
+</td>
+<td style="text-align:right;">
+54.2
 </td>
 <td style="text-align:right;">
 22.3
@@ -19675,6 +20441,9 @@ Census Tract 1483; Queens County; New York
 1024
 </td>
 <td style="text-align:right;">
+59.3
+</td>
+<td style="text-align:right;">
 31.4
 </td>
 <td style="text-align:right;">
@@ -19750,6 +20519,9 @@ Census Tract 1507.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1063
+</td>
+<td style="text-align:right;">
+56.5
 </td>
 <td style="text-align:right;">
 30.5
@@ -19829,6 +20601,9 @@ Census Tract 121; Richmond County; New York
 1207
 </td>
 <td style="text-align:right;">
+45.7
+</td>
+<td style="text-align:right;">
 32.5
 </td>
 <td style="text-align:right;">
@@ -19904,6 +20679,9 @@ Census Tract 254; Kings County; New York
 </td>
 <td style="text-align:right;">
 1215
+</td>
+<td style="text-align:right;">
+64.9
 </td>
 <td style="text-align:right;">
 32.3
@@ -19983,6 +20761,9 @@ Census Tract 612; Kings County; New York
 433
 </td>
 <td style="text-align:right;">
+57.7
+</td>
+<td style="text-align:right;">
 18.5
 </td>
 <td style="text-align:right;">
@@ -20058,6 +20839,9 @@ Census Tract 660; Kings County; New York
 </td>
 <td style="text-align:right;">
 696
+</td>
+<td style="text-align:right;">
+44.1
 </td>
 <td style="text-align:right;">
 35.2
@@ -20137,6 +20921,9 @@ Census Tract 868; Kings County; New York
 1309
 </td>
 <td style="text-align:right;">
+43.2
+</td>
+<td style="text-align:right;">
 35.0
 </td>
 <td style="text-align:right;">
@@ -20212,6 +20999,9 @@ Census Tract 1522; Kings County; New York
 </td>
 <td style="text-align:right;">
 1402
+</td>
+<td style="text-align:right;">
+30.2
 </td>
 <td style="text-align:right;">
 48.8
@@ -20291,6 +21081,9 @@ Census Tract 216.01; Queens County; New York
 1450
 </td>
 <td style="text-align:right;">
+32.0
+</td>
+<td style="text-align:right;">
 17.6
 </td>
 <td style="text-align:right;">
@@ -20366,6 +21159,9 @@ Census Tract 279; Queens County; New York
 </td>
 <td style="text-align:right;">
 2427
+</td>
+<td style="text-align:right;">
+40.5
 </td>
 <td style="text-align:right;">
 29.1
@@ -20445,6 +21241,9 @@ Census Tract 934.02; Queens County; New York
 1508
 </td>
 <td style="text-align:right;">
+48.2
+</td>
+<td style="text-align:right;">
 20.6
 </td>
 <td style="text-align:right;">
@@ -20520,6 +21319,9 @@ Census Tract 1507.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1233
+</td>
+<td style="text-align:right;">
+53.2
 </td>
 <td style="text-align:right;">
 19.5
@@ -20599,6 +21401,9 @@ Census Tract 245.01; Bronx County; New York
 1514
 </td>
 <td style="text-align:right;">
+33.2
+</td>
+<td style="text-align:right;">
 47.2
 </td>
 <td style="text-align:right;">
@@ -20674,6 +21479,9 @@ Census Tract 255; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2412
+</td>
+<td style="text-align:right;">
+54.5
 </td>
 <td style="text-align:right;">
 33.4
@@ -20753,6 +21561,9 @@ Census Tract 295; Bronx County; New York
 2078
 </td>
 <td style="text-align:right;">
+46.8
+</td>
+<td style="text-align:right;">
 20.3
 </td>
 <td style="text-align:right;">
@@ -20828,6 +21639,9 @@ Census Tract 256; Kings County; New York
 </td>
 <td style="text-align:right;">
 1117
+</td>
+<td style="text-align:right;">
+74.1
 </td>
 <td style="text-align:right;">
 48.8
@@ -20907,6 +21721,9 @@ Census Tract 258; Kings County; New York
 1476
 </td>
 <td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
 32.1
 </td>
 <td style="text-align:right;">
@@ -20982,6 +21799,9 @@ Census Tract 355; Kings County; New York
 </td>
 <td style="text-align:right;">
 2103
+</td>
+<td style="text-align:right;">
+45.9
 </td>
 <td style="text-align:right;">
 28.0
@@ -21061,6 +21881,9 @@ Census Tract 506; Kings County; New York
 2130
 </td>
 <td style="text-align:right;">
+37.1
+</td>
+<td style="text-align:right;">
 27.2
 </td>
 <td style="text-align:right;">
@@ -21136,6 +21959,9 @@ Census Tract 528; Kings County; New York
 </td>
 <td style="text-align:right;">
 682
+</td>
+<td style="text-align:right;">
+48.5
 </td>
 <td style="text-align:right;">
 32.3
@@ -21215,6 +22041,9 @@ Census Tract 271; New York County; New York
 3155
 </td>
 <td style="text-align:right;">
+44.0
+</td>
+<td style="text-align:right;">
 21.7
 </td>
 <td style="text-align:right;">
@@ -21290,6 +22119,9 @@ Census Tract 289; Queens County; New York
 </td>
 <td style="text-align:right;">
 1984
+</td>
+<td style="text-align:right;">
+47.1
 </td>
 <td style="text-align:right;">
 27.7
@@ -21369,6 +22201,9 @@ Census Tract 713.06; Queens County; New York
 3063
 </td>
 <td style="text-align:right;">
+38.6
+</td>
+<td style="text-align:right;">
 29.9
 </td>
 <td style="text-align:right;">
@@ -21444,6 +22279,9 @@ Census Tract 1277; Queens County; New York
 </td>
 <td style="text-align:right;">
 1080
+</td>
+<td style="text-align:right;">
+58.9
 </td>
 <td style="text-align:right;">
 24.2
@@ -21523,6 +22361,9 @@ Census Tract 287; Queens County; New York
 3044
 </td>
 <td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -21598,6 +22439,9 @@ Census Tract 466; Queens County; New York
 </td>
 <td style="text-align:right;">
 1398
+</td>
+<td style="text-align:right;">
+37.1
 </td>
 <td style="text-align:right;">
 42.1
@@ -21677,6 +22521,9 @@ Census Tract 1199; Queens County; New York
 489
 </td>
 <td style="text-align:right;">
+67.7
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -21752,6 +22599,9 @@ Census Tract 132.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 501
+</td>
+<td style="text-align:right;">
+63.9
 </td>
 <td style="text-align:right;">
 30.5
@@ -21831,6 +22681,9 @@ Census Tract 238; Bronx County; New York
 751
 </td>
 <td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
 34.5
 </td>
 <td style="text-align:right;">
@@ -21906,6 +22759,9 @@ Census Tract 208; Kings County; New York
 </td>
 <td style="text-align:right;">
 1220
+</td>
+<td style="text-align:right;">
+34.2
 </td>
 <td style="text-align:right;">
 49.1
@@ -21985,6 +22841,9 @@ Census Tract 458; Kings County; New York
 442
 </td>
 <td style="text-align:right;">
+45.9
+</td>
+<td style="text-align:right;">
 21.7
 </td>
 <td style="text-align:right;">
@@ -22060,6 +22919,9 @@ Census Tract 277.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1188
+</td>
+<td style="text-align:right;">
+29.4
 </td>
 <td style="text-align:right;">
 32.1
@@ -22139,6 +23001,9 @@ Census Tract 458; Queens County; New York
 723
 </td>
 <td style="text-align:right;">
+39.1
+</td>
+<td style="text-align:right;">
 49.9
 </td>
 <td style="text-align:right;">
@@ -22214,6 +23079,9 @@ Census Tract 244; Kings County; New York
 </td>
 <td style="text-align:right;">
 963
+</td>
+<td style="text-align:right;">
+26.7
 </td>
 <td style="text-align:right;">
 38.3
@@ -22293,6 +23161,9 @@ Census Tract 638; Kings County; New York
 714
 </td>
 <td style="text-align:right;">
+43.1
+</td>
+<td style="text-align:right;">
 34.0
 </td>
 <td style="text-align:right;">
@@ -22368,6 +23239,9 @@ Census Tract 770; Kings County; New York
 </td>
 <td style="text-align:right;">
 1128
+</td>
+<td style="text-align:right;">
+34.0
 </td>
 <td style="text-align:right;">
 29.6
@@ -22447,6 +23321,9 @@ Census Tract 786.01; Kings County; New York
 1051
 </td>
 <td style="text-align:right;">
+49.6
+</td>
+<td style="text-align:right;">
 19.6
 </td>
 <td style="text-align:right;">
@@ -22522,6 +23399,9 @@ Census Tract 1189; Queens County; New York
 </td>
 <td style="text-align:right;">
 890
+</td>
+<td style="text-align:right;">
+38.2
 </td>
 <td style="text-align:right;">
 13.8
@@ -22601,6 +23481,9 @@ Census Tract 5.01; Kings County; New York
 1924
 </td>
 <td style="text-align:right;">
+41.0
+</td>
+<td style="text-align:right;">
 11.8
 </td>
 <td style="text-align:right;">
@@ -22676,6 +23559,9 @@ Census Tract 773; Queens County; New York
 </td>
 <td style="text-align:right;">
 1049
+</td>
+<td style="text-align:right;">
+40.8
 </td>
 <td style="text-align:right;">
 16.1
@@ -22755,6 +23641,9 @@ Census Tract 237.02; Bronx County; New York
 327
 </td>
 <td style="text-align:right;">
+33.9
+</td>
+<td style="text-align:right;">
 37.9
 </td>
 <td style="text-align:right;">
@@ -22830,6 +23719,9 @@ Census Tract 288; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1016
+</td>
+<td style="text-align:right;">
+53.3
 </td>
 <td style="text-align:right;">
 21.7
@@ -22909,6 +23801,9 @@ Census Tract 3.01; Kings County; New York
 1886
 </td>
 <td style="text-align:right;">
+48.3
+</td>
+<td style="text-align:right;">
 25.7
 </td>
 <td style="text-align:right;">
@@ -22984,6 +23879,9 @@ Census Tract 329; Kings County; New York
 </td>
 <td style="text-align:right;">
 2165
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 27.9
@@ -23063,6 +23961,9 @@ Census Tract 331; Kings County; New York
 1667
 </td>
 <td style="text-align:right;">
+35.7
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -23138,6 +24039,9 @@ Census Tract 516.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1928
+</td>
+<td style="text-align:right;">
+34.5
 </td>
 <td style="text-align:right;">
 32.6
@@ -23217,6 +24121,9 @@ Census Tract 202; Kings County; New York
 631
 </td>
 <td style="text-align:right;">
+48.8
+</td>
+<td style="text-align:right;">
 40.1
 </td>
 <td style="text-align:right;">
@@ -23292,6 +24199,9 @@ Census Tract 187; New York County; New York
 </td>
 <td style="text-align:right;">
 3619
+</td>
+<td style="text-align:right;">
+48.6
 </td>
 <td style="text-align:right;">
 25.3
@@ -23371,6 +24281,9 @@ Census Tract 267.02; Bronx County; New York
 2694
 </td>
 <td style="text-align:right;">
+43.5
+</td>
+<td style="text-align:right;">
 40.5
 </td>
 <td style="text-align:right;">
@@ -23446,6 +24359,9 @@ Census Tract 822; Kings County; New York
 </td>
 <td style="text-align:right;">
 3060
+</td>
+<td style="text-align:right;">
+44.7
 </td>
 <td style="text-align:right;">
 21.5
@@ -23525,6 +24441,9 @@ Census Tract 1113; Queens County; New York
 781
 </td>
 <td style="text-align:right;">
+56.2
+</td>
+<td style="text-align:right;">
 33.7
 </td>
 <td style="text-align:right;">
@@ -23600,6 +24519,9 @@ Census Tract 132.03; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2233
+</td>
+<td style="text-align:right;">
+47.3
 </td>
 <td style="text-align:right;">
 43.2
@@ -23679,6 +24601,9 @@ Census Tract 5.02; Kings County; New York
 1467
 </td>
 <td style="text-align:right;">
+29.9
+</td>
+<td style="text-align:right;">
 16.4
 </td>
 <td style="text-align:right;">
@@ -23754,6 +24679,9 @@ Census Tract 175; New York County; New York
 </td>
 <td style="text-align:right;">
 4485
+</td>
+<td style="text-align:right;">
+52.6
 </td>
 <td style="text-align:right;">
 18.6
@@ -23833,6 +24761,9 @@ Census Tract 693; Queens County; New York
 1258
 </td>
 <td style="text-align:right;">
+30.9
+</td>
+<td style="text-align:right;">
 30.1
 </td>
 <td style="text-align:right;">
@@ -23908,6 +24839,9 @@ Census Tract 267.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1264
+</td>
+<td style="text-align:right;">
+35.6
 </td>
 <td style="text-align:right;">
 46.8
@@ -23987,6 +24921,9 @@ Census Tract 516.02; Kings County; New York
 1433
 </td>
 <td style="text-align:right;">
+41.5
+</td>
+<td style="text-align:right;">
 31.3
 </td>
 <td style="text-align:right;">
@@ -24062,6 +24999,9 @@ Census Tract 676; Kings County; New York
 </td>
 <td style="text-align:right;">
 556
+</td>
+<td style="text-align:right;">
+53.4
 </td>
 <td style="text-align:right;">
 42.3
@@ -24141,6 +25081,9 @@ Census Tract 191; New York County; New York
 4245
 </td>
 <td style="text-align:right;">
+51.7
+</td>
+<td style="text-align:right;">
 19.0
 </td>
 <td style="text-align:right;">
@@ -24216,6 +25159,9 @@ Census Tract 265; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2292
+</td>
+<td style="text-align:right;">
+40.1
 </td>
 <td style="text-align:right;">
 36.6
@@ -24295,6 +25241,9 @@ Census Tract 213; Kings County; New York
 2025
 </td>
 <td style="text-align:right;">
+29.2
+</td>
+<td style="text-align:right;">
 26.7
 </td>
 <td style="text-align:right;">
@@ -24370,6 +25319,9 @@ Census Tract 401; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2103
+</td>
+<td style="text-align:right;">
+34.4
 </td>
 <td style="text-align:right;">
 29.1
@@ -24449,6 +25401,9 @@ Census Tract 128.01; Kings County; New York
 766
 </td>
 <td style="text-align:right;">
+47.5
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -24524,6 +25479,9 @@ Census Tract 816; Kings County; New York
 </td>
 <td style="text-align:right;">
 998
+</td>
+<td style="text-align:right;">
+54.5
 </td>
 <td style="text-align:right;">
 22.9
@@ -24603,6 +25561,9 @@ Census Tract 183; New York County; New York
 3861
 </td>
 <td style="text-align:right;">
+44.7
+</td>
+<td style="text-align:right;">
 17.7
 </td>
 <td style="text-align:right;">
@@ -24678,6 +25639,9 @@ Census Tract 265; New York County; New York
 </td>
 <td style="text-align:right;">
 2849
+</td>
+<td style="text-align:right;">
+43.3
 </td>
 <td style="text-align:right;">
 24.0
@@ -24757,6 +25721,9 @@ Census Tract 818; Kings County; New York
 1748
 </td>
 <td style="text-align:right;">
+34.0
+</td>
+<td style="text-align:right;">
 21.8
 </td>
 <td style="text-align:right;">
@@ -24832,6 +25799,9 @@ Census Tract 854; Kings County; New York
 </td>
 <td style="text-align:right;">
 824
+</td>
+<td style="text-align:right;">
+51.7
 </td>
 <td style="text-align:right;">
 24.2
@@ -24911,6 +25881,9 @@ Census Tract 195; New York County; New York
 3358
 </td>
 <td style="text-align:right;">
+56.2
+</td>
+<td style="text-align:right;">
 16.3
 </td>
 <td style="text-align:right;">
@@ -24986,6 +25959,9 @@ Census Tract 269; New York County; New York
 </td>
 <td style="text-align:right;">
 2611
+</td>
+<td style="text-align:right;">
+55.0
 </td>
 <td style="text-align:right;">
 25.0
@@ -25065,6 +26041,9 @@ Census Tract 779.03; Queens County; New York
 1173
 </td>
 <td style="text-align:right;">
+42.9
+</td>
+<td style="text-align:right;">
 35.0
 </td>
 <td style="text-align:right;">
@@ -25140,6 +26119,9 @@ Census Tract 399.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1660
+</td>
+<td style="text-align:right;">
+33.6
 </td>
 <td style="text-align:right;">
 43.9
@@ -25219,6 +26201,9 @@ Census Tract 814; Kings County; New York
 970
 </td>
 <td style="text-align:right;">
+60.6
+</td>
+<td style="text-align:right;">
 19.8
 </td>
 <td style="text-align:right;">
@@ -25294,6 +26279,9 @@ Census Tract 697.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1775
+</td>
+<td style="text-align:right;">
+37.0
 </td>
 <td style="text-align:right;">
 29.1
@@ -25373,6 +26361,9 @@ Census Tract 1175; Queens County; New York
 1720
 </td>
 <td style="text-align:right;">
+50.3
+</td>
+<td style="text-align:right;">
 24.4
 </td>
 <td style="text-align:right;">
@@ -25448,6 +26439,9 @@ Census Tract 227.03; Bronx County; New York
 </td>
 <td style="text-align:right;">
 717
+</td>
+<td style="text-align:right;">
+32.1
 </td>
 <td style="text-align:right;">
 45.0
@@ -25527,6 +26521,9 @@ Census Tract 70; Kings County; New York
 1173
 </td>
 <td style="text-align:right;">
+50.4
+</td>
+<td style="text-align:right;">
 17.2
 </td>
 <td style="text-align:right;">
@@ -25602,6 +26599,9 @@ Census Tract 456; Kings County; New York
 </td>
 <td style="text-align:right;">
 782
+</td>
+<td style="text-align:right;">
+65.7
 </td>
 <td style="text-align:right;">
 29.0
@@ -25681,6 +26681,9 @@ Census Tract 179; New York County; New York
 4393
 </td>
 <td style="text-align:right;">
+33.8
+</td>
+<td style="text-align:right;">
 22.9
 </td>
 <td style="text-align:right;">
@@ -25756,6 +26759,9 @@ Census Tract 221.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1655
+</td>
+<td style="text-align:right;">
+26.9
 </td>
 <td style="text-align:right;">
 50.2
@@ -25835,6 +26841,9 @@ Census Tract 800; Kings County; New York
 1403
 </td>
 <td style="text-align:right;">
+45.2
+</td>
+<td style="text-align:right;">
 18.6
 </td>
 <td style="text-align:right;">
@@ -25910,6 +26919,9 @@ Census Tract 802; Kings County; New York
 </td>
 <td style="text-align:right;">
 1893
+</td>
+<td style="text-align:right;">
+39.8
 </td>
 <td style="text-align:right;">
 18.1
@@ -25989,6 +27001,9 @@ Census Tract 820; Kings County; New York
 2402
 </td>
 <td style="text-align:right;">
+25.6
+</td>
+<td style="text-align:right;">
 18.5
 </td>
 <td style="text-align:right;">
@@ -26064,6 +27079,9 @@ Census Tract 235.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1600
+</td>
+<td style="text-align:right;">
+39.6
 </td>
 <td style="text-align:right;">
 38.9
@@ -26143,6 +27161,9 @@ Census Tract 414.02; Kings County; New York
 746
 </td>
 <td style="text-align:right;">
+57.5
+</td>
+<td style="text-align:right;">
 22.7
 </td>
 <td style="text-align:right;">
@@ -26218,6 +27239,9 @@ Census Tract 136.01; New York County; New York
 </td>
 <td style="text-align:right;">
 924
+</td>
+<td style="text-align:right;">
+67.1
 </td>
 <td style="text-align:right;">
 12.8
@@ -26297,6 +27321,9 @@ Census Tract 872; Kings County; New York
 1111
 </td>
 <td style="text-align:right;">
+55.7
+</td>
+<td style="text-align:right;">
 34.8
 </td>
 <td style="text-align:right;">
@@ -26372,6 +27399,9 @@ Census Tract 323; Kings County; New York
 </td>
 <td style="text-align:right;">
 1542
+</td>
+<td style="text-align:right;">
+48.8
 </td>
 <td style="text-align:right;">
 16.2
@@ -26451,6 +27481,9 @@ Census Tract 652; Kings County; New York
 524
 </td>
 <td style="text-align:right;">
+67.4
+</td>
+<td style="text-align:right;">
 21.0
 </td>
 <td style="text-align:right;">
@@ -26526,6 +27559,9 @@ Census Tract 991; Queens County; New York
 </td>
 <td style="text-align:right;">
 2825
+</td>
+<td style="text-align:right;">
+62.9
 </td>
 <td style="text-align:right;">
 24.5
@@ -26605,6 +27641,9 @@ Census Tract 63; New York County; New York
 3327
 </td>
 <td style="text-align:right;">
+40.3
+</td>
+<td style="text-align:right;">
 11.0
 </td>
 <td style="text-align:right;">
@@ -26680,6 +27719,9 @@ Census Tract 1151; Queens County; New York
 </td>
 <td style="text-align:right;">
 364
+</td>
+<td style="text-align:right;">
+69.8
 </td>
 <td style="text-align:right;">
 24.5
@@ -26759,6 +27801,9 @@ Census Tract 610.02; Kings County; New York
 2516
 </td>
 <td style="text-align:right;">
+64.5
+</td>
+<td style="text-align:right;">
 16.4
 </td>
 <td style="text-align:right;">
@@ -26834,6 +27879,9 @@ Census Tract 325; Kings County; New York
 </td>
 <td style="text-align:right;">
 2530
+</td>
+<td style="text-align:right;">
+30.3
 </td>
 <td style="text-align:right;">
 19.1
@@ -26913,6 +27961,9 @@ Census Tract 860; Kings County; New York
 1172
 </td>
 <td style="text-align:right;">
+42.2
+</td>
+<td style="text-align:right;">
 30.9
 </td>
 <td style="text-align:right;">
@@ -26988,6 +28039,9 @@ Census Tract 181.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2180
+</td>
+<td style="text-align:right;">
+44.9
 </td>
 <td style="text-align:right;">
 29.4
@@ -27067,6 +28121,9 @@ Census Tract 260; Kings County; New York
 1068
 </td>
 <td style="text-align:right;">
+57.9
+</td>
+<td style="text-align:right;">
 34.3
 </td>
 <td style="text-align:right;">
@@ -27142,6 +28199,9 @@ Census Tract 468; Kings County; New York
 </td>
 <td style="text-align:right;">
 568
+</td>
+<td style="text-align:right;">
+38.0
 </td>
 <td style="text-align:right;">
 51.4
@@ -27221,6 +28281,9 @@ Census Tract 558; Kings County; New York
 957
 </td>
 <td style="text-align:right;">
+48.6
+</td>
+<td style="text-align:right;">
 24.7
 </td>
 <td style="text-align:right;">
@@ -27296,6 +28359,9 @@ Census Tract 566; Kings County; New York
 </td>
 <td style="text-align:right;">
 861
+</td>
+<td style="text-align:right;">
+57.5
 </td>
 <td style="text-align:right;">
 22.1
@@ -27375,6 +28441,9 @@ Census Tract 197.01; New York County; New York
 495
 </td>
 <td style="text-align:right;">
+17.8
+</td>
+<td style="text-align:right;">
 18.6
 </td>
 <td style="text-align:right;">
@@ -27450,6 +28519,9 @@ Census Tract 321; Kings County; New York
 </td>
 <td style="text-align:right;">
 2337
+</td>
+<td style="text-align:right;">
+40.3
 </td>
 <td style="text-align:right;">
 17.0
@@ -27529,6 +28601,9 @@ Census Tract 47; Richmond County; New York
 967
 </td>
 <td style="text-align:right;">
+36.6
+</td>
+<td style="text-align:right;">
 24.1
 </td>
 <td style="text-align:right;">
@@ -27604,6 +28679,9 @@ Census Tract 544; Kings County; New York
 </td>
 <td style="text-align:right;">
 1287
+</td>
+<td style="text-align:right;">
+53.7
 </td>
 <td style="text-align:right;">
 36.8
@@ -27683,6 +28761,9 @@ Census Tract 1479; Queens County; New York
 1831
 </td>
 <td style="text-align:right;">
+41.1
+</td>
+<td style="text-align:right;">
 26.9
 </td>
 <td style="text-align:right;">
@@ -27758,6 +28839,9 @@ Census Tract 159; Kings County; New York
 </td>
 <td style="text-align:right;">
 2480
+</td>
+<td style="text-align:right;">
+27.0
 </td>
 <td style="text-align:right;">
 24.8
@@ -27837,6 +28921,9 @@ Census Tract 277.02; Queens County; New York
 1610
 </td>
 <td style="text-align:right;">
+42.9
+</td>
+<td style="text-align:right;">
 22.8
 </td>
 <td style="text-align:right;">
@@ -27912,6 +28999,9 @@ Census Tract 1147; Queens County; New York
 </td>
 <td style="text-align:right;">
 620
+</td>
+<td style="text-align:right;">
+54.8
 </td>
 <td style="text-align:right;">
 39.8
@@ -27991,6 +29081,9 @@ Census Tract 248; Kings County; New York
 746
 </td>
 <td style="text-align:right;">
+44.0
+</td>
+<td style="text-align:right;">
 38.7
 </td>
 <td style="text-align:right;">
@@ -28066,6 +29159,9 @@ Census Tract 852; Kings County; New York
 </td>
 <td style="text-align:right;">
 3
+</td>
+<td style="text-align:right;">
+0.0
 </td>
 <td style="text-align:right;">
 100.0
@@ -28145,6 +29241,9 @@ Census Tract 241; New York County; New York
 3414
 </td>
 <td style="text-align:right;">
+49.8
+</td>
+<td style="text-align:right;">
 17.3
 </td>
 <td style="text-align:right;">
@@ -28220,6 +29319,9 @@ Census Tract 552; Kings County; New York
 </td>
 <td style="text-align:right;">
 1410
+</td>
+<td style="text-align:right;">
+52.1
 </td>
 <td style="text-align:right;">
 23.7
@@ -28299,6 +29401,9 @@ Census Tract 157; New York County; New York
 6154
 </td>
 <td style="text-align:right;">
+28.0
+</td>
+<td style="text-align:right;">
 10.6
 </td>
 <td style="text-align:right;">
@@ -28374,6 +29479,9 @@ Census Tract 1123; Queens County; New York
 </td>
 <td style="text-align:right;">
 730
+</td>
+<td style="text-align:right;">
+31.0
 </td>
 <td style="text-align:right;">
 37.4
@@ -28453,6 +29561,9 @@ Census Tract 383.01; Bronx County; New York
 1658
 </td>
 <td style="text-align:right;">
+26.0
+</td>
+<td style="text-align:right;">
 39.2
 </td>
 <td style="text-align:right;">
@@ -28528,6 +29639,9 @@ Census Tract 148; Kings County; New York
 </td>
 <td style="text-align:right;">
 431
+</td>
+<td style="text-align:right;">
+65.2
 </td>
 <td style="text-align:right;">
 26.0
@@ -28607,6 +29721,9 @@ Census Tract 291; Queens County; New York
 2418
 </td>
 <td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
 31.6
 </td>
 <td style="text-align:right;">
@@ -28682,6 +29799,9 @@ Census Tract 1155; Queens County; New York
 </td>
 <td style="text-align:right;">
 724
+</td>
+<td style="text-align:right;">
+42.0
 </td>
 <td style="text-align:right;">
 26.9
@@ -28761,6 +29881,9 @@ Census Tract 225; New York County; New York
 3830
 </td>
 <td style="text-align:right;">
+48.5
+</td>
+<td style="text-align:right;">
 21.3
 </td>
 <td style="text-align:right;">
@@ -28836,6 +29959,9 @@ Census Tract 436; Kings County; New York
 </td>
 <td style="text-align:right;">
 1859
+</td>
+<td style="text-align:right;">
+52.8
 </td>
 <td style="text-align:right;">
 33.8
@@ -28915,6 +30041,9 @@ Census Tract 532; Kings County; New York
 896
 </td>
 <td style="text-align:right;">
+47.7
+</td>
+<td style="text-align:right;">
 32.4
 </td>
 <td style="text-align:right;">
@@ -28990,6 +30119,9 @@ Census Tract 237; New York County; New York
 </td>
 <td style="text-align:right;">
 2572
+</td>
+<td style="text-align:right;">
+35.5
 </td>
 <td style="text-align:right;">
 27.1
@@ -29069,6 +30201,9 @@ Census Tract 132.04; Richmond County; New York
 1855
 </td>
 <td style="text-align:right;">
+51.7
+</td>
+<td style="text-align:right;">
 33.9
 </td>
 <td style="text-align:right;">
@@ -29144,6 +30279,9 @@ Census Tract 446; Kings County; New York
 </td>
 <td style="text-align:right;">
 605
+</td>
+<td style="text-align:right;">
+22.8
 </td>
 <td style="text-align:right;">
 46.4
@@ -29223,6 +30361,9 @@ Census Tract 460; Kings County; New York
 1257
 </td>
 <td style="text-align:right;">
+50.0
+</td>
+<td style="text-align:right;">
 35.9
 </td>
 <td style="text-align:right;">
@@ -29298,6 +30439,9 @@ Census Tract 233; New York County; New York
 </td>
 <td style="text-align:right;">
 2563
+</td>
+<td style="text-align:right;">
+25.7
 </td>
 <td style="text-align:right;">
 27.7
@@ -29377,6 +30521,9 @@ Census Tract 1093; Queens County; New York
 989
 </td>
 <td style="text-align:right;">
+71.1
+</td>
+<td style="text-align:right;">
 21.5
 </td>
 <td style="text-align:right;">
@@ -29452,6 +30599,9 @@ Census Tract 252; Kings County; New York
 </td>
 <td style="text-align:right;">
 1894
+</td>
+<td style="text-align:right;">
+37.6
 </td>
 <td style="text-align:right;">
 27.9
@@ -29531,6 +30681,9 @@ Census Tract 568; Kings County; New York
 553
 </td>
 <td style="text-align:right;">
+59.0
+</td>
+<td style="text-align:right;">
 24.1
 </td>
 <td style="text-align:right;">
@@ -29606,6 +30759,9 @@ Census Tract 173; New York County; New York
 </td>
 <td style="text-align:right;">
 4265
+</td>
+<td style="text-align:right;">
+46.8
 </td>
 <td style="text-align:right;">
 24.9
@@ -29685,6 +30841,9 @@ Census Tract 1047; Queens County; New York
 2798
 </td>
 <td style="text-align:right;">
+46.6
+</td>
+<td style="text-align:right;">
 20.6
 </td>
 <td style="text-align:right;">
@@ -29760,6 +30919,9 @@ Census Tract 1171; Queens County; New York
 </td>
 <td style="text-align:right;">
 918
+</td>
+<td style="text-align:right;">
+53.4
 </td>
 <td style="text-align:right;">
 26.8
@@ -29839,6 +31001,9 @@ Census Tract 215; Kings County; New York
 2728
 </td>
 <td style="text-align:right;">
+25.5
+</td>
+<td style="text-align:right;">
 17.7
 </td>
 <td style="text-align:right;">
@@ -29914,6 +31079,9 @@ Census Tract 33; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1347
+</td>
+<td style="text-align:right;">
+47.2
 </td>
 <td style="text-align:right;">
 33.5
@@ -29993,6 +31161,9 @@ Census Tract 409; Bronx County; New York
 1380
 </td>
 <td style="text-align:right;">
+53.3
+</td>
+<td style="text-align:right;">
 32.9
 </td>
 <td style="text-align:right;">
@@ -30068,6 +31239,9 @@ Census Tract 229; New York County; New York
 </td>
 <td style="text-align:right;">
 3064
+</td>
+<td style="text-align:right;">
+33.1
 </td>
 <td style="text-align:right;">
 23.3
@@ -30147,6 +31321,9 @@ Census Tract 1471; Queens County; New York
 1362
 </td>
 <td style="text-align:right;">
+57.2
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -30222,6 +31399,9 @@ Census Tract 179.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1319
+</td>
+<td style="text-align:right;">
+18.5
 </td>
 <td style="text-align:right;">
 51.0
@@ -30301,6 +31481,9 @@ Census Tract 237.03; Bronx County; New York
 1809
 </td>
 <td style="text-align:right;">
+22.5
+</td>
+<td style="text-align:right;">
 43.9
 </td>
 <td style="text-align:right;">
@@ -30376,6 +31559,9 @@ Census Tract 122; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1365
+</td>
+<td style="text-align:right;">
+42.4
 </td>
 <td style="text-align:right;">
 38.8
@@ -30455,6 +31641,9 @@ Census Tract 538; Kings County; New York
 2365
 </td>
 <td style="text-align:right;">
+43.1
+</td>
+<td style="text-align:right;">
 32.0
 </td>
 <td style="text-align:right;">
@@ -30530,6 +31719,9 @@ Census Tract 830; Kings County; New York
 </td>
 <td style="text-align:right;">
 2284
+</td>
+<td style="text-align:right;">
+41.7
 </td>
 <td style="text-align:right;">
 36.5
@@ -30609,6 +31801,9 @@ Census Tract 866; Kings County; New York
 1160
 </td>
 <td style="text-align:right;">
+40.4
+</td>
+<td style="text-align:right;">
 25.1
 </td>
 <td style="text-align:right;">
@@ -30684,6 +31879,9 @@ Census Tract 159; New York County; New York
 </td>
 <td style="text-align:right;">
 5103
+</td>
+<td style="text-align:right;">
+44.2
 </td>
 <td style="text-align:right;">
 16.3
@@ -30763,6 +31961,9 @@ Census Tract 285; Bronx County; New York
 1780
 </td>
 <td style="text-align:right;">
+36.6
+</td>
+<td style="text-align:right;">
 17.4
 </td>
 <td style="text-align:right;">
@@ -30838,6 +32039,9 @@ Census Tract 229.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2022
+</td>
+<td style="text-align:right;">
+21.2
 </td>
 <td style="text-align:right;">
 27.1
@@ -30917,6 +32121,9 @@ Census Tract 233.02; Bronx County; New York
 1049
 </td>
 <td style="text-align:right;">
+28.0
+</td>
+<td style="text-align:right;">
 43.6
 </td>
 <td style="text-align:right;">
@@ -30992,6 +32199,9 @@ Census Tract 237.04; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1409
+</td>
+<td style="text-align:right;">
+22.0
 </td>
 <td style="text-align:right;">
 44.1
@@ -31071,6 +32281,9 @@ Census Tract 151; Richmond County; New York
 1937
 </td>
 <td style="text-align:right;">
+44.3
+</td>
+<td style="text-align:right;">
 34.5
 </td>
 <td style="text-align:right;">
@@ -31146,6 +32359,9 @@ Census Tract 177.02; Richmond County; New York
 </td>
 <td style="text-align:right;">
 871
+</td>
+<td style="text-align:right;">
+62.0
 </td>
 <td style="text-align:right;">
 26.4
@@ -31225,6 +32441,9 @@ Census Tract 179.01; Bronx County; New York
 1686
 </td>
 <td style="text-align:right;">
+36.6
+</td>
+<td style="text-align:right;">
 30.4
 </td>
 <td style="text-align:right;">
@@ -31300,6 +32519,9 @@ Census Tract 223; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2220
+</td>
+<td style="text-align:right;">
+27.8
 </td>
 <td style="text-align:right;">
 45.1
@@ -31379,6 +32601,9 @@ Census Tract 792.01; Kings County; New York
 533
 </td>
 <td style="text-align:right;">
+60.8
+</td>
+<td style="text-align:right;">
 26.1
 </td>
 <td style="text-align:right;">
@@ -31454,6 +32679,9 @@ Census Tract 125; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1080
+</td>
+<td style="text-align:right;">
+39.0
 </td>
 <td style="text-align:right;">
 29.1
@@ -31533,6 +32761,9 @@ Census Tract 156.01; Richmond County; New York
 2150
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 23.7
 </td>
 <td style="text-align:right;">
@@ -31608,6 +32839,9 @@ Census Tract 245; New York County; New York
 </td>
 <td style="text-align:right;">
 5427
+</td>
+<td style="text-align:right;">
+40.4
 </td>
 <td style="text-align:right;">
 22.3
@@ -31687,6 +32921,9 @@ Census Tract 709; Queens County; New York
 1138
 </td>
 <td style="text-align:right;">
+35.1
+</td>
+<td style="text-align:right;">
 35.8
 </td>
 <td style="text-align:right;">
@@ -31762,6 +32999,9 @@ Census Tract 1141; Queens County; New York
 </td>
 <td style="text-align:right;">
 870
+</td>
+<td style="text-align:right;">
+68.9
 </td>
 <td style="text-align:right;">
 28.7
@@ -31841,6 +33081,9 @@ Census Tract 225; Bronx County; New York
 2319
 </td>
 <td style="text-align:right;">
+30.5
+</td>
+<td style="text-align:right;">
 54.2
 </td>
 <td style="text-align:right;">
@@ -31916,6 +33159,9 @@ Census Tract 167; Kings County; New York
 </td>
 <td style="text-align:right;">
 2300
+</td>
+<td style="text-align:right;">
+24.9
 </td>
 <td style="text-align:right;">
 18.2
@@ -31995,6 +33241,9 @@ Census Tract 126.02; New York County; New York
 2474
 </td>
 <td style="text-align:right;">
+36.4
+</td>
+<td style="text-align:right;">
 17.0
 </td>
 <td style="text-align:right;">
@@ -32070,6 +33319,9 @@ Census Tract 574; Kings County; New York
 </td>
 <td style="text-align:right;">
 997
+</td>
+<td style="text-align:right;">
+66.8
 </td>
 <td style="text-align:right;">
 24.9
@@ -32149,6 +33401,9 @@ Census Tract 672; Kings County; New York
 554
 </td>
 <td style="text-align:right;">
+65.0
+</td>
+<td style="text-align:right;">
 24.2
 </td>
 <td style="text-align:right;">
@@ -32224,6 +33479,9 @@ Census Tract 227.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2008
+</td>
+<td style="text-align:right;">
+26.4
 </td>
 <td style="text-align:right;">
 40.3
@@ -32303,6 +33561,9 @@ Census Tract 450; Kings County; New York
 233
 </td>
 <td style="text-align:right;">
+25.8
+</td>
+<td style="text-align:right;">
 58.8
 </td>
 <td style="text-align:right;">
@@ -32378,6 +33639,9 @@ Census Tract 195; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2650
+</td>
+<td style="text-align:right;">
+38.5
 </td>
 <td style="text-align:right;">
 33.1
@@ -32457,6 +33721,9 @@ Census Tract 80; New York County; New York
 2887
 </td>
 <td style="text-align:right;">
+25.9
+</td>
+<td style="text-align:right;">
 10.6
 </td>
 <td style="text-align:right;">
@@ -32532,6 +33799,9 @@ Census Tract 197; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2513
+</td>
+<td style="text-align:right;">
+29.1
 </td>
 <td style="text-align:right;">
 36.4
@@ -32611,6 +33881,9 @@ Census Tract 227.02; Bronx County; New York
 559
 </td>
 <td style="text-align:right;">
+45.3
+</td>
+<td style="text-align:right;">
 23.1
 </td>
 <td style="text-align:right;">
@@ -32686,6 +33959,9 @@ Census Tract 707; Queens County; New York
 </td>
 <td style="text-align:right;">
 1001
+</td>
+<td style="text-align:right;">
+53.8
 </td>
 <td style="text-align:right;">
 30.6
@@ -32765,6 +34041,9 @@ Census Tract 1157; Queens County; New York
 1168
 </td>
 <td style="text-align:right;">
+51.3
+</td>
+<td style="text-align:right;">
 26.9
 </td>
 <td style="text-align:right;">
@@ -32840,6 +34119,9 @@ Census Tract 462.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 528
+</td>
+<td style="text-align:right;">
+42.2
 </td>
 <td style="text-align:right;">
 47.0
@@ -32919,6 +34201,9 @@ Census Tract 337.01; Kings County; New York
 916
 </td>
 <td style="text-align:right;">
+41.9
+</td>
+<td style="text-align:right;">
 29.9
 </td>
 <td style="text-align:right;">
@@ -32994,6 +34279,9 @@ Census Tract 729; Queens County; New York
 </td>
 <td style="text-align:right;">
 475
+</td>
+<td style="text-align:right;">
+46.3
 </td>
 <td style="text-align:right;">
 21.7
@@ -33073,6 +34361,9 @@ Census Tract 987; Queens County; New York
 978
 </td>
 <td style="text-align:right;">
+56.1
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -33148,6 +34439,9 @@ Census Tract 276; Kings County; New York
 </td>
 <td style="text-align:right;">
 1348
+</td>
+<td style="text-align:right;">
+34.1
 </td>
 <td style="text-align:right;">
 41.9
@@ -33227,6 +34521,9 @@ Census Tract 233.01; Bronx County; New York
 1716
 </td>
 <td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
 28.2
 </td>
 <td style="text-align:right;">
@@ -33302,6 +34599,9 @@ Census Tract 177; New York County; New York
 </td>
 <td style="text-align:right;">
 4760
+</td>
+<td style="text-align:right;">
+41.0
 </td>
 <td style="text-align:right;">
 34.2
@@ -33381,6 +34681,9 @@ Census Tract 251; New York County; New York
 881
 </td>
 <td style="text-align:right;">
+46.1
+</td>
+<td style="text-align:right;">
 33.0
 </td>
 <td style="text-align:right;">
@@ -33456,6 +34759,9 @@ Census Tract 711; Queens County; New York
 </td>
 <td style="text-align:right;">
 2913
+</td>
+<td style="text-align:right;">
+43.1
 </td>
 <td style="text-align:right;">
 18.0
@@ -33535,6 +34841,9 @@ Census Tract 414.01; Kings County; New York
 430
 </td>
 <td style="text-align:right;">
+31.2
+</td>
+<td style="text-align:right;">
 28.1
 </td>
 <td style="text-align:right;">
@@ -33610,6 +34919,9 @@ Census Tract 251; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2110
+</td>
+<td style="text-align:right;">
+39.7
 </td>
 <td style="text-align:right;">
 35.5
@@ -33689,6 +35001,9 @@ Census Tract 381; Bronx County; New York
 2619
 </td>
 <td style="text-align:right;">
+43.9
+</td>
+<td style="text-align:right;">
 39.1
 </td>
 <td style="text-align:right;">
@@ -33764,6 +35079,9 @@ Census Tract 209; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1965
+</td>
+<td style="text-align:right;">
+27.8
 </td>
 <td style="text-align:right;">
 39.4
@@ -33843,6 +35161,9 @@ Census Tract 456; Bronx County; New York
 1158
 </td>
 <td style="text-align:right;">
+39.7
+</td>
+<td style="text-align:right;">
 33.2
 </td>
 <td style="text-align:right;">
@@ -33918,6 +35239,9 @@ Census Tract 930; Kings County; New York
 </td>
 <td style="text-align:right;">
 963
+</td>
+<td style="text-align:right;">
+61.7
 </td>
 <td style="text-align:right;">
 30.2
@@ -33997,6 +35321,9 @@ Census Tract 223.01; New York County; New York
 2658
 </td>
 <td style="text-align:right;">
+39.1
+</td>
+<td style="text-align:right;">
 21.2
 </td>
 <td style="text-align:right;">
@@ -34072,6 +35399,9 @@ Census Tract 1097; Queens County; New York
 </td>
 <td style="text-align:right;">
 664
+</td>
+<td style="text-align:right;">
+54.4
 </td>
 <td style="text-align:right;">
 21.2
@@ -34151,6 +35481,9 @@ Census Tract 310; Bronx County; New York
 1289
 </td>
 <td style="text-align:right;">
+61.8
+</td>
+<td style="text-align:right;">
 22.8
 </td>
 <td style="text-align:right;">
@@ -34226,6 +35559,9 @@ Census Tract 211; New York County; New York
 </td>
 <td style="text-align:right;">
 4288
+</td>
+<td style="text-align:right;">
+34.4
 </td>
 <td style="text-align:right;">
 15.3
@@ -34305,6 +35641,9 @@ Census Tract 889.03; Queens County; New York
 1634
 </td>
 <td style="text-align:right;">
+72.7
+</td>
+<td style="text-align:right;">
 18.3
 </td>
 <td style="text-align:right;">
@@ -34380,6 +35719,9 @@ Census Tract 1187; Queens County; New York
 </td>
 <td style="text-align:right;">
 882
+</td>
+<td style="text-align:right;">
+63.6
 </td>
 <td style="text-align:right;">
 35.3
@@ -34459,6 +35801,9 @@ Census Tract 181; New York County; New York
 4466
 </td>
 <td style="text-align:right;">
+60.9
+</td>
+<td style="text-align:right;">
 18.2
 </td>
 <td style="text-align:right;">
@@ -34534,6 +35879,9 @@ Census Tract 731; Queens County; New York
 </td>
 <td style="text-align:right;">
 595
+</td>
+<td style="text-align:right;">
+42.5
 </td>
 <td style="text-align:right;">
 33.4
@@ -34613,6 +35961,9 @@ Census Tract 243; Bronx County; New York
 1994
 </td>
 <td style="text-align:right;">
+27.7
+</td>
+<td style="text-align:right;">
 36.4
 </td>
 <td style="text-align:right;">
@@ -34688,6 +36039,9 @@ Census Tract 279; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2866
+</td>
+<td style="text-align:right;">
+35.2
 </td>
 <td style="text-align:right;">
 40.1
@@ -34767,6 +36121,9 @@ Census Tract 576; Kings County; New York
 1012
 </td>
 <td style="text-align:right;">
+60.3
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -34842,6 +36199,9 @@ Census Tract 578; Kings County; New York
 </td>
 <td style="text-align:right;">
 1178
+</td>
+<td style="text-align:right;">
+49.6
 </td>
 <td style="text-align:right;">
 21.1
@@ -34921,6 +36281,9 @@ Census Tract 530; Kings County; New York
 1215
 </td>
 <td style="text-align:right;">
+37.3
+</td>
+<td style="text-align:right;">
 26.9
 </td>
 <td style="text-align:right;">
@@ -34996,6 +36359,9 @@ Census Tract 678; Kings County; New York
 </td>
 <td style="text-align:right;">
 940
+</td>
+<td style="text-align:right;">
+51.5
 </td>
 <td style="text-align:right;">
 33.2
@@ -35075,6 +36441,9 @@ Census Tract 155; Kings County; New York
 1463
 </td>
 <td style="text-align:right;">
+27.6
+</td>
+<td style="text-align:right;">
 35.3
 </td>
 <td style="text-align:right;">
@@ -35150,6 +36519,9 @@ Census Tract 157; Kings County; New York
 </td>
 <td style="text-align:right;">
 2168
+</td>
+<td style="text-align:right;">
+29.1
 </td>
 <td style="text-align:right;">
 28.8
@@ -35229,6 +36601,9 @@ Census Tract 253; New York County; New York
 4300
 </td>
 <td style="text-align:right;">
+41.0
+</td>
+<td style="text-align:right;">
 21.3
 </td>
 <td style="text-align:right;">
@@ -35304,6 +36679,9 @@ Census Tract 1467; Queens County; New York
 </td>
 <td style="text-align:right;">
 1353
+</td>
+<td style="text-align:right;">
+42.1
 </td>
 <td style="text-align:right;">
 12.7
@@ -35383,6 +36761,9 @@ Census Tract 20.02; Richmond County; New York
 1304
 </td>
 <td style="text-align:right;">
+48.3
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -35458,6 +36839,9 @@ Census Tract 452; Kings County; New York
 </td>
 <td style="text-align:right;">
 846
+</td>
+<td style="text-align:right;">
+49.4
 </td>
 <td style="text-align:right;">
 40.1
@@ -35537,6 +36921,9 @@ Census Tract 662; Kings County; New York
 555
 </td>
 <td style="text-align:right;">
+60.2
+</td>
+<td style="text-align:right;">
 16.6
 </td>
 <td style="text-align:right;">
@@ -35612,6 +36999,9 @@ Census Tract 138; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2511
+</td>
+<td style="text-align:right;">
+65.6
 </td>
 <td style="text-align:right;">
 26.7
@@ -35691,6 +37081,9 @@ Census Tract 263; New York County; New York
 3000
 </td>
 <td style="text-align:right;">
+41.4
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -35766,6 +37159,9 @@ Census Tract 997.05; Queens County; New York
 </td>
 <td style="text-align:right;">
 1083
+</td>
+<td style="text-align:right;">
+52.5
 </td>
 <td style="text-align:right;">
 9.4
@@ -35845,6 +37241,9 @@ Census Tract 298; Kings County; New York
 1177
 </td>
 <td style="text-align:right;">
+41.1
+</td>
+<td style="text-align:right;">
 39.2
 </td>
 <td style="text-align:right;">
@@ -35920,6 +37319,9 @@ Census Tract 404; Kings County; New York
 </td>
 <td style="text-align:right;">
 893
+</td>
+<td style="text-align:right;">
+51.4
 </td>
 <td style="text-align:right;">
 46.4
@@ -35999,6 +37401,9 @@ Census Tract 580; Kings County; New York
 1165
 </td>
 <td style="text-align:right;">
+50.2
+</td>
+<td style="text-align:right;">
 24.5
 </td>
 <td style="text-align:right;">
@@ -36074,6 +37479,9 @@ Census Tract 92; New York County; New York
 </td>
 <td style="text-align:right;">
 903
+</td>
+<td style="text-align:right;">
+23.9
 </td>
 <td style="text-align:right;">
 9.3
@@ -36153,6 +37561,9 @@ Census Tract 263; Bronx County; New York
 2210
 </td>
 <td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
 46.8
 </td>
 <td style="text-align:right;">
@@ -36228,6 +37639,9 @@ Census Tract 470; Kings County; New York
 </td>
 <td style="text-align:right;">
 634
+</td>
+<td style="text-align:right;">
+31.1
 </td>
 <td style="text-align:right;">
 58.8
@@ -36307,6 +37721,9 @@ Census Tract 1201; Queens County; New York
 426
 </td>
 <td style="text-align:right;">
+46.0
+</td>
+<td style="text-align:right;">
 23.2
 </td>
 <td style="text-align:right;">
@@ -36382,6 +37799,9 @@ Census Tract 257; Bronx County; New York
 </td>
 <td style="text-align:right;">
 683
+</td>
+<td style="text-align:right;">
+28.8
 </td>
 <td style="text-align:right;">
 28.1
@@ -36461,6 +37881,9 @@ Census Tract 71; New York County; New York
 2646
 </td>
 <td style="text-align:right;">
+28.1
+</td>
+<td style="text-align:right;">
 8.2
 </td>
 <td style="text-align:right;">
@@ -36536,6 +37959,9 @@ Census Tract 208.04; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1988
+</td>
+<td style="text-align:right;">
+55.0
 </td>
 <td style="text-align:right;">
 29.3
@@ -36615,6 +38041,9 @@ Census Tract 264; Kings County; New York
 1582
 </td>
 <td style="text-align:right;">
+45.4
+</td>
+<td style="text-align:right;">
 37.0
 </td>
 <td style="text-align:right;">
@@ -36690,6 +38119,9 @@ Census Tract 353.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1129
+</td>
+<td style="text-align:right;">
+30.0
 </td>
 <td style="text-align:right;">
 18.0
@@ -36769,6 +38201,9 @@ Census Tract 183.02; Bronx County; New York
 1460
 </td>
 <td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
 28.4
 </td>
 <td style="text-align:right;">
@@ -36844,6 +38279,9 @@ Census Tract 351.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 687
+</td>
+<td style="text-align:right;">
+17.5
 </td>
 <td style="text-align:right;">
 46.1
@@ -36923,6 +38361,9 @@ Census Tract 428; Kings County; New York
 1413
 </td>
 <td style="text-align:right;">
+50.2
+</td>
+<td style="text-align:right;">
 33.6
 </td>
 <td style="text-align:right;">
@@ -36998,6 +38439,9 @@ Census Tract 456; Queens County; New York
 </td>
 <td style="text-align:right;">
 408
+</td>
+<td style="text-align:right;">
+58.1
 </td>
 <td style="text-align:right;">
 41.4
@@ -37077,6 +38521,9 @@ Census Tract 253; Bronx County; New York
 1885
 </td>
 <td style="text-align:right;">
+32.7
+</td>
+<td style="text-align:right;">
 37.2
 </td>
 <td style="text-align:right;">
@@ -37152,6 +38599,9 @@ Census Tract 394; Kings County; New York
 </td>
 <td style="text-align:right;">
 705
+</td>
+<td style="text-align:right;">
+46.0
 </td>
 <td style="text-align:right;">
 32.2
@@ -37231,6 +38681,9 @@ Census Tract 75; Richmond County; New York
 1095
 </td>
 <td style="text-align:right;">
+34.9
+</td>
+<td style="text-align:right;">
 47.8
 </td>
 <td style="text-align:right;">
@@ -37306,6 +38759,9 @@ Census Tract 880.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 773
+</td>
+<td style="text-align:right;">
+54.6
 </td>
 <td style="text-align:right;">
 19.0
@@ -37385,6 +38841,9 @@ Census Tract 478.02; Queens County; New York
 403
 </td>
 <td style="text-align:right;">
+46.4
+</td>
+<td style="text-align:right;">
 27.8
 </td>
 <td style="text-align:right;">
@@ -37460,6 +38919,9 @@ Census Tract 1139; Queens County; New York
 </td>
 <td style="text-align:right;">
 1518
+</td>
+<td style="text-align:right;">
+30.8
 </td>
 <td style="text-align:right;">
 35.8
@@ -37539,6 +39001,9 @@ Census Tract 1207.01; Queens County; New York
 919
 </td>
 <td style="text-align:right;">
+60.2
+</td>
+<td style="text-align:right;">
 27.6
 </td>
 <td style="text-align:right;">
@@ -37614,6 +39079,9 @@ Census Tract 105; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1672
+</td>
+<td style="text-align:right;">
+44.1
 </td>
 <td style="text-align:right;">
 38.5
@@ -37693,6 +39161,9 @@ Census Tract 251; Bronx County; New York
 2277
 </td>
 <td style="text-align:right;">
+40.7
+</td>
+<td style="text-align:right;">
 36.3
 </td>
 <td style="text-align:right;">
@@ -37768,6 +39239,9 @@ Census Tract 462.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1096
+</td>
+<td style="text-align:right;">
+62.5
 </td>
 <td style="text-align:right;">
 18.8
@@ -37850,6 +39324,9 @@ Census Tract 794; Kings County; New York
 40.3
 </td>
 <td style="text-align:right;">
+40.3
+</td>
+<td style="text-align:right;">
 59.7
 </td>
 <td style="text-align:right;">
@@ -37922,6 +39399,9 @@ Census Tract 153; Kings County; New York
 </td>
 <td style="text-align:right;">
 1102
+</td>
+<td style="text-align:right;">
+39.5
 </td>
 <td style="text-align:right;">
 28.1
@@ -38001,6 +39481,9 @@ Census Tract 317.02; Kings County; New York
 1613
 </td>
 <td style="text-align:right;">
+30.5
+</td>
+<td style="text-align:right;">
 23.4
 </td>
 <td style="text-align:right;">
@@ -38076,6 +39559,9 @@ Census Tract 448; Kings County; New York
 </td>
 <td style="text-align:right;">
 748
+</td>
+<td style="text-align:right;">
+65.9
 </td>
 <td style="text-align:right;">
 21.8
@@ -38155,6 +39641,9 @@ Census Tract 482; Kings County; New York
 2261
 </td>
 <td style="text-align:right;">
+59.1
+</td>
+<td style="text-align:right;">
 20.4
 </td>
 <td style="text-align:right;">
@@ -38230,6 +39719,9 @@ Census Tract 610.04; Kings County; New York
 </td>
 <td style="text-align:right;">
 2814
+</td>
+<td style="text-align:right;">
+59.6
 </td>
 <td style="text-align:right;">
 21.6
@@ -38309,6 +39801,9 @@ Census Tract 160.02; New York County; New York
 1214
 </td>
 <td style="text-align:right;">
+33.9
+</td>
+<td style="text-align:right;">
 18.7
 </td>
 <td style="text-align:right;">
@@ -38384,6 +39879,9 @@ Census Tract 1267; Queens County; New York
 </td>
 <td style="text-align:right;">
 713
+</td>
+<td style="text-align:right;">
+44.7
 </td>
 <td style="text-align:right;">
 46.4
@@ -38463,6 +39961,9 @@ Census Tract 134; Richmond County; New York
 1392
 </td>
 <td style="text-align:right;">
+45.8
+</td>
+<td style="text-align:right;">
 29.0
 </td>
 <td style="text-align:right;">
@@ -38538,6 +40039,9 @@ Census Tract 215.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1360
+</td>
+<td style="text-align:right;">
+45.9
 </td>
 <td style="text-align:right;">
 35.7
@@ -38617,6 +40121,9 @@ Census Tract 241; Bronx County; New York
 2371
 </td>
 <td style="text-align:right;">
+31.6
+</td>
+<td style="text-align:right;">
 33.8
 </td>
 <td style="text-align:right;">
@@ -38692,6 +40199,9 @@ Census Tract 296; Bronx County; New York
 </td>
 <td style="text-align:right;">
 881
+</td>
+<td style="text-align:right;">
+26.7
 </td>
 <td style="text-align:right;">
 19.3
@@ -38771,6 +40281,9 @@ Census Tract 416; Kings County; New York
 754
 </td>
 <td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
 37.1
 </td>
 <td style="text-align:right;">
@@ -38846,6 +40359,9 @@ Census Tract 768; Kings County; New York
 </td>
 <td style="text-align:right;">
 1277
+</td>
+<td style="text-align:right;">
+44.7
 </td>
 <td style="text-align:right;">
 42.8
@@ -38925,6 +40441,9 @@ Census Tract 788.01; Kings County; New York
 804
 </td>
 <td style="text-align:right;">
+33.0
+</td>
+<td style="text-align:right;">
 31.7
 </td>
 <td style="text-align:right;">
@@ -39000,6 +40519,9 @@ Census Tract 880.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 403
+</td>
+<td style="text-align:right;">
+49.4
 </td>
 <td style="text-align:right;">
 38.5
@@ -39079,6 +40601,9 @@ Census Tract 278; Kings County; New York
 1149
 </td>
 <td style="text-align:right;">
+47.5
+</td>
+<td style="text-align:right;">
 26.1
 </td>
 <td style="text-align:right;">
@@ -39154,6 +40679,9 @@ Census Tract 284; Kings County; New York
 </td>
 <td style="text-align:right;">
 1357
+</td>
+<td style="text-align:right;">
+48.0
 </td>
 <td style="text-align:right;">
 29.2
@@ -39233,6 +40761,9 @@ Census Tract 882; Kings County; New York
 2374
 </td>
 <td style="text-align:right;">
+45.3
+</td>
+<td style="text-align:right;">
 27.9
 </td>
 <td style="text-align:right;">
@@ -39308,6 +40839,9 @@ Census Tract 193; New York County; New York
 </td>
 <td style="text-align:right;">
 4299
+</td>
+<td style="text-align:right;">
+45.7
 </td>
 <td style="text-align:right;">
 14.2
@@ -39387,6 +40921,9 @@ Census Tract 136; Queens County; New York
 900
 </td>
 <td style="text-align:right;">
+32.8
+</td>
+<td style="text-align:right;">
 25.9
 </td>
 <td style="text-align:right;">
@@ -39462,6 +40999,9 @@ Census Tract 482; Queens County; New York
 </td>
 <td style="text-align:right;">
 413
+</td>
+<td style="text-align:right;">
+59.8
 </td>
 <td style="text-align:right;">
 19.6
@@ -39541,6 +41081,9 @@ Census Tract 222; Bronx County; New York
 1066
 </td>
 <td style="text-align:right;">
+33.5
+</td>
+<td style="text-align:right;">
 43.4
 </td>
 <td style="text-align:right;">
@@ -39616,6 +41159,9 @@ Census Tract 288; Kings County; New York
 </td>
 <td style="text-align:right;">
 1096
+</td>
+<td style="text-align:right;">
+48.1
 </td>
 <td style="text-align:right;">
 20.6
@@ -39695,6 +41241,9 @@ Census Tract 290; Kings County; New York
 1476
 </td>
 <td style="text-align:right;">
+62.8
+</td>
+<td style="text-align:right;">
 20.0
 </td>
 <td style="text-align:right;">
@@ -39770,6 +41319,9 @@ Census Tract 418; Kings County; New York
 </td>
 <td style="text-align:right;">
 852
+</td>
+<td style="text-align:right;">
+48.6
 </td>
 <td style="text-align:right;">
 34.9
@@ -39849,6 +41401,9 @@ Census Tract 492; Kings County; New York
 1252
 </td>
 <td style="text-align:right;">
+32.3
+</td>
+<td style="text-align:right;">
 29.9
 </td>
 <td style="text-align:right;">
@@ -39924,6 +41479,9 @@ Census Tract 888; Kings County; New York
 </td>
 <td style="text-align:right;">
 1587
+</td>
+<td style="text-align:right;">
+51.0
 </td>
 <td style="text-align:right;">
 24.4
@@ -40003,6 +41561,9 @@ Census Tract 144.02; New York County; New York
 3720
 </td>
 <td style="text-align:right;">
+42.8
+</td>
+<td style="text-align:right;">
 17.0
 </td>
 <td style="text-align:right;">
@@ -40078,6 +41639,9 @@ Census Tract 138; Queens County; New York
 </td>
 <td style="text-align:right;">
 1426
+</td>
+<td style="text-align:right;">
+36.3
 </td>
 <td style="text-align:right;">
 36.7
@@ -40157,6 +41721,9 @@ Census Tract 480; Queens County; New York
 696
 </td>
 <td style="text-align:right;">
+66.2
+</td>
+<td style="text-align:right;">
 23.0
 </td>
 <td style="text-align:right;">
@@ -40232,6 +41799,9 @@ Census Tract 1203; Queens County; New York
 </td>
 <td style="text-align:right;">
 550
+</td>
+<td style="text-align:right;">
+51.8
 </td>
 <td style="text-align:right;">
 26.0
@@ -40311,6 +41881,9 @@ Census Tract 296; Kings County; New York
 2037
 </td>
 <td style="text-align:right;">
+38.5
+</td>
+<td style="text-align:right;">
 30.8
 </td>
 <td style="text-align:right;">
@@ -40386,6 +41959,9 @@ Census Tract 856; Kings County; New York
 </td>
 <td style="text-align:right;">
 1474
+</td>
+<td style="text-align:right;">
+36.8
 </td>
 <td style="text-align:right;">
 41.2
@@ -40465,6 +42041,9 @@ Census Tract 134; Queens County; New York
 2348
 </td>
 <td style="text-align:right;">
+47.9
+</td>
+<td style="text-align:right;">
 14.0
 </td>
 <td style="text-align:right;">
@@ -40540,6 +42119,9 @@ Census Tract 265.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1105
+</td>
+<td style="text-align:right;">
+26.0
 </td>
 <td style="text-align:right;">
 37.0
@@ -40619,6 +42201,9 @@ Census Tract 269.01; Queens County; New York
 1537
 </td>
 <td style="text-align:right;">
+36.1
+</td>
+<td style="text-align:right;">
 41.9
 </td>
 <td style="text-align:right;">
@@ -40694,6 +42279,9 @@ Census Tract 339; Queens County; New York
 </td>
 <td style="text-align:right;">
 1121
+</td>
+<td style="text-align:right;">
+54.3
 </td>
 <td style="text-align:right;">
 26.2
@@ -40773,6 +42361,9 @@ Census Tract 687; Queens County; New York
 2045
 </td>
 <td style="text-align:right;">
+45.7
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -40848,6 +42439,9 @@ Census Tract 147; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1553
+</td>
+<td style="text-align:right;">
+61.2
 </td>
 <td style="text-align:right;">
 14.9
@@ -40927,6 +42521,9 @@ Census Tract 197; Richmond County; New York
 691
 </td>
 <td style="text-align:right;">
+42.7
+</td>
+<td style="text-align:right;">
 36.6
 </td>
 <td style="text-align:right;">
@@ -41002,6 +42599,9 @@ Census Tract 205.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1048
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 28.9
@@ -41081,6 +42681,9 @@ Census Tract 229.02; Bronx County; New York
 1165
 </td>
 <td style="text-align:right;">
+24.1
+</td>
+<td style="text-align:right;">
 44.6
 </td>
 <td style="text-align:right;">
@@ -41156,6 +42759,9 @@ Census Tract 247; Bronx County; New York
 </td>
 <td style="text-align:right;">
 753
+</td>
+<td style="text-align:right;">
+39.3
 </td>
 <td style="text-align:right;">
 28.0
@@ -41235,6 +42841,9 @@ Census Tract 286; Bronx County; New York
 466
 </td>
 <td style="text-align:right;">
+48.7
+</td>
+<td style="text-align:right;">
 12.4
 </td>
 <td style="text-align:right;">
@@ -41310,6 +42919,9 @@ Census Tract 886; Kings County; New York
 </td>
 <td style="text-align:right;">
 1971
+</td>
+<td style="text-align:right;">
+40.0
 </td>
 <td style="text-align:right;">
 19.3
@@ -41389,6 +43001,9 @@ Census Tract 327; Queens County; New York
 879
 </td>
 <td style="text-align:right;">
+45.2
+</td>
+<td style="text-align:right;">
 41.3
 </td>
 <td style="text-align:right;">
@@ -41464,6 +43079,9 @@ Census Tract 337; Queens County; New York
 </td>
 <td style="text-align:right;">
 787
+</td>
+<td style="text-align:right;">
+35.3
 </td>
 <td style="text-align:right;">
 29.5
@@ -41543,6 +43161,9 @@ Census Tract 96.02; Richmond County; New York
 1390
 </td>
 <td style="text-align:right;">
+43.5
+</td>
+<td style="text-align:right;">
 29.1
 </td>
 <td style="text-align:right;">
@@ -41618,6 +43239,9 @@ Census Tract 146.04; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2466
+</td>
+<td style="text-align:right;">
+55.3
 </td>
 <td style="text-align:right;">
 34.7
@@ -41697,6 +43321,9 @@ Census Tract 201; Richmond County; New York
 1319
 </td>
 <td style="text-align:right;">
+28.9
+</td>
+<td style="text-align:right;">
 46.4
 </td>
 <td style="text-align:right;">
@@ -41772,6 +43399,9 @@ Census Tract 40.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 529
+</td>
+<td style="text-align:right;">
+47.6
 </td>
 <td style="text-align:right;">
 36.1
@@ -41851,6 +43481,9 @@ Census Tract 44; Bronx County; New York
 1610
 </td>
 <td style="text-align:right;">
+46.7
+</td>
+<td style="text-align:right;">
 39.5
 </td>
 <td style="text-align:right;">
@@ -41926,6 +43559,9 @@ Census Tract 48; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1523
+</td>
+<td style="text-align:right;">
+27.7
 </td>
 <td style="text-align:right;">
 53.6
@@ -42005,6 +43641,9 @@ Census Tract 50.01; Bronx County; New York
 1377
 </td>
 <td style="text-align:right;">
+33.6
+</td>
+<td style="text-align:right;">
 41.2
 </td>
 <td style="text-align:right;">
@@ -42080,6 +43719,9 @@ Census Tract 50.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1936
+</td>
+<td style="text-align:right;">
+31.9
 </td>
 <td style="text-align:right;">
 46.8
@@ -42159,6 +43801,9 @@ Census Tract 52; Bronx County; New York
 820
 </td>
 <td style="text-align:right;">
+39.8
+</td>
+<td style="text-align:right;">
 40.6
 </td>
 <td style="text-align:right;">
@@ -42234,6 +43879,9 @@ Census Tract 53; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1634
+</td>
+<td style="text-align:right;">
+23.6
 </td>
 <td style="text-align:right;">
 55.3
@@ -42313,6 +43961,9 @@ Census Tract 54; Bronx County; New York
 1781
 </td>
 <td style="text-align:right;">
+36.4
+</td>
+<td style="text-align:right;">
 48.1
 </td>
 <td style="text-align:right;">
@@ -42388,6 +44039,9 @@ Census Tract 56; Bronx County; New York
 </td>
 <td style="text-align:right;">
 953
+</td>
+<td style="text-align:right;">
+51.6
 </td>
 <td style="text-align:right;">
 31.4
@@ -42467,6 +44121,9 @@ Census Tract 62; Bronx County; New York
 2543
 </td>
 <td style="text-align:right;">
+42.2
+</td>
+<td style="text-align:right;">
 35.9
 </td>
 <td style="text-align:right;">
@@ -42542,6 +44199,9 @@ Census Tract 64; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1383
+</td>
+<td style="text-align:right;">
+35.4
 </td>
 <td style="text-align:right;">
 30.3
@@ -42621,6 +44281,9 @@ Census Tract 68; Bronx County; New York
 907
 </td>
 <td style="text-align:right;">
+40.4
+</td>
+<td style="text-align:right;">
 39.1
 </td>
 <td style="text-align:right;">
@@ -42696,6 +44359,9 @@ Census Tract 70; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1294
+</td>
+<td style="text-align:right;">
+49.8
 </td>
 <td style="text-align:right;">
 24.0
@@ -42775,6 +44441,9 @@ Census Tract 72; Bronx County; New York
 1651
 </td>
 <td style="text-align:right;">
+49.9
+</td>
+<td style="text-align:right;">
 32.0
 </td>
 <td style="text-align:right;">
@@ -42850,6 +44519,9 @@ Census Tract 76; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1868
+</td>
+<td style="text-align:right;">
+40.8
 </td>
 <td style="text-align:right;">
 33.3
@@ -42929,6 +44601,9 @@ Census Tract 78; Bronx County; New York
 1939
 </td>
 <td style="text-align:right;">
+42.7
+</td>
+<td style="text-align:right;">
 45.6
 </td>
 <td style="text-align:right;">
@@ -43004,6 +44679,9 @@ Census Tract 90; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1247
+</td>
+<td style="text-align:right;">
+45.4
 </td>
 <td style="text-align:right;">
 47.0
@@ -43083,6 +44761,9 @@ Census Tract 92; Bronx County; New York
 1856
 </td>
 <td style="text-align:right;">
+37.8
+</td>
+<td style="text-align:right;">
 43.0
 </td>
 <td style="text-align:right;">
@@ -43158,6 +44839,9 @@ Census Tract 93.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1876
+</td>
+<td style="text-align:right;">
+28.1
 </td>
 <td style="text-align:right;">
 43.8
@@ -43237,6 +44921,9 @@ Census Tract 96; Bronx County; New York
 876
 </td>
 <td style="text-align:right;">
+50.7
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -43312,6 +44999,9 @@ Census Tract 98; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1638
+</td>
+<td style="text-align:right;">
+57.6
 </td>
 <td style="text-align:right;">
 33.8
@@ -43391,6 +45081,9 @@ Census Tract 117.01; Bronx County; New York
 493
 </td>
 <td style="text-align:right;">
+22.9
+</td>
+<td style="text-align:right;">
 47.9
 </td>
 <td style="text-align:right;">
@@ -43466,6 +45159,9 @@ Census Tract 118; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1501
+</td>
+<td style="text-align:right;">
+37.2
 </td>
 <td style="text-align:right;">
 38.2
@@ -43545,6 +45241,9 @@ Census Tract 130; Bronx County; New York
 449
 </td>
 <td style="text-align:right;">
+53.0
+</td>
+<td style="text-align:right;">
 15.8
 </td>
 <td style="text-align:right;">
@@ -43620,6 +45319,9 @@ Census Tract 132; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2592
+</td>
+<td style="text-align:right;">
+42.1
 </td>
 <td style="text-align:right;">
 32.3
@@ -43699,6 +45401,9 @@ Census Tract 138; Bronx County; New York
 1205
 </td>
 <td style="text-align:right;">
+40.4
+</td>
+<td style="text-align:right;">
 23.5
 </td>
 <td style="text-align:right;">
@@ -43774,6 +45479,9 @@ Census Tract 144; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2411
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 43.0
@@ -43853,6 +45561,9 @@ Census Tract 152; Bronx County; New York
 987
 </td>
 <td style="text-align:right;">
+38.2
+</td>
+<td style="text-align:right;">
 39.0
 </td>
 <td style="text-align:right;">
@@ -43928,6 +45639,9 @@ Census Tract 158; Bronx County; New York
 </td>
 <td style="text-align:right;">
 494
+</td>
+<td style="text-align:right;">
+46.2
 </td>
 <td style="text-align:right;">
 31.2
@@ -44007,6 +45721,9 @@ Census Tract 160; Bronx County; New York
 1497
 </td>
 <td style="text-align:right;">
+48.4
+</td>
+<td style="text-align:right;">
 23.5
 </td>
 <td style="text-align:right;">
@@ -44082,6 +45799,9 @@ Census Tract 162; Bronx County; New York
 </td>
 <td style="text-align:right;">
 506
+</td>
+<td style="text-align:right;">
+44.1
 </td>
 <td style="text-align:right;">
 34.0
@@ -44161,6 +45881,9 @@ Census Tract 164; Bronx County; New York
 412
 </td>
 <td style="text-align:right;">
+57.0
+</td>
+<td style="text-align:right;">
 26.2
 </td>
 <td style="text-align:right;">
@@ -44236,6 +45959,9 @@ Census Tract 166; Bronx County; New York
 </td>
 <td style="text-align:right;">
 829
+</td>
+<td style="text-align:right;">
+33.5
 </td>
 <td style="text-align:right;">
 43.8
@@ -44315,6 +46041,9 @@ Census Tract 173; Bronx County; New York
 2276
 </td>
 <td style="text-align:right;">
+55.4
+</td>
+<td style="text-align:right;">
 29.2
 </td>
 <td style="text-align:right;">
@@ -44390,6 +46119,9 @@ Census Tract 175; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2831
+</td>
+<td style="text-align:right;">
+43.2
 </td>
 <td style="text-align:right;">
 39.1
@@ -44469,6 +46201,9 @@ Census Tract 177.01; Bronx County; New York
 1374
 </td>
 <td style="text-align:right;">
+27.4
+</td>
+<td style="text-align:right;">
 47.6
 </td>
 <td style="text-align:right;">
@@ -44544,6 +46279,9 @@ Census Tract 181.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1040
+</td>
+<td style="text-align:right;">
+29.5
 </td>
 <td style="text-align:right;">
 60.0
@@ -44623,6 +46361,9 @@ Census Tract 184; Bronx County; New York
 1407
 </td>
 <td style="text-align:right;">
+41.4
+</td>
+<td style="text-align:right;">
 27.9
 </td>
 <td style="text-align:right;">
@@ -44698,6 +46439,9 @@ Census Tract 189; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2857
+</td>
+<td style="text-align:right;">
+26.1
 </td>
 <td style="text-align:right;">
 42.4
@@ -44777,6 +46521,9 @@ Census Tract 193; Bronx County; New York
 2410
 </td>
 <td style="text-align:right;">
+42.7
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -44852,6 +46599,9 @@ Census Tract 194; Bronx County; New York
 </td>
 <td style="text-align:right;">
 728
+</td>
+<td style="text-align:right;">
+44.0
 </td>
 <td style="text-align:right;">
 33.7
@@ -44931,6 +46681,9 @@ Census Tract 199; Bronx County; New York
 3251
 </td>
 <td style="text-align:right;">
+30.9
+</td>
+<td style="text-align:right;">
 40.5
 </td>
 <td style="text-align:right;">
@@ -45006,6 +46759,9 @@ Census Tract 200; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1491
+</td>
+<td style="text-align:right;">
+31.5
 </td>
 <td style="text-align:right;">
 48.8
@@ -45085,6 +46841,9 @@ Census Tract 201; Bronx County; New York
 1351
 </td>
 <td style="text-align:right;">
+36.3
+</td>
+<td style="text-align:right;">
 32.8
 </td>
 <td style="text-align:right;">
@@ -45160,6 +46919,9 @@ Census Tract 202; Bronx County; New York
 </td>
 <td style="text-align:right;">
 972
+</td>
+<td style="text-align:right;">
+46.4
 </td>
 <td style="text-align:right;">
 23.8
@@ -45239,6 +47001,9 @@ Census Tract 204; Bronx County; New York
 1029
 </td>
 <td style="text-align:right;">
+28.4
+</td>
+<td style="text-align:right;">
 46.8
 </td>
 <td style="text-align:right;">
@@ -45314,6 +47079,9 @@ Census Tract 205.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2701
+</td>
+<td style="text-align:right;">
+43.5
 </td>
 <td style="text-align:right;">
 36.4
@@ -45393,6 +47161,9 @@ Census Tract 206.01; Bronx County; New York
 990
 </td>
 <td style="text-align:right;">
+48.4
+</td>
+<td style="text-align:right;">
 32.3
 </td>
 <td style="text-align:right;">
@@ -45468,6 +47239,9 @@ Census Tract 211; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1997
+</td>
+<td style="text-align:right;">
+39.8
 </td>
 <td style="text-align:right;">
 30.2
@@ -45547,6 +47321,9 @@ Census Tract 213.01; Bronx County; New York
 464
 </td>
 <td style="text-align:right;">
+27.2
+</td>
+<td style="text-align:right;">
 38.6
 </td>
 <td style="text-align:right;">
@@ -45622,6 +47399,9 @@ Census Tract 213.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2303
+</td>
+<td style="text-align:right;">
+51.4
 </td>
 <td style="text-align:right;">
 31.4
@@ -45701,6 +47481,9 @@ Census Tract 215.02; Bronx County; New York
 2239
 </td>
 <td style="text-align:right;">
+29.7
+</td>
+<td style="text-align:right;">
 53.3
 </td>
 <td style="text-align:right;">
@@ -45776,6 +47559,9 @@ Census Tract 216.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1609
+</td>
+<td style="text-align:right;">
+32.0
 </td>
 <td style="text-align:right;">
 44.7
@@ -45855,6 +47641,9 @@ Census Tract 217; Bronx County; New York
 1781
 </td>
 <td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -45930,6 +47719,9 @@ Census Tract 218; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2198
+</td>
+<td style="text-align:right;">
+41.1
 </td>
 <td style="text-align:right;">
 25.3
@@ -46009,6 +47801,9 @@ Census Tract 219; Bronx County; New York
 384
 </td>
 <td style="text-align:right;">
+47.1
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -46084,6 +47879,9 @@ Census Tract 220; Bronx County; New York
 </td>
 <td style="text-align:right;">
 650
+</td>
+<td style="text-align:right;">
+31.7
 </td>
 <td style="text-align:right;">
 51.2
@@ -46163,6 +47961,9 @@ Census Tract 221.01; Bronx County; New York
 1292
 </td>
 <td style="text-align:right;">
+28.9
+</td>
+<td style="text-align:right;">
 55.9
 </td>
 <td style="text-align:right;">
@@ -46238,6 +48039,9 @@ Census Tract 224.03; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1142
+</td>
+<td style="text-align:right;">
+27.1
 </td>
 <td style="text-align:right;">
 33.8
@@ -46317,6 +48121,9 @@ Census Tract 224.04; Bronx County; New York
 1976
 </td>
 <td style="text-align:right;">
+32.4
+</td>
+<td style="text-align:right;">
 32.5
 </td>
 <td style="text-align:right;">
@@ -46392,6 +48199,9 @@ Census Tract 228; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2369
+</td>
+<td style="text-align:right;">
+24.3
 </td>
 <td style="text-align:right;">
 24.4
@@ -46471,6 +48281,9 @@ Census Tract 230; Bronx County; New York
 1033
 </td>
 <td style="text-align:right;">
+28.0
+</td>
+<td style="text-align:right;">
 36.0
 </td>
 <td style="text-align:right;">
@@ -46546,6 +48359,9 @@ Census Tract 232; Bronx County; New York
 </td>
 <td style="text-align:right;">
 827
+</td>
+<td style="text-align:right;">
+40.7
 </td>
 <td style="text-align:right;">
 34.6
@@ -46625,6 +48441,9 @@ Census Tract 236; Bronx County; New York
 560
 </td>
 <td style="text-align:right;">
+34.8
+</td>
+<td style="text-align:right;">
 39.8
 </td>
 <td style="text-align:right;">
@@ -46700,6 +48519,9 @@ Census Tract 239; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2589
+</td>
+<td style="text-align:right;">
+34.0
 </td>
 <td style="text-align:right;">
 62.5
@@ -46779,6 +48601,9 @@ Census Tract 240; Bronx County; New York
 1350
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 38.6
 </td>
 <td style="text-align:right;">
@@ -46854,6 +48679,9 @@ Census Tract 244; Bronx County; New York
 </td>
 <td style="text-align:right;">
 863
+</td>
+<td style="text-align:right;">
+29.1
 </td>
 <td style="text-align:right;">
 33.7
@@ -46933,6 +48761,9 @@ Census Tract 246; Bronx County; New York
 791
 </td>
 <td style="text-align:right;">
+48.2
+</td>
+<td style="text-align:right;">
 21.6
 </td>
 <td style="text-align:right;">
@@ -47008,6 +48839,9 @@ Census Tract 248; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1137
+</td>
+<td style="text-align:right;">
+37.7
 </td>
 <td style="text-align:right;">
 26.9
@@ -47087,6 +48921,9 @@ Census Tract 250; Bronx County; New York
 934
 </td>
 <td style="text-align:right;">
+56.5
+</td>
+<td style="text-align:right;">
 32.8
 </td>
 <td style="text-align:right;">
@@ -47162,6 +48999,9 @@ Census Tract 252; Bronx County; New York
 </td>
 <td style="text-align:right;">
 906
+</td>
+<td style="text-align:right;">
+36.0
 </td>
 <td style="text-align:right;">
 35.1
@@ -47241,6 +49081,9 @@ Census Tract 254; Bronx County; New York
 770
 </td>
 <td style="text-align:right;">
+48.1
+</td>
+<td style="text-align:right;">
 27.3
 </td>
 <td style="text-align:right;">
@@ -47316,6 +49159,9 @@ Census Tract 256; Bronx County; New York
 </td>
 <td style="text-align:right;">
 620
+</td>
+<td style="text-align:right;">
+35.8
 </td>
 <td style="text-align:right;">
 20.8
@@ -47395,6 +49241,9 @@ Census Tract 261; Bronx County; New York
 1102
 </td>
 <td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -47470,6 +49319,9 @@ Census Tract 264; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2196
+</td>
+<td style="text-align:right;">
+30.1
 </td>
 <td style="text-align:right;">
 43.6
@@ -47549,6 +49401,9 @@ Census Tract 266.01; Bronx County; New York
 1322
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 23.8
 </td>
 <td style="text-align:right;">
@@ -47624,6 +49479,9 @@ Census Tract 266.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2441
+</td>
+<td style="text-align:right;">
+45.4
 </td>
 <td style="text-align:right;">
 29.8
@@ -47703,6 +49561,9 @@ Census Tract 269; Bronx County; New York
 1823
 </td>
 <td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
 24.9
 </td>
 <td style="text-align:right;">
@@ -47778,6 +49639,9 @@ Census Tract 273; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2925
+</td>
+<td style="text-align:right;">
+42.8
 </td>
 <td style="text-align:right;">
 28.2
@@ -47857,6 +49721,9 @@ Census Tract 274.01; Bronx County; New York
 1755
 </td>
 <td style="text-align:right;">
+39.5
+</td>
+<td style="text-align:right;">
 34.4
 </td>
 <td style="text-align:right;">
@@ -47932,6 +49799,9 @@ Census Tract 274.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1253
+</td>
+<td style="text-align:right;">
+37.6
 </td>
 <td style="text-align:right;">
 28.8
@@ -48011,6 +49881,9 @@ Census Tract 277; Bronx County; New York
 1781
 </td>
 <td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -48086,6 +49959,9 @@ Census Tract 281; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1676
+</td>
+<td style="text-align:right;">
+69.9
 </td>
 <td style="text-align:right;">
 15.9
@@ -48165,6 +50041,9 @@ Census Tract 283; Bronx County; New York
 1075
 </td>
 <td style="text-align:right;">
+40.9
+</td>
+<td style="text-align:right;">
 52.2
 </td>
 <td style="text-align:right;">
@@ -48240,6 +50119,9 @@ Census Tract 287; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1280
+</td>
+<td style="text-align:right;">
+46.5
 </td>
 <td style="text-align:right;">
 32.4
@@ -48319,6 +50201,9 @@ Census Tract 289; Bronx County; New York
 1956
 </td>
 <td style="text-align:right;">
+34.2
+</td>
+<td style="text-align:right;">
 33.2
 </td>
 <td style="text-align:right;">
@@ -48394,6 +50279,9 @@ Census Tract 300; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2464
+</td>
+<td style="text-align:right;">
+39.3
 </td>
 <td style="text-align:right;">
 27.8
@@ -48473,6 +50361,9 @@ Census Tract 302.01; Bronx County; New York
 1575
 </td>
 <td style="text-align:right;">
+52.0
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -48548,6 +50439,9 @@ Census Tract 302.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2542
+</td>
+<td style="text-align:right;">
+52.1
 </td>
 <td style="text-align:right;">
 20.1
@@ -48627,6 +50521,9 @@ Census Tract 312; Bronx County; New York
 586
 </td>
 <td style="text-align:right;">
+40.6
+</td>
+<td style="text-align:right;">
 34.0
 </td>
 <td style="text-align:right;">
@@ -48702,6 +50599,9 @@ Census Tract 314; Bronx County; New York
 </td>
 <td style="text-align:right;">
 617
+</td>
+<td style="text-align:right;">
+49.9
 </td>
 <td style="text-align:right;">
 29.2
@@ -48781,6 +50681,9 @@ Census Tract 316; Bronx County; New York
 709
 </td>
 <td style="text-align:right;">
+44.4
+</td>
+<td style="text-align:right;">
 28.1
 </td>
 <td style="text-align:right;">
@@ -48856,6 +50759,9 @@ Census Tract 318; Bronx County; New York
 </td>
 <td style="text-align:right;">
 557
+</td>
+<td style="text-align:right;">
+55.3
 </td>
 <td style="text-align:right;">
 19.9
@@ -48935,6 +50841,9 @@ Census Tract 324; Bronx County; New York
 1255
 </td>
 <td style="text-align:right;">
+44.7
+</td>
+<td style="text-align:right;">
 46.1
 </td>
 <td style="text-align:right;">
@@ -49010,6 +50919,9 @@ Census Tract 326; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1040
+</td>
+<td style="text-align:right;">
+41.6
 </td>
 <td style="text-align:right;">
 23.6
@@ -49089,6 +51001,9 @@ Census Tract 328; Bronx County; New York
 1446
 </td>
 <td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
 33.8
 </td>
 <td style="text-align:right;">
@@ -49164,6 +51079,9 @@ Census Tract 330; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2176
+</td>
+<td style="text-align:right;">
+37.2
 </td>
 <td style="text-align:right;">
 29.4
@@ -49243,6 +51161,9 @@ Census Tract 332.01; Bronx County; New York
 2395
 </td>
 <td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
 26.0
 </td>
 <td style="text-align:right;">
@@ -49318,6 +51239,9 @@ Census Tract 332.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1635
+</td>
+<td style="text-align:right;">
+44.5
 </td>
 <td style="text-align:right;">
 23.9
@@ -49397,6 +51321,9 @@ Census Tract 336.01; Bronx County; New York
 2154
 </td>
 <td style="text-align:right;">
+45.0
+</td>
+<td style="text-align:right;">
 30.1
 </td>
 <td style="text-align:right;">
@@ -49472,6 +51399,9 @@ Census Tract 336.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 570
+</td>
+<td style="text-align:right;">
+46.0
 </td>
 <td style="text-align:right;">
 13.0
@@ -49551,6 +51481,9 @@ Census Tract 338.01; Bronx County; New York
 942
 </td>
 <td style="text-align:right;">
+25.8
+</td>
+<td style="text-align:right;">
 31.0
 </td>
 <td style="text-align:right;">
@@ -49626,6 +51559,9 @@ Census Tract 338.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 577
+</td>
+<td style="text-align:right;">
+21.1
 </td>
 <td style="text-align:right;">
 46.3
@@ -49705,6 +51641,9 @@ Census Tract 340; Bronx County; New York
 1843
 </td>
 <td style="text-align:right;">
+32.6
+</td>
+<td style="text-align:right;">
 39.3
 </td>
 <td style="text-align:right;">
@@ -49780,6 +51719,9 @@ Census Tract 342; Bronx County; New York
 </td>
 <td style="text-align:right;">
 637
+</td>
+<td style="text-align:right;">
+31.7
 </td>
 <td style="text-align:right;">
 44.9
@@ -49859,6 +51801,9 @@ Census Tract 344; Bronx County; New York
 627
 </td>
 <td style="text-align:right;">
+44.7
+</td>
+<td style="text-align:right;">
 42.6
 </td>
 <td style="text-align:right;">
@@ -49934,6 +51879,9 @@ Census Tract 348; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2076
+</td>
+<td style="text-align:right;">
+43.7
 </td>
 <td style="text-align:right;">
 39.2
@@ -50013,6 +51961,9 @@ Census Tract 350; Bronx County; New York
 703
 </td>
 <td style="text-align:right;">
+27.6
+</td>
+<td style="text-align:right;">
 42.4
 </td>
 <td style="text-align:right;">
@@ -50088,6 +52039,9 @@ Census Tract 356; Bronx County; New York
 </td>
 <td style="text-align:right;">
 658
+</td>
+<td style="text-align:right;">
+43.6
 </td>
 <td style="text-align:right;">
 42.9
@@ -50167,6 +52121,9 @@ Census Tract 358; Bronx County; New York
 2711
 </td>
 <td style="text-align:right;">
+59.2
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -50242,6 +52199,9 @@ Census Tract 360; Bronx County; New York
 </td>
 <td style="text-align:right;">
 958
+</td>
+<td style="text-align:right;">
+61.4
 </td>
 <td style="text-align:right;">
 24.8
@@ -50321,6 +52281,9 @@ Census Tract 372; Bronx County; New York
 841
 </td>
 <td style="text-align:right;">
+39.6
+</td>
+<td style="text-align:right;">
 34.7
 </td>
 <td style="text-align:right;">
@@ -50396,6 +52359,9 @@ Census Tract 374; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1478
+</td>
+<td style="text-align:right;">
+34.6
 </td>
 <td style="text-align:right;">
 32.7
@@ -50475,6 +52441,9 @@ Census Tract 376; Bronx County; New York
 753
 </td>
 <td style="text-align:right;">
+45.7
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -50550,6 +52519,9 @@ Census Tract 378; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1142
+</td>
+<td style="text-align:right;">
+42.1
 </td>
 <td style="text-align:right;">
 37.2
@@ -50629,6 +52601,9 @@ Census Tract 383.03; Bronx County; New York
 1207
 </td>
 <td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
 36.8
 </td>
 <td style="text-align:right;">
@@ -50704,6 +52679,9 @@ Census Tract 414; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1863
+</td>
+<td style="text-align:right;">
+55.0
 </td>
 <td style="text-align:right;">
 25.2
@@ -50783,6 +52761,9 @@ Census Tract 418; Bronx County; New York
 1273
 </td>
 <td style="text-align:right;">
+36.8
+</td>
+<td style="text-align:right;">
 54.3
 </td>
 <td style="text-align:right;">
@@ -50858,6 +52839,9 @@ Census Tract 420; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1626
+</td>
+<td style="text-align:right;">
+39.2
 </td>
 <td style="text-align:right;">
 35.8
@@ -50937,6 +52921,9 @@ Census Tract 428; Bronx County; New York
 753
 </td>
 <td style="text-align:right;">
+69.3
+</td>
+<td style="text-align:right;">
 42.8
 </td>
 <td style="text-align:right;">
@@ -51012,6 +52999,9 @@ Census Tract 435.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 451
+</td>
+<td style="text-align:right;">
+37.5
 </td>
 <td style="text-align:right;">
 44.8
@@ -51091,6 +53081,9 @@ Census Tract 436; Bronx County; New York
 698
 </td>
 <td style="text-align:right;">
+38.7
+</td>
+<td style="text-align:right;">
 30.9
 </td>
 <td style="text-align:right;">
@@ -51166,6 +53159,9 @@ Census Tract 442; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1253
+</td>
+<td style="text-align:right;">
+31.8
 </td>
 <td style="text-align:right;">
 43.0
@@ -51245,6 +53241,9 @@ Census Tract 462.03; Bronx County; New York
 3208
 </td>
 <td style="text-align:right;">
+69.8
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -51320,6 +53319,9 @@ Census Tract 462.05; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1926
+</td>
+<td style="text-align:right;">
+67.6
 </td>
 <td style="text-align:right;">
 4.6
@@ -51399,6 +53401,9 @@ Census Tract 462.07; Bronx County; New York
 2913
 </td>
 <td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
 26.3
 </td>
 <td style="text-align:right;">
@@ -51474,6 +53479,9 @@ Census Tract 462.08; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1389
+</td>
+<td style="text-align:right;">
+37.5
 </td>
 <td style="text-align:right;">
 50.0
@@ -51553,6 +53561,9 @@ Census Tract 462.09; Bronx County; New York
 1443
 </td>
 <td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
 57.9
 </td>
 <td style="text-align:right;">
@@ -51628,6 +53639,9 @@ Census Tract 516.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1990
+</td>
+<td style="text-align:right;">
+47.6
 </td>
 <td style="text-align:right;">
 18.8
@@ -51707,6 +53721,9 @@ Census Tract 72; Kings County; New York
 565
 </td>
 <td style="text-align:right;">
+29.2
+</td>
+<td style="text-align:right;">
 44.6
 </td>
 <td style="text-align:right;">
@@ -51782,6 +53799,9 @@ Census Tract 74; Kings County; New York
 </td>
 <td style="text-align:right;">
 1546
+</td>
+<td style="text-align:right;">
+37.6
 </td>
 <td style="text-align:right;">
 39.3
@@ -51861,6 +53881,9 @@ Census Tract 76; Kings County; New York
 1277
 </td>
 <td style="text-align:right;">
+47.0
+</td>
+<td style="text-align:right;">
 43.1
 </td>
 <td style="text-align:right;">
@@ -51936,6 +53959,9 @@ Census Tract 78; Kings County; New York
 </td>
 <td style="text-align:right;">
 1544
+</td>
+<td style="text-align:right;">
+29.4
 </td>
 <td style="text-align:right;">
 35.9
@@ -52015,6 +54041,9 @@ Census Tract 80; Kings County; New York
 1348
 </td>
 <td style="text-align:right;">
+44.0
+</td>
+<td style="text-align:right;">
 30.5
 </td>
 <td style="text-align:right;">
@@ -52090,6 +54119,9 @@ Census Tract 82; Kings County; New York
 </td>
 <td style="text-align:right;">
 1417
+</td>
+<td style="text-align:right;">
+38.4
 </td>
 <td style="text-align:right;">
 20.6
@@ -52169,6 +54201,9 @@ Census Tract 90.01; Kings County; New York
 461
 </td>
 <td style="text-align:right;">
+28.4
+</td>
+<td style="text-align:right;">
 31.5
 </td>
 <td style="text-align:right;">
@@ -52244,6 +54279,9 @@ Census Tract 90.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 442
+</td>
+<td style="text-align:right;">
+27.8
 </td>
 <td style="text-align:right;">
 36.4
@@ -52323,6 +54361,9 @@ Census Tract 92.01; Kings County; New York
 539
 </td>
 <td style="text-align:right;">
+38.6
+</td>
+<td style="text-align:right;">
 42.9
 </td>
 <td style="text-align:right;">
@@ -52398,6 +54439,9 @@ Census Tract 92.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1186
+</td>
+<td style="text-align:right;">
+27.3
 </td>
 <td style="text-align:right;">
 40.5
@@ -52477,6 +54521,9 @@ Census Tract 94.01; Kings County; New York
 571
 </td>
 <td style="text-align:right;">
+51.1
+</td>
+<td style="text-align:right;">
 46.9
 </td>
 <td style="text-align:right;">
@@ -52552,6 +54599,9 @@ Census Tract 94.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 966
+</td>
+<td style="text-align:right;">
+52.7
 </td>
 <td style="text-align:right;">
 54.6
@@ -52631,6 +54681,9 @@ Census Tract 96; Kings County; New York
 1905
 </td>
 <td style="text-align:right;">
+40.6
+</td>
+<td style="text-align:right;">
 34.4
 </td>
 <td style="text-align:right;">
@@ -52706,6 +54759,9 @@ Census Tract 98; Kings County; New York
 </td>
 <td style="text-align:right;">
 1864
+</td>
+<td style="text-align:right;">
+39.6
 </td>
 <td style="text-align:right;">
 49.8
@@ -52785,6 +54841,9 @@ Census Tract 100; Kings County; New York
 1774
 </td>
 <td style="text-align:right;">
+46.0
+</td>
+<td style="text-align:right;">
 38.3
 </td>
 <td style="text-align:right;">
@@ -52860,6 +54919,9 @@ Census Tract 102; Kings County; New York
 </td>
 <td style="text-align:right;">
 1193
+</td>
+<td style="text-align:right;">
+36.5
 </td>
 <td style="text-align:right;">
 58.0
@@ -52939,6 +55001,9 @@ Census Tract 104.01; Kings County; New York
 592
 </td>
 <td style="text-align:right;">
+40.9
+</td>
+<td style="text-align:right;">
 48.3
 </td>
 <td style="text-align:right;">
@@ -53014,6 +55079,9 @@ Census Tract 104.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 647
+</td>
+<td style="text-align:right;">
+44.4
 </td>
 <td style="text-align:right;">
 58.0
@@ -53093,6 +55161,9 @@ Census Tract 106.01; Kings County; New York
 621
 </td>
 <td style="text-align:right;">
+35.1
+</td>
+<td style="text-align:right;">
 51.4
 </td>
 <td style="text-align:right;">
@@ -53168,6 +55239,9 @@ Census Tract 106.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 577
+</td>
+<td style="text-align:right;">
+59.6
 </td>
 <td style="text-align:right;">
 59.4
@@ -53247,6 +55321,9 @@ Census Tract 108.01; Kings County; New York
 550
 </td>
 <td style="text-align:right;">
+32.0
+</td>
+<td style="text-align:right;">
 42.0
 </td>
 <td style="text-align:right;">
@@ -53322,6 +55399,9 @@ Census Tract 108.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 647
+</td>
+<td style="text-align:right;">
+49.5
 </td>
 <td style="text-align:right;">
 35.2
@@ -53401,6 +55481,9 @@ Census Tract 114; Kings County; New York
 864
 </td>
 <td style="text-align:right;">
+27.9
+</td>
+<td style="text-align:right;">
 41.2
 </td>
 <td style="text-align:right;">
@@ -53476,6 +55559,9 @@ Census Tract 116; Kings County; New York
 </td>
 <td style="text-align:right;">
 1070
+</td>
+<td style="text-align:right;">
+39.8
 </td>
 <td style="text-align:right;">
 45.3
@@ -53555,6 +55641,9 @@ Census Tract 122; Kings County; New York
 1546
 </td>
 <td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
 44.6
 </td>
 <td style="text-align:right;">
@@ -53630,6 +55719,9 @@ Census Tract 150; Kings County; New York
 </td>
 <td style="text-align:right;">
 594
+</td>
+<td style="text-align:right;">
+49.2
 </td>
 <td style="text-align:right;">
 31.3
@@ -53709,6 +55801,9 @@ Census Tract 163; Kings County; New York
 1751
 </td>
 <td style="text-align:right;">
+24.2
+</td>
+<td style="text-align:right;">
 23.8
 </td>
 <td style="text-align:right;">
@@ -53784,6 +55879,9 @@ Census Tract 170; Kings County; New York
 </td>
 <td style="text-align:right;">
 1074
+</td>
+<td style="text-align:right;">
+64.1
 </td>
 <td style="text-align:right;">
 30.5
@@ -53863,6 +55961,9 @@ Census Tract 172; Kings County; New York
 986
 </td>
 <td style="text-align:right;">
+38.4
+</td>
+<td style="text-align:right;">
 33.8
 </td>
 <td style="text-align:right;">
@@ -53938,6 +56039,9 @@ Census Tract 174; Kings County; New York
 </td>
 <td style="text-align:right;">
 731
+</td>
+<td style="text-align:right;">
+45.7
 </td>
 <td style="text-align:right;">
 39.1
@@ -54017,6 +56121,9 @@ Census Tract 176; Kings County; New York
 841
 </td>
 <td style="text-align:right;">
+49.2
+</td>
+<td style="text-align:right;">
 23.9
 </td>
 <td style="text-align:right;">
@@ -54092,6 +56199,9 @@ Census Tract 178; Kings County; New York
 </td>
 <td style="text-align:right;">
 861
+</td>
+<td style="text-align:right;">
+39.6
 </td>
 <td style="text-align:right;">
 47.6
@@ -54171,6 +56281,9 @@ Census Tract 180; Kings County; New York
 1113
 </td>
 <td style="text-align:right;">
+40.3
+</td>
+<td style="text-align:right;">
 29.3
 </td>
 <td style="text-align:right;">
@@ -54246,6 +56359,9 @@ Census Tract 181; Kings County; New York
 </td>
 <td style="text-align:right;">
 2043
+</td>
+<td style="text-align:right;">
+19.8
 </td>
 <td style="text-align:right;">
 17.3
@@ -54325,6 +56441,9 @@ Census Tract 182; Kings County; New York
 1096
 </td>
 <td style="text-align:right;">
+53.7
+</td>
+<td style="text-align:right;">
 27.0
 </td>
 <td style="text-align:right;">
@@ -54400,6 +56519,9 @@ Census Tract 184; Kings County; New York
 </td>
 <td style="text-align:right;">
 789
+</td>
+<td style="text-align:right;">
+50.8
 </td>
 <td style="text-align:right;">
 33.0
@@ -54479,6 +56601,9 @@ Census Tract 186; Kings County; New York
 680
 </td>
 <td style="text-align:right;">
+60.6
+</td>
+<td style="text-align:right;">
 26.3
 </td>
 <td style="text-align:right;">
@@ -54554,6 +56679,9 @@ Census Tract 188; Kings County; New York
 </td>
 <td style="text-align:right;">
 1092
+</td>
+<td style="text-align:right;">
+34.2
 </td>
 <td style="text-align:right;">
 24.8
@@ -54633,6 +56761,9 @@ Census Tract 198; Kings County; New York
 697
 </td>
 <td style="text-align:right;">
+48.2
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -54708,6 +56839,9 @@ Census Tract 200; Kings County; New York
 </td>
 <td style="text-align:right;">
 707
+</td>
+<td style="text-align:right;">
+51.9
 </td>
 <td style="text-align:right;">
 29.6
@@ -54787,6 +56921,9 @@ Census Tract 217; Kings County; New York
 1767
 </td>
 <td style="text-align:right;">
+33.5
+</td>
+<td style="text-align:right;">
 19.5
 </td>
 <td style="text-align:right;">
@@ -54862,6 +56999,9 @@ Census Tract 219; Kings County; New York
 </td>
 <td style="text-align:right;">
 1733
+</td>
+<td style="text-align:right;">
+26.8
 </td>
 <td style="text-align:right;">
 15.1
@@ -54941,6 +57081,9 @@ Census Tract 220; Kings County; New York
 1149
 </td>
 <td style="text-align:right;">
+28.4
+</td>
+<td style="text-align:right;">
 51.7
 </td>
 <td style="text-align:right;">
@@ -55016,6 +57159,9 @@ Census Tract 234; Kings County; New York
 </td>
 <td style="text-align:right;">
 1382
+</td>
+<td style="text-align:right;">
+37.7
 </td>
 <td style="text-align:right;">
 51.6
@@ -55095,6 +57241,9 @@ Census Tract 236; Kings County; New York
 1472
 </td>
 <td style="text-align:right;">
+24.0
+</td>
+<td style="text-align:right;">
 61.1
 </td>
 <td style="text-align:right;">
@@ -55170,6 +57319,9 @@ Census Tract 238; Kings County; New York
 </td>
 <td style="text-align:right;">
 1125
+</td>
+<td style="text-align:right;">
+32.0
 </td>
 <td style="text-align:right;">
 62.8
@@ -55249,6 +57401,9 @@ Census Tract 280; Kings County; New York
 631
 </td>
 <td style="text-align:right;">
+55.5
+</td>
+<td style="text-align:right;">
 29.6
 </td>
 <td style="text-align:right;">
@@ -55324,6 +57479,9 @@ Census Tract 282; Kings County; New York
 </td>
 <td style="text-align:right;">
 1236
+</td>
+<td style="text-align:right;">
+51.9
 </td>
 <td style="text-align:right;">
 20.5
@@ -55403,6 +57561,9 @@ Census Tract 286; Kings County; New York
 1883
 </td>
 <td style="text-align:right;">
+35.1
+</td>
+<td style="text-align:right;">
 43.2
 </td>
 <td style="text-align:right;">
@@ -55478,6 +57639,9 @@ Census Tract 292; Kings County; New York
 </td>
 <td style="text-align:right;">
 1041
+</td>
+<td style="text-align:right;">
+45.7
 </td>
 <td style="text-align:right;">
 25.5
@@ -55557,6 +57721,9 @@ Census Tract 294; Kings County; New York
 667
 </td>
 <td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
 31.9
 </td>
 <td style="text-align:right;">
@@ -55632,6 +57799,9 @@ Census Tract 317.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1584
+</td>
+<td style="text-align:right;">
+20.2
 </td>
 <td style="text-align:right;">
 35.9
@@ -55711,6 +57881,9 @@ Census Tract 339; Kings County; New York
 2024
 </td>
 <td style="text-align:right;">
+44.0
+</td>
+<td style="text-align:right;">
 25.7
 </td>
 <td style="text-align:right;">
@@ -55786,6 +57959,9 @@ Census Tract 360.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1728
+</td>
+<td style="text-align:right;">
+60.0
 </td>
 <td style="text-align:right;">
 10.1
@@ -55865,6 +58041,9 @@ Census Tract 360.02; Kings County; New York
 2189
 </td>
 <td style="text-align:right;">
+66.2
+</td>
+<td style="text-align:right;">
 8.9
 </td>
 <td style="text-align:right;">
@@ -55940,6 +58119,9 @@ Census Tract 362; Kings County; New York
 </td>
 <td style="text-align:right;">
 1447
+</td>
+<td style="text-align:right;">
+31.8
 </td>
 <td style="text-align:right;">
 43.1
@@ -56019,6 +58201,9 @@ Census Tract 364; Kings County; New York
 930
 </td>
 <td style="text-align:right;">
+48.8
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -56094,6 +58279,9 @@ Census Tract 373; Kings County; New York
 </td>
 <td style="text-align:right;">
 1907
+</td>
+<td style="text-align:right;">
+25.7
 </td>
 <td style="text-align:right;">
 27.2
@@ -56173,6 +58361,9 @@ Census Tract 401; Kings County; New York
 1263
 </td>
 <td style="text-align:right;">
+28.3
+</td>
+<td style="text-align:right;">
 19.5
 </td>
 <td style="text-align:right;">
@@ -56248,6 +58439,9 @@ Census Tract 403; Kings County; New York
 </td>
 <td style="text-align:right;">
 1415
+</td>
+<td style="text-align:right;">
+32.1
 </td>
 <td style="text-align:right;">
 24.5
@@ -56327,6 +58521,9 @@ Census Tract 406; Kings County; New York
 1035
 </td>
 <td style="text-align:right;">
+39.1
+</td>
+<td style="text-align:right;">
 48.3
 </td>
 <td style="text-align:right;">
@@ -56402,6 +58599,9 @@ Census Tract 408; Kings County; New York
 </td>
 <td style="text-align:right;">
 1128
+</td>
+<td style="text-align:right;">
+40.6
 </td>
 <td style="text-align:right;">
 40.5
@@ -56481,6 +58681,9 @@ Census Tract 409; Kings County; New York
 1323
 </td>
 <td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
 30.2
 </td>
 <td style="text-align:right;">
@@ -56556,6 +58759,9 @@ Census Tract 410; Kings County; New York
 </td>
 <td style="text-align:right;">
 632
+</td>
+<td style="text-align:right;">
+46.2
 </td>
 <td style="text-align:right;">
 47.0
@@ -56635,6 +58841,9 @@ Census Tract 411; Kings County; New York
 1081
 </td>
 <td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
 23.6
 </td>
 <td style="text-align:right;">
@@ -56710,6 +58919,9 @@ Census Tract 412; Kings County; New York
 </td>
 <td style="text-align:right;">
 1012
+</td>
+<td style="text-align:right;">
+55.1
 </td>
 <td style="text-align:right;">
 33.6
@@ -56789,6 +59001,9 @@ Census Tract 413; Kings County; New York
 1374
 </td>
 <td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
 23.1
 </td>
 <td style="text-align:right;">
@@ -56864,6 +59079,9 @@ Census Tract 420; Kings County; New York
 </td>
 <td style="text-align:right;">
 485
+</td>
+<td style="text-align:right;">
+47.0
 </td>
 <td style="text-align:right;">
 40.0
@@ -56943,6 +59161,9 @@ Census Tract 422; Kings County; New York
 1083
 </td>
 <td style="text-align:right;">
+27.0
+</td>
+<td style="text-align:right;">
 38.0
 </td>
 <td style="text-align:right;">
@@ -57018,6 +59239,9 @@ Census Tract 424; Kings County; New York
 </td>
 <td style="text-align:right;">
 1212
+</td>
+<td style="text-align:right;">
+46.2
 </td>
 <td style="text-align:right;">
 42.2
@@ -57097,6 +59321,9 @@ Census Tract 426; Kings County; New York
 1584
 </td>
 <td style="text-align:right;">
+37.1
+</td>
+<td style="text-align:right;">
 36.1
 </td>
 <td style="text-align:right;">
@@ -57172,6 +59399,9 @@ Census Tract 430; Kings County; New York
 </td>
 <td style="text-align:right;">
 1330
+</td>
+<td style="text-align:right;">
+40.3
 </td>
 <td style="text-align:right;">
 39.3
@@ -57251,6 +59481,9 @@ Census Tract 432; Kings County; New York
 1442
 </td>
 <td style="text-align:right;">
+44.7
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -57326,6 +59559,9 @@ Census Tract 434; Kings County; New York
 </td>
 <td style="text-align:right;">
 1255
+</td>
+<td style="text-align:right;">
+43.3
 </td>
 <td style="text-align:right;">
 34.3
@@ -57405,6 +59641,9 @@ Census Tract 437; Kings County; New York
 1884
 </td>
 <td style="text-align:right;">
+21.9
+</td>
+<td style="text-align:right;">
 20.2
 </td>
 <td style="text-align:right;">
@@ -57480,6 +59719,9 @@ Census Tract 438; Kings County; New York
 </td>
 <td style="text-align:right;">
 923
+</td>
+<td style="text-align:right;">
+45.5
 </td>
 <td style="text-align:right;">
 37.5
@@ -57559,6 +59801,9 @@ Census Tract 440; Kings County; New York
 832
 </td>
 <td style="text-align:right;">
+38.1
+</td>
+<td style="text-align:right;">
 47.4
 </td>
 <td style="text-align:right;">
@@ -57634,6 +59879,9 @@ Census Tract 442; Kings County; New York
 </td>
 <td style="text-align:right;">
 870
+</td>
+<td style="text-align:right;">
+54.3
 </td>
 <td style="text-align:right;">
 31.5
@@ -57713,6 +59961,9 @@ Census Tract 444; Kings County; New York
 1070
 </td>
 <td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
 45.0
 </td>
 <td style="text-align:right;">
@@ -57788,6 +60039,9 @@ Census Tract 454; Kings County; New York
 </td>
 <td style="text-align:right;">
 497
+</td>
+<td style="text-align:right;">
+57.5
 </td>
 <td style="text-align:right;">
 36.8
@@ -57867,6 +60121,9 @@ Census Tract 464; Kings County; New York
 614
 </td>
 <td style="text-align:right;">
+37.1
+</td>
+<td style="text-align:right;">
 59.0
 </td>
 <td style="text-align:right;">
@@ -57942,6 +60199,9 @@ Census Tract 472; Kings County; New York
 </td>
 <td style="text-align:right;">
 668
+</td>
+<td style="text-align:right;">
+44.0
 </td>
 <td style="text-align:right;">
 53.7
@@ -58021,6 +60281,9 @@ Census Tract 474; Kings County; New York
 695
 </td>
 <td style="text-align:right;">
+51.7
+</td>
+<td style="text-align:right;">
 40.1
 </td>
 <td style="text-align:right;">
@@ -58096,6 +60359,9 @@ Census Tract 480; Kings County; New York
 </td>
 <td style="text-align:right;">
 964
+</td>
+<td style="text-align:right;">
+44.2
 </td>
 <td style="text-align:right;">
 34.6
@@ -58175,6 +60441,9 @@ Census Tract 484; Kings County; New York
 1521
 </td>
 <td style="text-align:right;">
+48.3
+</td>
+<td style="text-align:right;">
 41.2
 </td>
 <td style="text-align:right;">
@@ -58250,6 +60519,9 @@ Census Tract 488; Kings County; New York
 </td>
 <td style="text-align:right;">
 1657
+</td>
+<td style="text-align:right;">
+41.9
 </td>
 <td style="text-align:right;">
 32.6
@@ -58329,6 +60601,9 @@ Census Tract 490; Kings County; New York
 2215
 </td>
 <td style="text-align:right;">
+31.9
+</td>
+<td style="text-align:right;">
 39.0
 </td>
 <td style="text-align:right;">
@@ -58404,6 +60679,9 @@ Census Tract 494; Kings County; New York
 </td>
 <td style="text-align:right;">
 2179
+</td>
+<td style="text-align:right;">
+42.4
 </td>
 <td style="text-align:right;">
 19.9
@@ -58483,6 +60761,9 @@ Census Tract 496; Kings County; New York
 1249
 </td>
 <td style="text-align:right;">
+37.1
+</td>
+<td style="text-align:right;">
 28.6
 </td>
 <td style="text-align:right;">
@@ -58558,6 +60839,9 @@ Census Tract 498; Kings County; New York
 </td>
 <td style="text-align:right;">
 1586
+</td>
+<td style="text-align:right;">
+45.5
 </td>
 <td style="text-align:right;">
 30.5
@@ -58637,6 +60921,9 @@ Census Tract 500.01; Kings County; New York
 891
 </td>
 <td style="text-align:right;">
+48.8
+</td>
+<td style="text-align:right;">
 22.7
 </td>
 <td style="text-align:right;">
@@ -58712,6 +60999,9 @@ Census Tract 500.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 681
+</td>
+<td style="text-align:right;">
+34.2
 </td>
 <td style="text-align:right;">
 40.1
@@ -58791,6 +61081,9 @@ Census Tract 502.02; Kings County; New York
 1156
 </td>
 <td style="text-align:right;">
+45.2
+</td>
+<td style="text-align:right;">
 20.2
 </td>
 <td style="text-align:right;">
@@ -58866,6 +61159,9 @@ Census Tract 504.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1224
+</td>
+<td style="text-align:right;">
+32.7
 </td>
 <td style="text-align:right;">
 28.3
@@ -58945,6 +61241,9 @@ Census Tract 504.02; Kings County; New York
 941
 </td>
 <td style="text-align:right;">
+32.4
+</td>
+<td style="text-align:right;">
 18.8
 </td>
 <td style="text-align:right;">
@@ -59020,6 +61319,9 @@ Census Tract 534; Kings County; New York
 </td>
 <td style="text-align:right;">
 1378
+</td>
+<td style="text-align:right;">
+49.7
 </td>
 <td style="text-align:right;">
 46.2
@@ -59099,6 +61401,9 @@ Census Tract 542; Kings County; New York
 1538
 </td>
 <td style="text-align:right;">
+52.6
+</td>
+<td style="text-align:right;">
 28.5
 </td>
 <td style="text-align:right;">
@@ -59174,6 +61479,9 @@ Census Tract 554; Kings County; New York
 </td>
 <td style="text-align:right;">
 1672
+</td>
+<td style="text-align:right;">
+40.0
 </td>
 <td style="text-align:right;">
 26.3
@@ -59253,6 +61561,9 @@ Census Tract 556; Kings County; New York
 1346
 </td>
 <td style="text-align:right;">
+49.2
+</td>
+<td style="text-align:right;">
 30.2
 </td>
 <td style="text-align:right;">
@@ -59328,6 +61639,9 @@ Census Tract 582; Kings County; New York
 </td>
 <td style="text-align:right;">
 819
+</td>
+<td style="text-align:right;">
+48.1
 </td>
 <td style="text-align:right;">
 23.8
@@ -59407,6 +61721,9 @@ Census Tract 592; Kings County; New York
 1694
 </td>
 <td style="text-align:right;">
+48.6
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -59482,6 +61799,9 @@ Census Tract 594.03; Kings County; New York
 </td>
 <td style="text-align:right;">
 1083
+</td>
+<td style="text-align:right;">
+54.8
 </td>
 <td style="text-align:right;">
 26.7
@@ -59561,6 +61881,9 @@ Census Tract 594.04; Kings County; New York
 1671
 </td>
 <td style="text-align:right;">
+45.7
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -59636,6 +61959,9 @@ Census Tract 670; Kings County; New York
 </td>
 <td style="text-align:right;">
 1072
+</td>
+<td style="text-align:right;">
+57.5
 </td>
 <td style="text-align:right;">
 29.1
@@ -59715,6 +62041,9 @@ Census Tract 680; Kings County; New York
 656
 </td>
 <td style="text-align:right;">
+39.2
+</td>
+<td style="text-align:right;">
 34.1
 </td>
 <td style="text-align:right;">
@@ -59790,6 +62119,9 @@ Census Tract 682; Kings County; New York
 </td>
 <td style="text-align:right;">
 893
+</td>
+<td style="text-align:right;">
+54.6
 </td>
 <td style="text-align:right;">
 17.2
@@ -59869,6 +62201,9 @@ Census Tract 686; Kings County; New York
 697
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 30.6
 </td>
 <td style="text-align:right;">
@@ -59944,6 +62279,9 @@ Census Tract 688; Kings County; New York
 </td>
 <td style="text-align:right;">
 698
+</td>
+<td style="text-align:right;">
+52.3
 </td>
 <td style="text-align:right;">
 30.4
@@ -60023,6 +62361,9 @@ Census Tract 690; Kings County; New York
 620
 </td>
 <td style="text-align:right;">
+47.4
+</td>
+<td style="text-align:right;">
 37.6
 </td>
 <td style="text-align:right;">
@@ -60098,6 +62439,9 @@ Census Tract 692; Kings County; New York
 </td>
 <td style="text-align:right;">
 831
+</td>
+<td style="text-align:right;">
+46.2
 </td>
 <td style="text-align:right;">
 28.0
@@ -60177,6 +62521,9 @@ Census Tract 698; Kings County; New York
 417
 </td>
 <td style="text-align:right;">
+49.6
+</td>
+<td style="text-align:right;">
 37.4
 </td>
 <td style="text-align:right;">
@@ -60252,6 +62599,9 @@ Census Tract 790.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 462
+</td>
+<td style="text-align:right;">
+51.1
 </td>
 <td style="text-align:right;">
 33.8
@@ -60331,6 +62681,9 @@ Census Tract 790.02; Kings County; New York
 1175
 </td>
 <td style="text-align:right;">
+38.8
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -60406,6 +62759,9 @@ Census Tract 804; Kings County; New York
 </td>
 <td style="text-align:right;">
 1419
+</td>
+<td style="text-align:right;">
+50.0
 </td>
 <td style="text-align:right;">
 20.1
@@ -60485,6 +62841,9 @@ Census Tract 806; Kings County; New York
 1269
 </td>
 <td style="text-align:right;">
+34.4
+</td>
+<td style="text-align:right;">
 24.0
 </td>
 <td style="text-align:right;">
@@ -60560,6 +62919,9 @@ Census Tract 810; Kings County; New York
 </td>
 <td style="text-align:right;">
 926
+</td>
+<td style="text-align:right;">
+23.9
 </td>
 <td style="text-align:right;">
 25.4
@@ -60639,6 +63001,9 @@ Census Tract 828; Kings County; New York
 1409
 </td>
 <td style="text-align:right;">
+44.9
+</td>
+<td style="text-align:right;">
 20.4
 </td>
 <td style="text-align:right;">
@@ -60714,6 +63079,9 @@ Census Tract 858; Kings County; New York
 </td>
 <td style="text-align:right;">
 779
+</td>
+<td style="text-align:right;">
+52.4
 </td>
 <td style="text-align:right;">
 25.7
@@ -60793,6 +63161,9 @@ Census Tract 874.01; Kings County; New York
 1561
 </td>
 <td style="text-align:right;">
+50.9
+</td>
+<td style="text-align:right;">
 33.1
 </td>
 <td style="text-align:right;">
@@ -60868,6 +63239,9 @@ Census Tract 876; Kings County; New York
 </td>
 <td style="text-align:right;">
 728
+</td>
+<td style="text-align:right;">
+41.2
 </td>
 <td style="text-align:right;">
 24.2
@@ -60947,6 +63321,9 @@ Census Tract 878; Kings County; New York
 973
 </td>
 <td style="text-align:right;">
+37.9
+</td>
+<td style="text-align:right;">
 18.8
 </td>
 <td style="text-align:right;">
@@ -61022,6 +63399,9 @@ Census Tract 884; Kings County; New York
 </td>
 <td style="text-align:right;">
 1873
+</td>
+<td style="text-align:right;">
+46.0
 </td>
 <td style="text-align:right;">
 41.7
@@ -61101,6 +63481,9 @@ Census Tract 892; Kings County; New York
 1502
 </td>
 <td style="text-align:right;">
+53.7
+</td>
+<td style="text-align:right;">
 15.2
 </td>
 <td style="text-align:right;">
@@ -61176,6 +63559,9 @@ Census Tract 894; Kings County; New York
 </td>
 <td style="text-align:right;">
 1074
+</td>
+<td style="text-align:right;">
+50.0
 </td>
 <td style="text-align:right;">
 34.1
@@ -61255,6 +63641,9 @@ Census Tract 1172.02; Kings County; New York
 1542
 </td>
 <td style="text-align:right;">
+37.9
+</td>
+<td style="text-align:right;">
 49.3
 </td>
 <td style="text-align:right;">
@@ -61330,6 +63719,9 @@ Census Tract 1176.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 997
+</td>
+<td style="text-align:right;">
+37.5
 </td>
 <td style="text-align:right;">
 39.5
@@ -61409,6 +63801,9 @@ Census Tract 1182.01; Kings County; New York
 957
 </td>
 <td style="text-align:right;">
+29.5
+</td>
+<td style="text-align:right;">
 46.4
 </td>
 <td style="text-align:right;">
@@ -61484,6 +63879,9 @@ Census Tract 1182.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 948
+</td>
+<td style="text-align:right;">
+28.8
 </td>
 <td style="text-align:right;">
 57.2
@@ -61563,6 +63961,9 @@ Census Tract 1184; Kings County; New York
 1633
 </td>
 <td style="text-align:right;">
+40.2
+</td>
+<td style="text-align:right;">
 44.0
 </td>
 <td style="text-align:right;">
@@ -61638,6 +64039,9 @@ Census Tract 1186; Kings County; New York
 </td>
 <td style="text-align:right;">
 810
+</td>
+<td style="text-align:right;">
+56.4
 </td>
 <td style="text-align:right;">
 37.7
@@ -61717,6 +64121,9 @@ Census Tract 1188; Kings County; New York
 1253
 </td>
 <td style="text-align:right;">
+39.7
+</td>
+<td style="text-align:right;">
 50.2
 </td>
 <td style="text-align:right;">
@@ -61792,6 +64199,9 @@ Census Tract 73; New York County; New York
 </td>
 <td style="text-align:right;">
 3548
+</td>
+<td style="text-align:right;">
+19.0
 </td>
 <td style="text-align:right;">
 7.9
@@ -61871,6 +64281,9 @@ Census Tract 77; New York County; New York
 3372
 </td>
 <td style="text-align:right;">
+26.0
+</td>
+<td style="text-align:right;">
 7.9
 </td>
 <td style="text-align:right;">
@@ -61946,6 +64359,9 @@ Census Tract 185; New York County; New York
 </td>
 <td style="text-align:right;">
 2786
+</td>
+<td style="text-align:right;">
+37.4
 </td>
 <td style="text-align:right;">
 14.5
@@ -62025,6 +64441,9 @@ Census Tract 189; New York County; New York
 4703
 </td>
 <td style="text-align:right;">
+46.0
+</td>
+<td style="text-align:right;">
 25.5
 </td>
 <td style="text-align:right;">
@@ -62100,6 +64519,9 @@ Census Tract 239; New York County; New York
 </td>
 <td style="text-align:right;">
 1202
+</td>
+<td style="text-align:right;">
+38.3
 </td>
 <td style="text-align:right;">
 22.0
@@ -62179,6 +64601,9 @@ Census Tract 243.01; New York County; New York
 1576
 </td>
 <td style="text-align:right;">
+41.6
+</td>
+<td style="text-align:right;">
 25.3
 </td>
 <td style="text-align:right;">
@@ -62254,6 +64679,9 @@ Census Tract 249; New York County; New York
 </td>
 <td style="text-align:right;">
 445
+</td>
+<td style="text-align:right;">
+41.3
 </td>
 <td style="text-align:right;">
 15.3
@@ -62333,6 +64761,9 @@ Census Tract 261; New York County; New York
 3997
 </td>
 <td style="text-align:right;">
+43.9
+</td>
+<td style="text-align:right;">
 31.5
 </td>
 <td style="text-align:right;">
@@ -62408,6 +64839,9 @@ Census Tract 2; Queens County; New York
 </td>
 <td style="text-align:right;">
 838
+</td>
+<td style="text-align:right;">
+36.5
 </td>
 <td style="text-align:right;">
 23.0
@@ -62487,6 +64921,9 @@ Census Tract 4; Queens County; New York
 1142
 </td>
 <td style="text-align:right;">
+53.9
+</td>
+<td style="text-align:right;">
 48.4
 </td>
 <td style="text-align:right;">
@@ -62562,6 +64999,9 @@ Census Tract 6; Queens County; New York
 </td>
 <td style="text-align:right;">
 993
+</td>
+<td style="text-align:right;">
+47.1
 </td>
 <td style="text-align:right;">
 52.2
@@ -62641,6 +65081,9 @@ Census Tract 8; Queens County; New York
 947
 </td>
 <td style="text-align:right;">
+49.9
+</td>
+<td style="text-align:right;">
 35.4
 </td>
 <td style="text-align:right;">
@@ -62716,6 +65159,9 @@ Census Tract 10; Queens County; New York
 </td>
 <td style="text-align:right;">
 1077
+</td>
+<td style="text-align:right;">
+47.4
 </td>
 <td style="text-align:right;">
 57.6
@@ -62795,6 +65241,9 @@ Census Tract 12; Queens County; New York
 1235
 </td>
 <td style="text-align:right;">
+41.6
+</td>
+<td style="text-align:right;">
 26.8
 </td>
 <td style="text-align:right;">
@@ -62870,6 +65319,9 @@ Census Tract 14; Queens County; New York
 </td>
 <td style="text-align:right;">
 1192
+</td>
+<td style="text-align:right;">
+27.5
 </td>
 <td style="text-align:right;">
 30.2
@@ -62949,6 +65401,9 @@ Census Tract 16; Queens County; New York
 768
 </td>
 <td style="text-align:right;">
+48.0
+</td>
+<td style="text-align:right;">
 23.7
 </td>
 <td style="text-align:right;">
@@ -63024,6 +65479,9 @@ Census Tract 18; Queens County; New York
 </td>
 <td style="text-align:right;">
 876
+</td>
+<td style="text-align:right;">
+37.6
 </td>
 <td style="text-align:right;">
 32.4
@@ -63103,6 +65561,9 @@ Census Tract 20; Queens County; New York
 452
 </td>
 <td style="text-align:right;">
+54.9
+</td>
+<td style="text-align:right;">
 32.5
 </td>
 <td style="text-align:right;">
@@ -63178,6 +65639,9 @@ Census Tract 22; Queens County; New York
 </td>
 <td style="text-align:right;">
 689
+</td>
+<td style="text-align:right;">
+43.8
 </td>
 <td style="text-align:right;">
 44.8
@@ -63260,6 +65724,9 @@ Census Tract 24; Queens County; New York
 42.9
 </td>
 <td style="text-align:right;">
+42.9
+</td>
+<td style="text-align:right;">
 57.1
 </td>
 <td style="text-align:right;">
@@ -63332,6 +65799,9 @@ Census Tract 26; Queens County; New York
 </td>
 <td style="text-align:right;">
 674
+</td>
+<td style="text-align:right;">
+58.3
 </td>
 <td style="text-align:right;">
 29.4
@@ -63411,6 +65881,9 @@ Census Tract 28; Queens County; New York
 1141
 </td>
 <td style="text-align:right;">
+58.2
+</td>
+<td style="text-align:right;">
 25.4
 </td>
 <td style="text-align:right;">
@@ -63486,6 +65959,9 @@ Census Tract 30; Queens County; New York
 </td>
 <td style="text-align:right;">
 422
+</td>
+<td style="text-align:right;">
+63.5
 </td>
 <td style="text-align:right;">
 33.9
@@ -63565,6 +66041,9 @@ Census Tract 32; Queens County; New York
 540
 </td>
 <td style="text-align:right;">
+53.9
+</td>
+<td style="text-align:right;">
 39.4
 </td>
 <td style="text-align:right;">
@@ -63640,6 +66119,9 @@ Census Tract 34; Queens County; New York
 </td>
 <td style="text-align:right;">
 718
+</td>
+<td style="text-align:right;">
+47.1
 </td>
 <td style="text-align:right;">
 31.1
@@ -63719,6 +66201,9 @@ Census Tract 36; Queens County; New York
 1136
 </td>
 <td style="text-align:right;">
+46.1
+</td>
+<td style="text-align:right;">
 47.8
 </td>
 <td style="text-align:right;">
@@ -63794,6 +66279,9 @@ Census Tract 38; Queens County; New York
 </td>
 <td style="text-align:right;">
 683
+</td>
+<td style="text-align:right;">
+31.8
 </td>
 <td style="text-align:right;">
 42.5
@@ -63873,6 +66361,9 @@ Census Tract 40.01; Queens County; New York
 643
 </td>
 <td style="text-align:right;">
+37.5
+</td>
+<td style="text-align:right;">
 39.7
 </td>
 <td style="text-align:right;">
@@ -63948,6 +66439,9 @@ Census Tract 40.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 528
+</td>
+<td style="text-align:right;">
+56.3
 </td>
 <td style="text-align:right;">
 24.8
@@ -64027,6 +66521,9 @@ Census Tract 42; Queens County; New York
 1067
 </td>
 <td style="text-align:right;">
+43.0
+</td>
+<td style="text-align:right;">
 39.9
 </td>
 <td style="text-align:right;">
@@ -64102,6 +66599,9 @@ Census Tract 44.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1092
+</td>
+<td style="text-align:right;">
+32.8
 </td>
 <td style="text-align:right;">
 55.1
@@ -64181,6 +66681,9 @@ Census Tract 52; Queens County; New York
 730
 </td>
 <td style="text-align:right;">
+47.9
+</td>
+<td style="text-align:right;">
 32.9
 </td>
 <td style="text-align:right;">
@@ -64256,6 +66759,9 @@ Census Tract 54; Queens County; New York
 </td>
 <td style="text-align:right;">
 1862
+</td>
+<td style="text-align:right;">
+51.9
 </td>
 <td style="text-align:right;">
 32.5
@@ -64335,6 +66841,9 @@ Census Tract 58; Queens County; New York
 1959
 </td>
 <td style="text-align:right;">
+48.3
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -64410,6 +66919,9 @@ Census Tract 63; Queens County; New York
 </td>
 <td style="text-align:right;">
 2667
+</td>
+<td style="text-align:right;">
+19.7
 </td>
 <td style="text-align:right;">
 12.1
@@ -64489,6 +67001,9 @@ Census Tract 65.01; Queens County; New York
 1581
 </td>
 <td style="text-align:right;">
+28.3
+</td>
+<td style="text-align:right;">
 10.6
 </td>
 <td style="text-align:right;">
@@ -64564,6 +67079,9 @@ Census Tract 65.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1718
+</td>
+<td style="text-align:right;">
+28.8
 </td>
 <td style="text-align:right;">
 11.8
@@ -64643,6 +67161,9 @@ Census Tract 69; Queens County; New York
 1808
 </td>
 <td style="text-align:right;">
+23.0
+</td>
+<td style="text-align:right;">
 16.5
 </td>
 <td style="text-align:right;">
@@ -64718,6 +67239,9 @@ Census Tract 71; Queens County; New York
 </td>
 <td style="text-align:right;">
 1545
+</td>
+<td style="text-align:right;">
+19.6
 </td>
 <td style="text-align:right;">
 13.1
@@ -64797,6 +67321,9 @@ Census Tract 73; Queens County; New York
 1980
 </td>
 <td style="text-align:right;">
+16.3
+</td>
+<td style="text-align:right;">
 5.5
 </td>
 <td style="text-align:right;">
@@ -64872,6 +67399,9 @@ Census Tract 86; Queens County; New York
 </td>
 <td style="text-align:right;">
 961
+</td>
+<td style="text-align:right;">
+47.1
 </td>
 <td style="text-align:right;">
 32.9
@@ -64951,6 +67481,9 @@ Census Tract 88; Queens County; New York
 1173
 </td>
 <td style="text-align:right;">
+49.7
+</td>
+<td style="text-align:right;">
 40.8
 </td>
 <td style="text-align:right;">
@@ -65026,6 +67559,9 @@ Census Tract 94; Queens County; New York
 </td>
 <td style="text-align:right;">
 753
+</td>
+<td style="text-align:right;">
+44.5
 </td>
 <td style="text-align:right;">
 41.0
@@ -65105,6 +67641,9 @@ Census Tract 95; Queens County; New York
 811
 </td>
 <td style="text-align:right;">
+33.8
+</td>
+<td style="text-align:right;">
 19.5
 </td>
 <td style="text-align:right;">
@@ -65180,6 +67719,9 @@ Census Tract 96; Queens County; New York
 </td>
 <td style="text-align:right;">
 1014
+</td>
+<td style="text-align:right;">
+69.0
 </td>
 <td style="text-align:right;">
 55.0
@@ -65259,6 +67801,9 @@ Census Tract 97; Queens County; New York
 1614
 </td>
 <td style="text-align:right;">
+31.7
+</td>
+<td style="text-align:right;">
 24.7
 </td>
 <td style="text-align:right;">
@@ -65334,6 +67879,9 @@ Census Tract 98; Queens County; New York
 </td>
 <td style="text-align:right;">
 672
+</td>
+<td style="text-align:right;">
+45.1
 </td>
 <td style="text-align:right;">
 33.3
@@ -65413,6 +67961,9 @@ Census Tract 100; Queens County; New York
 919
 </td>
 <td style="text-align:right;">
+77.7
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -65488,6 +68039,9 @@ Census Tract 101; Queens County; New York
 </td>
 <td style="text-align:right;">
 1001
+</td>
+<td style="text-align:right;">
+38.0
 </td>
 <td style="text-align:right;">
 19.0
@@ -65567,6 +68121,9 @@ Census Tract 102; Queens County; New York
 855
 </td>
 <td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
 38.1
 </td>
 <td style="text-align:right;">
@@ -65642,6 +68199,9 @@ Census Tract 103; Queens County; New York
 </td>
 <td style="text-align:right;">
 1901
+</td>
+<td style="text-align:right;">
+41.3
 </td>
 <td style="text-align:right;">
 19.3
@@ -65721,6 +68281,9 @@ Census Tract 104; Queens County; New York
 996
 </td>
 <td style="text-align:right;">
+55.2
+</td>
+<td style="text-align:right;">
 27.5
 </td>
 <td style="text-align:right;">
@@ -65796,6 +68359,9 @@ Census Tract 106; Queens County; New York
 </td>
 <td style="text-align:right;">
 939
+</td>
+<td style="text-align:right;">
+62.7
 </td>
 <td style="text-align:right;">
 30.0
@@ -65875,6 +68441,9 @@ Census Tract 108; Queens County; New York
 805
 </td>
 <td style="text-align:right;">
+56.4
+</td>
+<td style="text-align:right;">
 33.2
 </td>
 <td style="text-align:right;">
@@ -65950,6 +68519,9 @@ Census Tract 110; Queens County; New York
 </td>
 <td style="text-align:right;">
 795
+</td>
+<td style="text-align:right;">
+47.4
 </td>
 <td style="text-align:right;">
 40.8
@@ -66029,6 +68601,9 @@ Census Tract 111; Queens County; New York
 1265
 </td>
 <td style="text-align:right;">
+32.3
+</td>
+<td style="text-align:right;">
 21.8
 </td>
 <td style="text-align:right;">
@@ -66104,6 +68679,9 @@ Census Tract 112; Queens County; New York
 </td>
 <td style="text-align:right;">
 831
+</td>
+<td style="text-align:right;">
+48.3
 </td>
 <td style="text-align:right;">
 26.8
@@ -66183,6 +68761,9 @@ Census Tract 113; Queens County; New York
 1824
 </td>
 <td style="text-align:right;">
+18.2
+</td>
+<td style="text-align:right;">
 16.4
 </td>
 <td style="text-align:right;">
@@ -66258,6 +68839,9 @@ Census Tract 114; Queens County; New York
 </td>
 <td style="text-align:right;">
 399
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 46.6
@@ -66337,6 +68921,9 @@ Census Tract 115; Queens County; New York
 1058
 </td>
 <td style="text-align:right;">
+29.1
+</td>
+<td style="text-align:right;">
 20.6
 </td>
 <td style="text-align:right;">
@@ -66412,6 +68999,9 @@ Census Tract 116; Queens County; New York
 </td>
 <td style="text-align:right;">
 619
+</td>
+<td style="text-align:right;">
+52.8
 </td>
 <td style="text-align:right;">
 34.6
@@ -66491,6 +69081,9 @@ Census Tract 117; Queens County; New York
 1629
 </td>
 <td style="text-align:right;">
+27.0
+</td>
+<td style="text-align:right;">
 13.8
 </td>
 <td style="text-align:right;">
@@ -66566,6 +69159,9 @@ Census Tract 118; Queens County; New York
 </td>
 <td style="text-align:right;">
 884
+</td>
+<td style="text-align:right;">
+25.0
 </td>
 <td style="text-align:right;">
 35.4
@@ -66645,6 +69241,9 @@ Census Tract 120; Queens County; New York
 685
 </td>
 <td style="text-align:right;">
+39.3
+</td>
+<td style="text-align:right;">
 44.4
 </td>
 <td style="text-align:right;">
@@ -66720,6 +69319,9 @@ Census Tract 121; Queens County; New York
 </td>
 <td style="text-align:right;">
 876
+</td>
+<td style="text-align:right;">
+38.8
 </td>
 <td style="text-align:right;">
 17.5
@@ -66799,6 +69401,9 @@ Census Tract 122; Queens County; New York
 753
 </td>
 <td style="text-align:right;">
+66.3
+</td>
+<td style="text-align:right;">
 39.2
 </td>
 <td style="text-align:right;">
@@ -66874,6 +69479,9 @@ Census Tract 123.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1240
+</td>
+<td style="text-align:right;">
+24.1
 </td>
 <td style="text-align:right;">
 31.9
@@ -66953,6 +69561,9 @@ Census Tract 124; Queens County; New York
 909
 </td>
 <td style="text-align:right;">
+51.8
+</td>
+<td style="text-align:right;">
 42.2
 </td>
 <td style="text-align:right;">
@@ -67028,6 +69639,9 @@ Census Tract 125; Queens County; New York
 </td>
 <td style="text-align:right;">
 582
+</td>
+<td style="text-align:right;">
+35.6
 </td>
 <td style="text-align:right;">
 21.1
@@ -67107,6 +69721,9 @@ Census Tract 126.01; Queens County; New York
 774
 </td>
 <td style="text-align:right;">
+34.5
+</td>
+<td style="text-align:right;">
 50.1
 </td>
 <td style="text-align:right;">
@@ -67182,6 +69799,9 @@ Census Tract 126.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 759
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 33.3
@@ -67261,6 +69881,9 @@ Census Tract 128; Queens County; New York
 748
 </td>
 <td style="text-align:right;">
+49.2
+</td>
+<td style="text-align:right;">
 29.0
 </td>
 <td style="text-align:right;">
@@ -67336,6 +69959,9 @@ Census Tract 130; Queens County; New York
 </td>
 <td style="text-align:right;">
 686
+</td>
+<td style="text-align:right;">
+38.0
 </td>
 <td style="text-align:right;">
 22.2
@@ -67415,6 +70041,9 @@ Census Tract 132; Queens County; New York
 666
 </td>
 <td style="text-align:right;">
+38.1
+</td>
+<td style="text-align:right;">
 28.8
 </td>
 <td style="text-align:right;">
@@ -67490,6 +70119,9 @@ Census Tract 135; Queens County; New York
 </td>
 <td style="text-align:right;">
 484
+</td>
+<td style="text-align:right;">
+49.2
 </td>
 <td style="text-align:right;">
 21.9
@@ -67569,6 +70201,9 @@ Census Tract 140; Queens County; New York
 1305
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 30.5
 </td>
 <td style="text-align:right;">
@@ -67644,6 +70279,9 @@ Census Tract 142.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1534
+</td>
+<td style="text-align:right;">
+34.0
 </td>
 <td style="text-align:right;">
 36.8
@@ -67723,6 +70361,9 @@ Census Tract 142.02; Queens County; New York
 649
 </td>
 <td style="text-align:right;">
+61.9
+</td>
+<td style="text-align:right;">
 40.2
 </td>
 <td style="text-align:right;">
@@ -67798,6 +70439,9 @@ Census Tract 143; Queens County; New York
 </td>
 <td style="text-align:right;">
 1603
+</td>
+<td style="text-align:right;">
+32.4
 </td>
 <td style="text-align:right;">
 23.3
@@ -67877,6 +70521,9 @@ Census Tract 144; Queens County; New York
 491
 </td>
 <td style="text-align:right;">
+52.7
+</td>
+<td style="text-align:right;">
 36.9
 </td>
 <td style="text-align:right;">
@@ -67952,6 +70599,9 @@ Census Tract 147; Queens County; New York
 </td>
 <td style="text-align:right;">
 1382
+</td>
+<td style="text-align:right;">
+28.9
 </td>
 <td style="text-align:right;">
 20.5
@@ -68031,6 +70681,9 @@ Census Tract 148; Queens County; New York
 575
 </td>
 <td style="text-align:right;">
+64.2
+</td>
+<td style="text-align:right;">
 21.6
 </td>
 <td style="text-align:right;">
@@ -68106,6 +70759,9 @@ Census Tract 149; Queens County; New York
 </td>
 <td style="text-align:right;">
 957
+</td>
+<td style="text-align:right;">
+26.1
 </td>
 <td style="text-align:right;">
 19.7
@@ -68185,6 +70841,9 @@ Census Tract 150; Queens County; New York
 584
 </td>
 <td style="text-align:right;">
+45.0
+</td>
+<td style="text-align:right;">
 29.3
 </td>
 <td style="text-align:right;">
@@ -68260,6 +70919,9 @@ Census Tract 151; Queens County; New York
 </td>
 <td style="text-align:right;">
 1203
+</td>
+<td style="text-align:right;">
+30.8
 </td>
 <td style="text-align:right;">
 12.1
@@ -68339,6 +71001,9 @@ Census Tract 154; Queens County; New York
 500
 </td>
 <td style="text-align:right;">
+47.2
+</td>
+<td style="text-align:right;">
 36.6
 </td>
 <td style="text-align:right;">
@@ -68414,6 +71079,9 @@ Census Tract 156; Queens County; New York
 </td>
 <td style="text-align:right;">
 764
+</td>
+<td style="text-align:right;">
+46.2
 </td>
 <td style="text-align:right;">
 23.4
@@ -68493,6 +71161,9 @@ Census Tract 158.02; Queens County; New York
 1158
 </td>
 <td style="text-align:right;">
+49.4
+</td>
+<td style="text-align:right;">
 38.8
 </td>
 <td style="text-align:right;">
@@ -68568,6 +71239,9 @@ Census Tract 163; Queens County; New York
 </td>
 <td style="text-align:right;">
 1690
+</td>
+<td style="text-align:right;">
+59.6
 </td>
 <td style="text-align:right;">
 27.0
@@ -68647,6 +71321,9 @@ Census Tract 164; Queens County; New York
 959
 </td>
 <td style="text-align:right;">
+69.1
+</td>
+<td style="text-align:right;">
 26.9
 </td>
 <td style="text-align:right;">
@@ -68722,6 +71399,9 @@ Census Tract 166; Queens County; New York
 </td>
 <td style="text-align:right;">
 1151
+</td>
+<td style="text-align:right;">
+59.4
 </td>
 <td style="text-align:right;">
 35.6
@@ -68801,6 +71481,9 @@ Census Tract 168; Queens County; New York
 899
 </td>
 <td style="text-align:right;">
+51.6
+</td>
+<td style="text-align:right;">
 38.0
 </td>
 <td style="text-align:right;">
@@ -68876,6 +71559,9 @@ Census Tract 174; Queens County; New York
 </td>
 <td style="text-align:right;">
 715
+</td>
+<td style="text-align:right;">
+42.0
 </td>
 <td style="text-align:right;">
 37.3
@@ -68955,6 +71641,9 @@ Census Tract 176; Queens County; New York
 597
 </td>
 <td style="text-align:right;">
+56.6
+</td>
+<td style="text-align:right;">
 37.2
 </td>
 <td style="text-align:right;">
@@ -69030,6 +71719,9 @@ Census Tract 178; Queens County; New York
 </td>
 <td style="text-align:right;">
 625
+</td>
+<td style="text-align:right;">
+44.6
 </td>
 <td style="text-align:right;">
 39.5
@@ -69109,6 +71801,9 @@ Census Tract 179.01; Queens County; New York
 454
 </td>
 <td style="text-align:right;">
+33.5
+</td>
+<td style="text-align:right;">
 18.1
 </td>
 <td style="text-align:right;">
@@ -69184,6 +71879,9 @@ Census Tract 180; Queens County; New York
 </td>
 <td style="text-align:right;">
 364
+</td>
+<td style="text-align:right;">
+66.5
 </td>
 <td style="text-align:right;">
 47.0
@@ -69263,6 +71961,9 @@ Census Tract 181.01; Queens County; New York
 1783
 </td>
 <td style="text-align:right;">
+34.5
+</td>
+<td style="text-align:right;">
 13.0
 </td>
 <td style="text-align:right;">
@@ -69338,6 +72039,9 @@ Census Tract 181.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1757
+</td>
+<td style="text-align:right;">
+25.0
 </td>
 <td style="text-align:right;">
 16.1
@@ -69417,6 +72121,9 @@ Census Tract 182; Queens County; New York
 735
 </td>
 <td style="text-align:right;">
+44.2
+</td>
+<td style="text-align:right;">
 48.7
 </td>
 <td style="text-align:right;">
@@ -69492,6 +72199,9 @@ Census Tract 183; Queens County; New York
 </td>
 <td style="text-align:right;">
 2361
+</td>
+<td style="text-align:right;">
+29.3
 </td>
 <td style="text-align:right;">
 19.7
@@ -69571,6 +72281,9 @@ Census Tract 184.01; Queens County; New York
 692
 </td>
 <td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
 36.3
 </td>
 <td style="text-align:right;">
@@ -69646,6 +72359,9 @@ Census Tract 184.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 660
+</td>
+<td style="text-align:right;">
+53.6
 </td>
 <td style="text-align:right;">
 48.3
@@ -69725,6 +72441,9 @@ Census Tract 185.01; Queens County; New York
 1737
 </td>
 <td style="text-align:right;">
+32.7
+</td>
+<td style="text-align:right;">
 17.8
 </td>
 <td style="text-align:right;">
@@ -69800,6 +72519,9 @@ Census Tract 185.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1616
+</td>
+<td style="text-align:right;">
+21.3
 </td>
 <td style="text-align:right;">
 15.3
@@ -69879,6 +72601,9 @@ Census Tract 186; Queens County; New York
 580
 </td>
 <td style="text-align:right;">
+36.4
+</td>
+<td style="text-align:right;">
 33.8
 </td>
 <td style="text-align:right;">
@@ -69954,6 +72679,9 @@ Census Tract 188; Queens County; New York
 </td>
 <td style="text-align:right;">
 417
+</td>
+<td style="text-align:right;">
+48.4
 </td>
 <td style="text-align:right;">
 35.0
@@ -70033,6 +72761,9 @@ Census Tract 189; Queens County; New York
 1207
 </td>
 <td style="text-align:right;">
+48.1
+</td>
+<td style="text-align:right;">
 41.2
 </td>
 <td style="text-align:right;">
@@ -70108,6 +72839,9 @@ Census Tract 212; Queens County; New York
 </td>
 <td style="text-align:right;">
 702
+</td>
+<td style="text-align:right;">
+45.3
 </td>
 <td style="text-align:right;">
 44.2
@@ -70187,6 +72921,9 @@ Census Tract 214; Queens County; New York
 2166
 </td>
 <td style="text-align:right;">
+46.5
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -70262,6 +72999,9 @@ Census Tract 216.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 560
+</td>
+<td style="text-align:right;">
+50.4
 </td>
 <td style="text-align:right;">
 38.2
@@ -70341,6 +73081,9 @@ Census Tract 220.02; Queens County; New York
 2677
 </td>
 <td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
 29.0
 </td>
 <td style="text-align:right;">
@@ -70416,6 +73159,9 @@ Census Tract 230; Queens County; New York
 </td>
 <td style="text-align:right;">
 542
+</td>
+<td style="text-align:right;">
+51.3
 </td>
 <td style="text-align:right;">
 39.3
@@ -70495,6 +73241,9 @@ Census Tract 232; Queens County; New York
 1868
 </td>
 <td style="text-align:right;">
+48.2
+</td>
+<td style="text-align:right;">
 19.7
 </td>
 <td style="text-align:right;">
@@ -70570,6 +73319,9 @@ Census Tract 235.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1631
+</td>
+<td style="text-align:right;">
+37.2
 </td>
 <td style="text-align:right;">
 29.8
@@ -70649,6 +73401,9 @@ Census Tract 235.02; Queens County; New York
 1132
 </td>
 <td style="text-align:right;">
+28.1
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -70724,6 +73479,9 @@ Census Tract 236; Queens County; New York
 </td>
 <td style="text-align:right;">
 919
+</td>
+<td style="text-align:right;">
+41.3
 </td>
 <td style="text-align:right;">
 28.2
@@ -70803,6 +73561,9 @@ Census Tract 238; Queens County; New York
 1578
 </td>
 <td style="text-align:right;">
+30.9
+</td>
+<td style="text-align:right;">
 43.2
 </td>
 <td style="text-align:right;">
@@ -70878,6 +73639,9 @@ Census Tract 240; Queens County; New York
 </td>
 <td style="text-align:right;">
 2058
+</td>
+<td style="text-align:right;">
+41.7
 </td>
 <td style="text-align:right;">
 35.6
@@ -70957,6 +73721,9 @@ Census Tract 243; Queens County; New York
 2199
 </td>
 <td style="text-align:right;">
+56.2
+</td>
+<td style="text-align:right;">
 25.0
 </td>
 <td style="text-align:right;">
@@ -71032,6 +73799,9 @@ Census Tract 245; Queens County; New York
 </td>
 <td style="text-align:right;">
 2132
+</td>
+<td style="text-align:right;">
+52.2
 </td>
 <td style="text-align:right;">
 16.2
@@ -71111,6 +73881,9 @@ Census Tract 247; Queens County; New York
 443
 </td>
 <td style="text-align:right;">
+41.8
+</td>
+<td style="text-align:right;">
 30.7
 </td>
 <td style="text-align:right;">
@@ -71186,6 +73959,9 @@ Census Tract 249; Queens County; New York
 </td>
 <td style="text-align:right;">
 2039
+</td>
+<td style="text-align:right;">
+36.1
 </td>
 <td style="text-align:right;">
 27.2
@@ -71265,6 +74041,9 @@ Census Tract 251; Queens County; New York
 2556
 </td>
 <td style="text-align:right;">
+44.7
+</td>
+<td style="text-align:right;">
 20.9
 </td>
 <td style="text-align:right;">
@@ -71340,6 +74119,9 @@ Census Tract 253.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1830
+</td>
+<td style="text-align:right;">
+33.8
 </td>
 <td style="text-align:right;">
 19.0
@@ -71419,6 +74201,9 @@ Census Tract 253.02; Queens County; New York
 1278
 </td>
 <td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -71494,6 +74279,9 @@ Census Tract 255; Queens County; New York
 </td>
 <td style="text-align:right;">
 529
+</td>
+<td style="text-align:right;">
+29.7
 </td>
 <td style="text-align:right;">
 41.0
@@ -71573,6 +74361,9 @@ Census Tract 257; Queens County; New York
 572
 </td>
 <td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
 28.1
 </td>
 <td style="text-align:right;">
@@ -71648,6 +74439,9 @@ Census Tract 259; Queens County; New York
 </td>
 <td style="text-align:right;">
 1344
+</td>
+<td style="text-align:right;">
+36.0
 </td>
 <td style="text-align:right;">
 18.8
@@ -71727,6 +74521,9 @@ Census Tract 261; Queens County; New York
 2378
 </td>
 <td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
 32.7
 </td>
 <td style="text-align:right;">
@@ -71802,6 +74599,9 @@ Census Tract 263; Queens County; New York
 </td>
 <td style="text-align:right;">
 2210
+</td>
+<td style="text-align:right;">
+32.8
 </td>
 <td style="text-align:right;">
 32.6
@@ -71881,6 +74681,9 @@ Census Tract 265.02; Queens County; New York
 408
 </td>
 <td style="text-align:right;">
+3.9
+</td>
+<td style="text-align:right;">
 62.7
 </td>
 <td style="text-align:right;">
@@ -71956,6 +74759,9 @@ Census Tract 267; Queens County; New York
 </td>
 <td style="text-align:right;">
 2388
+</td>
+<td style="text-align:right;">
+37.4
 </td>
 <td style="text-align:right;">
 24.7
@@ -72035,6 +74841,9 @@ Census Tract 269.02; Queens County; New York
 1437
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 26.4
 </td>
 <td style="text-align:right;">
@@ -72110,6 +74919,9 @@ Census Tract 271.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1801
+</td>
+<td style="text-align:right;">
+45.3
 </td>
 <td style="text-align:right;">
 33.1
@@ -72189,6 +75001,9 @@ Census Tract 271.02; Queens County; New York
 975
 </td>
 <td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
 27.9
 </td>
 <td style="text-align:right;">
@@ -72264,6 +75079,9 @@ Census Tract 272; Queens County; New York
 </td>
 <td style="text-align:right;">
 572
+</td>
+<td style="text-align:right;">
+43.7
 </td>
 <td style="text-align:right;">
 22.7
@@ -72343,6 +75161,9 @@ Census Tract 275; Queens County; New York
 2345
 </td>
 <td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
 29.3
 </td>
 <td style="text-align:right;">
@@ -72418,6 +75239,9 @@ Census Tract 276; Queens County; New York
 </td>
 <td style="text-align:right;">
 415
+</td>
+<td style="text-align:right;">
+58.6
 </td>
 <td style="text-align:right;">
 44.8
@@ -72497,6 +75321,9 @@ Census Tract 278; Queens County; New York
 918
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 30.3
 </td>
 <td style="text-align:right;">
@@ -72572,6 +75399,9 @@ Census Tract 282; Queens County; New York
 </td>
 <td style="text-align:right;">
 608
+</td>
+<td style="text-align:right;">
+26.8
 </td>
 <td style="text-align:right;">
 57.7
@@ -72651,6 +75481,9 @@ Census Tract 284; Queens County; New York
 1220
 </td>
 <td style="text-align:right;">
+53.4
+</td>
+<td style="text-align:right;">
 46.4
 </td>
 <td style="text-align:right;">
@@ -72726,6 +75559,9 @@ Census Tract 288.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 795
+</td>
+<td style="text-align:right;">
+49.6
 </td>
 <td style="text-align:right;">
 44.0
@@ -72805,6 +75641,9 @@ Census Tract 293; Queens County; New York
 381
 </td>
 <td style="text-align:right;">
+29.4
+</td>
+<td style="text-align:right;">
 45.7
 </td>
 <td style="text-align:right;">
@@ -72880,6 +75719,9 @@ Census Tract 295; Queens County; New York
 </td>
 <td style="text-align:right;">
 1875
+</td>
+<td style="text-align:right;">
+37.0
 </td>
 <td style="text-align:right;">
 20.1
@@ -72959,6 +75801,9 @@ Census Tract 309.03; Queens County; New York
 1680
 </td>
 <td style="text-align:right;">
+54.6
+</td>
+<td style="text-align:right;">
 20.9
 </td>
 <td style="text-align:right;">
@@ -73034,6 +75879,9 @@ Census Tract 309.04; Queens County; New York
 </td>
 <td style="text-align:right;">
 1031
+</td>
+<td style="text-align:right;">
+64.3
 </td>
 <td style="text-align:right;">
 20.4
@@ -73113,6 +75961,9 @@ Census Tract 309.06; Queens County; New York
 1201
 </td>
 <td style="text-align:right;">
+55.5
+</td>
+<td style="text-align:right;">
 17.2
 </td>
 <td style="text-align:right;">
@@ -73188,6 +76039,9 @@ Census Tract 317; Queens County; New York
 </td>
 <td style="text-align:right;">
 2196
+</td>
+<td style="text-align:right;">
+47.6
 </td>
 <td style="text-align:right;">
 17.4
@@ -73267,6 +76121,9 @@ Census Tract 328; Queens County; New York
 854
 </td>
 <td style="text-align:right;">
+45.6
+</td>
+<td style="text-align:right;">
 47.7
 </td>
 <td style="text-align:right;">
@@ -73342,6 +76199,9 @@ Census Tract 329; Queens County; New York
 </td>
 <td style="text-align:right;">
 1002
+</td>
+<td style="text-align:right;">
+63.0
 </td>
 <td style="text-align:right;">
 36.6
@@ -73421,6 +76281,9 @@ Census Tract 334.05; Queens County; New York
 1643
 </td>
 <td style="text-align:right;">
+43.3
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -73496,6 +76359,9 @@ Census Tract 347; Queens County; New York
 </td>
 <td style="text-align:right;">
 902
+</td>
+<td style="text-align:right;">
+46.2
 </td>
 <td style="text-align:right;">
 29.2
@@ -73575,6 +76441,9 @@ Census Tract 351; Queens County; New York
 1349
 </td>
 <td style="text-align:right;">
+48.1
+</td>
+<td style="text-align:right;">
 28.8
 </td>
 <td style="text-align:right;">
@@ -73650,6 +76519,9 @@ Census Tract 352; Queens County; New York
 </td>
 <td style="text-align:right;">
 875
+</td>
+<td style="text-align:right;">
+44.7
 </td>
 <td style="text-align:right;">
 33.5
@@ -73729,6 +76601,9 @@ Census Tract 357; Queens County; New York
 950
 </td>
 <td style="text-align:right;">
+59.1
+</td>
+<td style="text-align:right;">
 26.2
 </td>
 <td style="text-align:right;">
@@ -73804,6 +76679,9 @@ Census Tract 358; Queens County; New York
 </td>
 <td style="text-align:right;">
 1299
+</td>
+<td style="text-align:right;">
+45.7
 </td>
 <td style="text-align:right;">
 32.2
@@ -73883,6 +76761,9 @@ Census Tract 367; Queens County; New York
 672
 </td>
 <td style="text-align:right;">
+54.6
+</td>
+<td style="text-align:right;">
 33.2
 </td>
 <td style="text-align:right;">
@@ -73958,6 +76839,9 @@ Census Tract 368; Queens County; New York
 </td>
 <td style="text-align:right;">
 768
+</td>
+<td style="text-align:right;">
+52.3
 </td>
 <td style="text-align:right;">
 34.5
@@ -74037,6 +76921,9 @@ Census Tract 371; Queens County; New York
 503
 </td>
 <td style="text-align:right;">
+43.3
+</td>
+<td style="text-align:right;">
 27.6
 </td>
 <td style="text-align:right;">
@@ -74112,6 +76999,9 @@ Census Tract 376; Queens County; New York
 </td>
 <td style="text-align:right;">
 1827
+</td>
+<td style="text-align:right;">
+58.9
 </td>
 <td style="text-align:right;">
 35.1
@@ -74191,6 +77081,9 @@ Census Tract 384; Queens County; New York
 772
 </td>
 <td style="text-align:right;">
+66.6
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -74266,6 +77159,9 @@ Census Tract 394; Queens County; New York
 </td>
 <td style="text-align:right;">
 923
+</td>
+<td style="text-align:right;">
+47.1
 </td>
 <td style="text-align:right;">
 38.6
@@ -74345,6 +77241,9 @@ Census Tract 398; Queens County; New York
 500
 </td>
 <td style="text-align:right;">
+37.2
+</td>
+<td style="text-align:right;">
 24.2
 </td>
 <td style="text-align:right;">
@@ -74420,6 +77319,9 @@ Census Tract 400; Queens County; New York
 </td>
 <td style="text-align:right;">
 469
+</td>
+<td style="text-align:right;">
+34.3
 </td>
 <td style="text-align:right;">
 35.4
@@ -74499,6 +77401,9 @@ Census Tract 402; Queens County; New York
 509
 </td>
 <td style="text-align:right;">
+54.6
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -74574,6 +77479,9 @@ Census Tract 404; Queens County; New York
 </td>
 <td style="text-align:right;">
 1453
+</td>
+<td style="text-align:right;">
+62.4
 </td>
 <td style="text-align:right;">
 25.9
@@ -74653,6 +77561,9 @@ Census Tract 446.01; Queens County; New York
 1194
 </td>
 <td style="text-align:right;">
+45.6
+</td>
+<td style="text-align:right;">
 38.6
 </td>
 <td style="text-align:right;">
@@ -74728,6 +77639,9 @@ Census Tract 446.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1550
+</td>
+<td style="text-align:right;">
+51.0
 </td>
 <td style="text-align:right;">
 37.2
@@ -74807,6 +77721,9 @@ Census Tract 448; Queens County; New York
 906
 </td>
 <td style="text-align:right;">
+45.8
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -74882,6 +77799,9 @@ Census Tract 450; Queens County; New York
 </td>
 <td style="text-align:right;">
 761
+</td>
+<td style="text-align:right;">
+31.8
 </td>
 <td style="text-align:right;">
 60.7
@@ -74961,6 +77881,9 @@ Census Tract 452; Queens County; New York
 231
 </td>
 <td style="text-align:right;">
+57.1
+</td>
+<td style="text-align:right;">
 34.6
 </td>
 <td style="text-align:right;">
@@ -75036,6 +77959,9 @@ Census Tract 454; Queens County; New York
 </td>
 <td style="text-align:right;">
 1696
+</td>
+<td style="text-align:right;">
+60.5
 </td>
 <td style="text-align:right;">
 34.8
@@ -75115,6 +78041,9 @@ Census Tract 460; Queens County; New York
 1928
 </td>
 <td style="text-align:right;">
+56.1
+</td>
+<td style="text-align:right;">
 34.0
 </td>
 <td style="text-align:right;">
@@ -75190,6 +78119,9 @@ Census Tract 462; Queens County; New York
 </td>
 <td style="text-align:right;">
 1998
+</td>
+<td style="text-align:right;">
+44.5
 </td>
 <td style="text-align:right;">
 34.3
@@ -75269,6 +78201,9 @@ Census Tract 467; Queens County; New York
 2128
 </td>
 <td style="text-align:right;">
+25.6
+</td>
+<td style="text-align:right;">
 42.3
 </td>
 <td style="text-align:right;">
@@ -75344,6 +78279,9 @@ Census Tract 468; Queens County; New York
 </td>
 <td style="text-align:right;">
 1023
+</td>
+<td style="text-align:right;">
+49.8
 </td>
 <td style="text-align:right;">
 39.6
@@ -75423,6 +78361,9 @@ Census Tract 469.01; Queens County; New York
 1398
 </td>
 <td style="text-align:right;">
+40.1
+</td>
+<td style="text-align:right;">
 37.2
 </td>
 <td style="text-align:right;">
@@ -75498,6 +78439,9 @@ Census Tract 469.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1139
+</td>
+<td style="text-align:right;">
+33.5
 </td>
 <td style="text-align:right;">
 29.9
@@ -75577,6 +78521,9 @@ Census Tract 470; Queens County; New York
 996
 </td>
 <td style="text-align:right;">
+39.7
+</td>
+<td style="text-align:right;">
 45.3
 </td>
 <td style="text-align:right;">
@@ -75652,6 +78599,9 @@ Census Tract 471; Queens County; New York
 </td>
 <td style="text-align:right;">
 1502
+</td>
+<td style="text-align:right;">
+53.4
 </td>
 <td style="text-align:right;">
 33.6
@@ -75731,6 +78681,9 @@ Census Tract 473; Queens County; New York
 1668
 </td>
 <td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
 32.9
 </td>
 <td style="text-align:right;">
@@ -75806,6 +78759,9 @@ Census Tract 475; Queens County; New York
 </td>
 <td style="text-align:right;">
 1720
+</td>
+<td style="text-align:right;">
+34.2
 </td>
 <td style="text-align:right;">
 28.4
@@ -75885,6 +78841,9 @@ Census Tract 479; Queens County; New York
 1850
 </td>
 <td style="text-align:right;">
+34.9
+</td>
+<td style="text-align:right;">
 38.0
 </td>
 <td style="text-align:right;">
@@ -75960,6 +78919,9 @@ Census Tract 481; Queens County; New York
 </td>
 <td style="text-align:right;">
 1835
+</td>
+<td style="text-align:right;">
+40.5
 </td>
 <td style="text-align:right;">
 32.3
@@ -76039,6 +79001,9 @@ Census Tract 483.01; Queens County; New York
 731
 </td>
 <td style="text-align:right;">
+45.6
+</td>
+<td style="text-align:right;">
 43.0
 </td>
 <td style="text-align:right;">
@@ -76114,6 +79079,9 @@ Census Tract 483.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 642
+</td>
+<td style="text-align:right;">
+20.6
 </td>
 <td style="text-align:right;">
 40.3
@@ -76193,6 +79161,9 @@ Census Tract 484; Queens County; New York
 1309
 </td>
 <td style="text-align:right;">
+51.3
+</td>
+<td style="text-align:right;">
 37.3
 </td>
 <td style="text-align:right;">
@@ -76268,6 +79239,9 @@ Census Tract 485; Queens County; New York
 </td>
 <td style="text-align:right;">
 1612
+</td>
+<td style="text-align:right;">
+42.2
 </td>
 <td style="text-align:right;">
 27.6
@@ -76347,6 +79321,9 @@ Census Tract 489; Queens County; New York
 522
 </td>
 <td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
 30.7
 </td>
 <td style="text-align:right;">
@@ -76422,6 +79399,9 @@ Census Tract 492.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 604
+</td>
+<td style="text-align:right;">
+58.4
 </td>
 <td style="text-align:right;">
 34.6
@@ -76501,6 +79481,9 @@ Census Tract 493.01; Queens County; New York
 757
 </td>
 <td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
 34.6
 </td>
 <td style="text-align:right;">
@@ -76576,6 +79559,9 @@ Census Tract 493.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 938
+</td>
+<td style="text-align:right;">
+24.0
 </td>
 <td style="text-align:right;">
 32.1
@@ -76655,6 +79641,9 @@ Census Tract 495; Queens County; New York
 523
 </td>
 <td style="text-align:right;">
+50.5
+</td>
+<td style="text-align:right;">
 30.8
 </td>
 <td style="text-align:right;">
@@ -76730,6 +79719,9 @@ Census Tract 496; Queens County; New York
 </td>
 <td style="text-align:right;">
 916
+</td>
+<td style="text-align:right;">
+55.5
 </td>
 <td style="text-align:right;">
 17.8
@@ -76809,6 +79801,9 @@ Census Tract 497; Queens County; New York
 951
 </td>
 <td style="text-align:right;">
+45.1
+</td>
+<td style="text-align:right;">
 38.6
 </td>
 <td style="text-align:right;">
@@ -76884,6 +79879,9 @@ Census Tract 499; Queens County; New York
 </td>
 <td style="text-align:right;">
 1599
+</td>
+<td style="text-align:right;">
+36.1
 </td>
 <td style="text-align:right;">
 32.5
@@ -76963,6 +79961,9 @@ Census Tract 500; Queens County; New York
 1597
 </td>
 <td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
 31.2
 </td>
 <td style="text-align:right;">
@@ -77038,6 +80039,9 @@ Census Tract 502.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 469
+</td>
+<td style="text-align:right;">
+66.7
 </td>
 <td style="text-align:right;">
 20.0
@@ -77117,6 +80121,9 @@ Census Tract 502.02; Queens County; New York
 416
 </td>
 <td style="text-align:right;">
+46.4
+</td>
+<td style="text-align:right;">
 32.2
 </td>
 <td style="text-align:right;">
@@ -77192,6 +80199,9 @@ Census Tract 504; Queens County; New York
 </td>
 <td style="text-align:right;">
 551
+</td>
+<td style="text-align:right;">
+53.9
 </td>
 <td style="text-align:right;">
 48.8
@@ -77271,6 +80281,9 @@ Census Tract 505; Queens County; New York
 591
 </td>
 <td style="text-align:right;">
+50.1
+</td>
+<td style="text-align:right;">
 40.9
 </td>
 <td style="text-align:right;">
@@ -77346,6 +80359,9 @@ Census Tract 506; Queens County; New York
 </td>
 <td style="text-align:right;">
 428
+</td>
+<td style="text-align:right;">
+49.3
 </td>
 <td style="text-align:right;">
 18.9
@@ -77425,6 +80441,9 @@ Census Tract 507; Queens County; New York
 1275
 </td>
 <td style="text-align:right;">
+49.0
+</td>
+<td style="text-align:right;">
 28.1
 </td>
 <td style="text-align:right;">
@@ -77500,6 +80519,9 @@ Census Tract 508; Queens County; New York
 </td>
 <td style="text-align:right;">
 660
+</td>
+<td style="text-align:right;">
+49.4
 </td>
 <td style="text-align:right;">
 20.5
@@ -77579,6 +80601,9 @@ Census Tract 510; Queens County; New York
 453
 </td>
 <td style="text-align:right;">
+62.3
+</td>
+<td style="text-align:right;">
 47.9
 </td>
 <td style="text-align:right;">
@@ -77654,6 +80679,9 @@ Census Tract 511; Queens County; New York
 </td>
 <td style="text-align:right;">
 805
+</td>
+<td style="text-align:right;">
+39.4
 </td>
 <td style="text-align:right;">
 27.2
@@ -77733,6 +80761,9 @@ Census Tract 512; Queens County; New York
 676
 </td>
 <td style="text-align:right;">
+50.3
+</td>
+<td style="text-align:right;">
 34.3
 </td>
 <td style="text-align:right;">
@@ -77808,6 +80839,9 @@ Census Tract 513; Queens County; New York
 </td>
 <td style="text-align:right;">
 825
+</td>
+<td style="text-align:right;">
+41.8
 </td>
 <td style="text-align:right;">
 34.4
@@ -77887,6 +80921,9 @@ Census Tract 515; Queens County; New York
 1141
 </td>
 <td style="text-align:right;">
+45.6
+</td>
+<td style="text-align:right;">
 46.9
 </td>
 <td style="text-align:right;">
@@ -77962,6 +80999,9 @@ Census Tract 516; Queens County; New York
 </td>
 <td style="text-align:right;">
 597
+</td>
+<td style="text-align:right;">
+53.9
 </td>
 <td style="text-align:right;">
 35.3
@@ -78041,6 +81081,9 @@ Census Tract 517; Queens County; New York
 760
 </td>
 <td style="text-align:right;">
+39.2
+</td>
+<td style="text-align:right;">
 23.0
 </td>
 <td style="text-align:right;">
@@ -78116,6 +81159,9 @@ Census Tract 518; Queens County; New York
 </td>
 <td style="text-align:right;">
 615
+</td>
+<td style="text-align:right;">
+50.4
 </td>
 <td style="text-align:right;">
 36.7
@@ -78195,6 +81241,9 @@ Census Tract 520; Queens County; New York
 472
 </td>
 <td style="text-align:right;">
+47.2
+</td>
+<td style="text-align:right;">
 25.0
 </td>
 <td style="text-align:right;">
@@ -78270,6 +81319,9 @@ Census Tract 521; Queens County; New York
 </td>
 <td style="text-align:right;">
 689
+</td>
+<td style="text-align:right;">
+52.2
 </td>
 <td style="text-align:right;">
 30.3
@@ -78349,6 +81401,9 @@ Census Tract 522; Queens County; New York
 497
 </td>
 <td style="text-align:right;">
+60.8
+</td>
+<td style="text-align:right;">
 41.9
 </td>
 <td style="text-align:right;">
@@ -78424,6 +81479,9 @@ Census Tract 524; Queens County; New York
 </td>
 <td style="text-align:right;">
 588
+</td>
+<td style="text-align:right;">
+48.3
 </td>
 <td style="text-align:right;">
 40.0
@@ -78503,6 +81561,9 @@ Census Tract 525; Queens County; New York
 811
 </td>
 <td style="text-align:right;">
+42.9
+</td>
+<td style="text-align:right;">
 28.9
 </td>
 <td style="text-align:right;">
@@ -78578,6 +81639,9 @@ Census Tract 526; Queens County; New York
 </td>
 <td style="text-align:right;">
 761
+</td>
+<td style="text-align:right;">
+64.4
 </td>
 <td style="text-align:right;">
 21.8
@@ -78657,6 +81721,9 @@ Census Tract 528; Queens County; New York
 514
 </td>
 <td style="text-align:right;">
+49.0
+</td>
+<td style="text-align:right;">
 23.0
 </td>
 <td style="text-align:right;">
@@ -78732,6 +81799,9 @@ Census Tract 530; Queens County; New York
 </td>
 <td style="text-align:right;">
 648
+</td>
+<td style="text-align:right;">
+46.9
 </td>
 <td style="text-align:right;">
 33.8
@@ -78811,6 +81881,9 @@ Census Tract 531; Queens County; New York
 1336
 </td>
 <td style="text-align:right;">
+34.5
+</td>
+<td style="text-align:right;">
 25.3
 </td>
 <td style="text-align:right;">
@@ -78886,6 +81959,9 @@ Census Tract 532; Queens County; New York
 </td>
 <td style="text-align:right;">
 613
+</td>
+<td style="text-align:right;">
+47.0
 </td>
 <td style="text-align:right;">
 50.6
@@ -78965,6 +82041,9 @@ Census Tract 534.01; Queens County; New York
 570
 </td>
 <td style="text-align:right;">
+53.2
+</td>
+<td style="text-align:right;">
 30.9
 </td>
 <td style="text-align:right;">
@@ -79040,6 +82119,9 @@ Census Tract 535.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 471
+</td>
+<td style="text-align:right;">
+41.2
 </td>
 <td style="text-align:right;">
 27.2
@@ -79119,6 +82201,9 @@ Census Tract 536.01; Queens County; New York
 738
 </td>
 <td style="text-align:right;">
+72.8
+</td>
+<td style="text-align:right;">
 18.7
 </td>
 <td style="text-align:right;">
@@ -79194,6 +82279,9 @@ Census Tract 538; Queens County; New York
 </td>
 <td style="text-align:right;">
 433
+</td>
+<td style="text-align:right;">
+64.7
 </td>
 <td style="text-align:right;">
 37.9
@@ -79273,6 +82361,9 @@ Census Tract 539.01; Queens County; New York
 1537
 </td>
 <td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
 25.0
 </td>
 <td style="text-align:right;">
@@ -79348,6 +82439,9 @@ Census Tract 540; Queens County; New York
 </td>
 <td style="text-align:right;">
 1301
+</td>
+<td style="text-align:right;">
+54.8
 </td>
 <td style="text-align:right;">
 22.5
@@ -79427,6 +82521,9 @@ Census Tract 542; Queens County; New York
 1648
 </td>
 <td style="text-align:right;">
+59.9
+</td>
+<td style="text-align:right;">
 32.1
 </td>
 <td style="text-align:right;">
@@ -79502,6 +82599,9 @@ Census Tract 545; Queens County; New York
 </td>
 <td style="text-align:right;">
 1377
+</td>
+<td style="text-align:right;">
+42.4
 </td>
 <td style="text-align:right;">
 28.9
@@ -79581,6 +82681,9 @@ Census Tract 547; Queens County; New York
 1482
 </td>
 <td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
 25.8
 </td>
 <td style="text-align:right;">
@@ -79656,6 +82759,9 @@ Census Tract 548; Queens County; New York
 </td>
 <td style="text-align:right;">
 682
+</td>
+<td style="text-align:right;">
+56.6
 </td>
 <td style="text-align:right;">
 37.2
@@ -79735,6 +82841,9 @@ Census Tract 549; Queens County; New York
 1583
 </td>
 <td style="text-align:right;">
+25.0
+</td>
+<td style="text-align:right;">
 33.1
 </td>
 <td style="text-align:right;">
@@ -79810,6 +82919,9 @@ Census Tract 551; Queens County; New York
 </td>
 <td style="text-align:right;">
 1590
+</td>
+<td style="text-align:right;">
+31.8
 </td>
 <td style="text-align:right;">
 28.8
@@ -79889,6 +83001,9 @@ Census Tract 552; Queens County; New York
 988
 </td>
 <td style="text-align:right;">
+63.8
+</td>
+<td style="text-align:right;">
 24.2
 </td>
 <td style="text-align:right;">
@@ -79964,6 +83079,9 @@ Census Tract 553; Queens County; New York
 </td>
 <td style="text-align:right;">
 1017
+</td>
+<td style="text-align:right;">
+21.7
 </td>
 <td style="text-align:right;">
 28.2
@@ -80043,6 +83161,9 @@ Census Tract 554; Queens County; New York
 771
 </td>
 <td style="text-align:right;">
+63.7
+</td>
+<td style="text-align:right;">
 29.1
 </td>
 <td style="text-align:right;">
@@ -80118,6 +83239,9 @@ Census Tract 555; Queens County; New York
 </td>
 <td style="text-align:right;">
 733
+</td>
+<td style="text-align:right;">
+46.1
 </td>
 <td style="text-align:right;">
 33.6
@@ -80197,6 +83321,9 @@ Census Tract 556; Queens County; New York
 700
 </td>
 <td style="text-align:right;">
+59.3
+</td>
+<td style="text-align:right;">
 45.9
 </td>
 <td style="text-align:right;">
@@ -80272,6 +83399,9 @@ Census Tract 557; Queens County; New York
 </td>
 <td style="text-align:right;">
 1412
+</td>
+<td style="text-align:right;">
+28.9
 </td>
 <td style="text-align:right;">
 23.0
@@ -80351,6 +83481,9 @@ Census Tract 558; Queens County; New York
 702
 </td>
 <td style="text-align:right;">
+71.7
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -80426,6 +83559,9 @@ Census Tract 559; Queens County; New York
 </td>
 <td style="text-align:right;">
 347
+</td>
+<td style="text-align:right;">
+46.4
 </td>
 <td style="text-align:right;">
 28.5
@@ -80505,6 +83641,9 @@ Census Tract 560; Queens County; New York
 440
 </td>
 <td style="text-align:right;">
+62.3
+</td>
+<td style="text-align:right;">
 32.7
 </td>
 <td style="text-align:right;">
@@ -80580,6 +83719,9 @@ Census Tract 562; Queens County; New York
 </td>
 <td style="text-align:right;">
 501
+</td>
+<td style="text-align:right;">
+66.7
 </td>
 <td style="text-align:right;">
 21.2
@@ -80659,6 +83801,9 @@ Census Tract 564; Queens County; New York
 458
 </td>
 <td style="text-align:right;">
+71.2
+</td>
+<td style="text-align:right;">
 19.9
 </td>
 <td style="text-align:right;">
@@ -80734,6 +83879,9 @@ Census Tract 565; Queens County; New York
 </td>
 <td style="text-align:right;">
 601
+</td>
+<td style="text-align:right;">
+21.8
 </td>
 <td style="text-align:right;">
 25.3
@@ -80813,6 +83961,9 @@ Census Tract 566; Queens County; New York
 462
 </td>
 <td style="text-align:right;">
+64.1
+</td>
+<td style="text-align:right;">
 19.7
 </td>
 <td style="text-align:right;">
@@ -80888,6 +84039,9 @@ Census Tract 567; Queens County; New York
 </td>
 <td style="text-align:right;">
 1601
+</td>
+<td style="text-align:right;">
+42.5
 </td>
 <td style="text-align:right;">
 33.7
@@ -80967,6 +84121,9 @@ Census Tract 568; Queens County; New York
 1551
 </td>
 <td style="text-align:right;">
+50.3
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -81042,6 +84199,9 @@ Census Tract 577; Queens County; New York
 </td>
 <td style="text-align:right;">
 1457
+</td>
+<td style="text-align:right;">
+33.8
 </td>
 <td style="text-align:right;">
 28.7
@@ -81121,6 +84281,9 @@ Census Tract 579; Queens County; New York
 605
 </td>
 <td style="text-align:right;">
+41.5
+</td>
+<td style="text-align:right;">
 21.2
 </td>
 <td style="text-align:right;">
@@ -81196,6 +84359,9 @@ Census Tract 580; Queens County; New York
 </td>
 <td style="text-align:right;">
 1104
+</td>
+<td style="text-align:right;">
+52.0
 </td>
 <td style="text-align:right;">
 39.6
@@ -81275,6 +84441,9 @@ Census Tract 581; Queens County; New York
 1204
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 31.9
 </td>
 <td style="text-align:right;">
@@ -81350,6 +84519,9 @@ Census Tract 582; Queens County; New York
 </td>
 <td style="text-align:right;">
 1523
+</td>
+<td style="text-align:right;">
+57.5
 </td>
 <td style="text-align:right;">
 42.3
@@ -81429,6 +84601,9 @@ Census Tract 583; Queens County; New York
 1379
 </td>
 <td style="text-align:right;">
+36.5
+</td>
+<td style="text-align:right;">
 29.7
 </td>
 <td style="text-align:right;">
@@ -81504,6 +84679,9 @@ Census Tract 585; Queens County; New York
 </td>
 <td style="text-align:right;">
 1662
+</td>
+<td style="text-align:right;">
+21.3
 </td>
 <td style="text-align:right;">
 24.3
@@ -81583,6 +84761,9 @@ Census Tract 587; Queens County; New York
 1283
 </td>
 <td style="text-align:right;">
+39.0
+</td>
+<td style="text-align:right;">
 21.4
 </td>
 <td style="text-align:right;">
@@ -81658,6 +84839,9 @@ Census Tract 589; Queens County; New York
 </td>
 <td style="text-align:right;">
 1892
+</td>
+<td style="text-align:right;">
+29.5
 </td>
 <td style="text-align:right;">
 25.7
@@ -81737,6 +84921,9 @@ Census Tract 590; Queens County; New York
 402
 </td>
 <td style="text-align:right;">
+70.4
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -81812,6 +84999,9 @@ Census Tract 591; Queens County; New York
 </td>
 <td style="text-align:right;">
 2202
+</td>
+<td style="text-align:right;">
+39.1
 </td>
 <td style="text-align:right;">
 28.2
@@ -81891,6 +85081,9 @@ Census Tract 593; Queens County; New York
 1494
 </td>
 <td style="text-align:right;">
+36.5
+</td>
+<td style="text-align:right;">
 24.1
 </td>
 <td style="text-align:right;">
@@ -81966,6 +85159,9 @@ Census Tract 594; Queens County; New York
 </td>
 <td style="text-align:right;">
 543
+</td>
+<td style="text-align:right;">
+68.0
 </td>
 <td style="text-align:right;">
 23.6
@@ -82045,6 +85241,9 @@ Census Tract 595.01; Queens County; New York
 612
 </td>
 <td style="text-align:right;">
+34.6
+</td>
+<td style="text-align:right;">
 25.7
 </td>
 <td style="text-align:right;">
@@ -82120,6 +85319,9 @@ Census Tract 595.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 903
+</td>
+<td style="text-align:right;">
+35.8
 </td>
 <td style="text-align:right;">
 49.3
@@ -82199,6 +85401,9 @@ Census Tract 596; Queens County; New York
 554
 </td>
 <td style="text-align:right;">
+75.8
+</td>
+<td style="text-align:right;">
 25.8
 </td>
 <td style="text-align:right;">
@@ -82274,6 +85479,9 @@ Census Tract 598; Queens County; New York
 </td>
 <td style="text-align:right;">
 537
+</td>
+<td style="text-align:right;">
+38.0
 </td>
 <td style="text-align:right;">
 38.7
@@ -82353,6 +85561,9 @@ Census Tract 599; Queens County; New York
 481
 </td>
 <td style="text-align:right;">
+44.5
+</td>
+<td style="text-align:right;">
 31.2
 </td>
 <td style="text-align:right;">
@@ -82428,6 +85639,9 @@ Census Tract 600; Queens County; New York
 </td>
 <td style="text-align:right;">
 431
+</td>
+<td style="text-align:right;">
+60.8
 </td>
 <td style="text-align:right;">
 20.9
@@ -82507,6 +85721,9 @@ Census Tract 601; Queens County; New York
 810
 </td>
 <td style="text-align:right;">
+42.5
+</td>
+<td style="text-align:right;">
 32.3
 </td>
 <td style="text-align:right;">
@@ -82582,6 +85799,9 @@ Census Tract 603; Queens County; New York
 </td>
 <td style="text-align:right;">
 689
+</td>
+<td style="text-align:right;">
+48.2
 </td>
 <td style="text-align:right;">
 40.1
@@ -82661,6 +85881,9 @@ Census Tract 606; Queens County; New York
 518
 </td>
 <td style="text-align:right;">
+61.8
+</td>
+<td style="text-align:right;">
 13.9
 </td>
 <td style="text-align:right;">
@@ -82736,6 +85959,9 @@ Census Tract 608; Queens County; New York
 </td>
 <td style="text-align:right;">
 455
+</td>
+<td style="text-align:right;">
+63.3
 </td>
 <td style="text-align:right;">
 26.4
@@ -82815,6 +86041,9 @@ Census Tract 610; Queens County; New York
 458
 </td>
 <td style="text-align:right;">
+67.0
+</td>
+<td style="text-align:right;">
 25.1
 </td>
 <td style="text-align:right;">
@@ -82890,6 +86119,9 @@ Census Tract 612; Queens County; New York
 </td>
 <td style="text-align:right;">
 521
+</td>
+<td style="text-align:right;">
+75.8
 </td>
 <td style="text-align:right;">
 27.6
@@ -82969,6 +86201,9 @@ Census Tract 613.01; Queens County; New York
 1759
 </td>
 <td style="text-align:right;">
+42.4
+</td>
+<td style="text-align:right;">
 25.1
 </td>
 <td style="text-align:right;">
@@ -83044,6 +86279,9 @@ Census Tract 614; Queens County; New York
 </td>
 <td style="text-align:right;">
 432
+</td>
+<td style="text-align:right;">
+66.9
 </td>
 <td style="text-align:right;">
 46.3
@@ -83123,6 +86361,9 @@ Census Tract 616.02; Queens County; New York
 361
 </td>
 <td style="text-align:right;">
+66.2
+</td>
+<td style="text-align:right;">
 18.0
 </td>
 <td style="text-align:right;">
@@ -83198,6 +86439,9 @@ Census Tract 618; Queens County; New York
 </td>
 <td style="text-align:right;">
 717
+</td>
+<td style="text-align:right;">
+51.2
 </td>
 <td style="text-align:right;">
 26.1
@@ -83277,6 +86521,9 @@ Census Tract 620; Queens County; New York
 503
 </td>
 <td style="text-align:right;">
+59.4
+</td>
+<td style="text-align:right;">
 31.4
 </td>
 <td style="text-align:right;">
@@ -83352,6 +86599,9 @@ Census Tract 622; Queens County; New York
 </td>
 <td style="text-align:right;">
 659
+</td>
+<td style="text-align:right;">
+70.3
 </td>
 <td style="text-align:right;">
 22.0
@@ -83431,6 +86681,9 @@ Census Tract 625; Queens County; New York
 909
 </td>
 <td style="text-align:right;">
+47.7
+</td>
+<td style="text-align:right;">
 30.7
 </td>
 <td style="text-align:right;">
@@ -83506,6 +86759,9 @@ Census Tract 626; Queens County; New York
 </td>
 <td style="text-align:right;">
 889
+</td>
+<td style="text-align:right;">
+47.5
 </td>
 <td style="text-align:right;">
 35.9
@@ -83585,6 +86841,9 @@ Census Tract 627; Queens County; New York
 1104
 </td>
 <td style="text-align:right;">
+43.5
+</td>
+<td style="text-align:right;">
 27.4
 </td>
 <td style="text-align:right;">
@@ -83660,6 +86919,9 @@ Census Tract 629; Queens County; New York
 </td>
 <td style="text-align:right;">
 1215
+</td>
+<td style="text-align:right;">
+37.8
 </td>
 <td style="text-align:right;">
 38.8
@@ -83739,6 +87001,9 @@ Census Tract 630; Queens County; New York
 588
 </td>
 <td style="text-align:right;">
+50.9
+</td>
+<td style="text-align:right;">
 26.7
 </td>
 <td style="text-align:right;">
@@ -83814,6 +87079,9 @@ Census Tract 632; Queens County; New York
 </td>
 <td style="text-align:right;">
 695
+</td>
+<td style="text-align:right;">
+62.9
 </td>
 <td style="text-align:right;">
 32.8
@@ -83893,6 +87161,9 @@ Census Tract 633.02; Queens County; New York
 581
 </td>
 <td style="text-align:right;">
+50.1
+</td>
+<td style="text-align:right;">
 55.9
 </td>
 <td style="text-align:right;">
@@ -83968,6 +87239,9 @@ Census Tract 635; Queens County; New York
 </td>
 <td style="text-align:right;">
 925
+</td>
+<td style="text-align:right;">
+56.8
 </td>
 <td style="text-align:right;">
 26.8
@@ -84047,6 +87321,9 @@ Census Tract 637; Queens County; New York
 1273
 </td>
 <td style="text-align:right;">
+49.1
+</td>
+<td style="text-align:right;">
 35.0
 </td>
 <td style="text-align:right;">
@@ -84122,6 +87399,9 @@ Census Tract 638; Queens County; New York
 </td>
 <td style="text-align:right;">
 1090
+</td>
+<td style="text-align:right;">
+62.3
 </td>
 <td style="text-align:right;">
 17.3
@@ -84201,6 +87481,9 @@ Census Tract 639; Queens County; New York
 1042
 </td>
 <td style="text-align:right;">
+40.9
+</td>
+<td style="text-align:right;">
 19.4
 </td>
 <td style="text-align:right;">
@@ -84276,6 +87559,9 @@ Census Tract 641.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 961
+</td>
+<td style="text-align:right;">
+45.2
 </td>
 <td style="text-align:right;">
 27.6
@@ -84355,6 +87641,9 @@ Census Tract 645; Queens County; New York
 771
 </td>
 <td style="text-align:right;">
+31.4
+</td>
+<td style="text-align:right;">
 34.8
 </td>
 <td style="text-align:right;">
@@ -84430,6 +87719,9 @@ Census Tract 646; Queens County; New York
 </td>
 <td style="text-align:right;">
 1104
+</td>
+<td style="text-align:right;">
+60.2
 </td>
 <td style="text-align:right;">
 32.5
@@ -84509,6 +87801,9 @@ Census Tract 650; Queens County; New York
 840
 </td>
 <td style="text-align:right;">
+64.6
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -84584,6 +87879,9 @@ Census Tract 654.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 938
+</td>
+<td style="text-align:right;">
+44.8
 </td>
 <td style="text-align:right;">
 41.7
@@ -84663,6 +87961,9 @@ Census Tract 656; Queens County; New York
 1510
 </td>
 <td style="text-align:right;">
+58.0
+</td>
+<td style="text-align:right;">
 19.3
 </td>
 <td style="text-align:right;">
@@ -84738,6 +88039,9 @@ Census Tract 657.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 599
+</td>
+<td style="text-align:right;">
+42.7
 </td>
 <td style="text-align:right;">
 26.9
@@ -84817,6 +88121,9 @@ Census Tract 657.03; Queens County; New York
 1014
 </td>
 <td style="text-align:right;">
+56.7
+</td>
+<td style="text-align:right;">
 22.7
 </td>
 <td style="text-align:right;">
@@ -84892,6 +88199,9 @@ Census Tract 659; Queens County; New York
 </td>
 <td style="text-align:right;">
 628
+</td>
+<td style="text-align:right;">
+49.5
 </td>
 <td style="text-align:right;">
 25.2
@@ -84971,6 +88281,9 @@ Census Tract 660; Queens County; New York
 1131
 </td>
 <td style="text-align:right;">
+49.8
+</td>
+<td style="text-align:right;">
 30.9
 </td>
 <td style="text-align:right;">
@@ -85046,6 +88359,9 @@ Census Tract 663.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1002
+</td>
+<td style="text-align:right;">
+56.8
 </td>
 <td style="text-align:right;">
 31.8
@@ -85125,6 +88441,9 @@ Census Tract 664.02; Queens County; New York
 1030
 </td>
 <td style="text-align:right;">
+64.9
+</td>
+<td style="text-align:right;">
 21.7
 </td>
 <td style="text-align:right;">
@@ -85200,6 +88519,9 @@ Census Tract 665.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1551
+</td>
+<td style="text-align:right;">
+58.7
 </td>
 <td style="text-align:right;">
 25.7
@@ -85279,6 +88601,9 @@ Census Tract 667.01; Queens County; New York
 874
 </td>
 <td style="text-align:right;">
+47.9
+</td>
+<td style="text-align:right;">
 31.0
 </td>
 <td style="text-align:right;">
@@ -85354,6 +88679,9 @@ Census Tract 669; Queens County; New York
 </td>
 <td style="text-align:right;">
 652
+</td>
+<td style="text-align:right;">
+41.1
 </td>
 <td style="text-align:right;">
 35.4
@@ -85433,6 +88761,9 @@ Census Tract 677; Queens County; New York
 705
 </td>
 <td style="text-align:right;">
+52.8
+</td>
+<td style="text-align:right;">
 25.4
 </td>
 <td style="text-align:right;">
@@ -85508,6 +88839,9 @@ Census Tract 679; Queens County; New York
 </td>
 <td style="text-align:right;">
 1749
+</td>
+<td style="text-align:right;">
+33.4
 </td>
 <td style="text-align:right;">
 28.1
@@ -85587,6 +88921,9 @@ Census Tract 682; Queens County; New York
 354
 </td>
 <td style="text-align:right;">
+64.1
+</td>
+<td style="text-align:right;">
 27.7
 </td>
 <td style="text-align:right;">
@@ -85662,6 +88999,9 @@ Census Tract 695; Queens County; New York
 </td>
 <td style="text-align:right;">
 840
+</td>
+<td style="text-align:right;">
+56.3
 </td>
 <td style="text-align:right;">
 21.3
@@ -85741,6 +89081,9 @@ Census Tract 697.02; Queens County; New York
 1587
 </td>
 <td style="text-align:right;">
+57.4
+</td>
+<td style="text-align:right;">
 22.9
 </td>
 <td style="text-align:right;">
@@ -85816,6 +89159,9 @@ Census Tract 703; Queens County; New York
 </td>
 <td style="text-align:right;">
 909
+</td>
+<td style="text-align:right;">
+38.8
 </td>
 <td style="text-align:right;">
 24.8
@@ -85895,6 +89241,9 @@ Census Tract 717.01; Queens County; New York
 2386
 </td>
 <td style="text-align:right;">
+46.7
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -85970,6 +89319,9 @@ Census Tract 717.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2039
+</td>
+<td style="text-align:right;">
+44.2
 </td>
 <td style="text-align:right;">
 17.7
@@ -86049,6 +89401,9 @@ Census Tract 779.04; Queens County; New York
 2095
 </td>
 <td style="text-align:right;">
+44.2
+</td>
+<td style="text-align:right;">
 36.6
 </td>
 <td style="text-align:right;">
@@ -86124,6 +89479,9 @@ Census Tract 779.05; Queens County; New York
 </td>
 <td style="text-align:right;">
 1315
+</td>
+<td style="text-align:right;">
+51.3
 </td>
 <td style="text-align:right;">
 17.8
@@ -86203,6 +89561,9 @@ Census Tract 779.08; Queens County; New York
 1151
 </td>
 <td style="text-align:right;">
+38.3
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -86278,6 +89639,9 @@ Census Tract 788; Queens County; New York
 </td>
 <td style="text-align:right;">
 570
+</td>
+<td style="text-align:right;">
+39.3
 </td>
 <td style="text-align:right;">
 36.8
@@ -86357,6 +89721,9 @@ Census Tract 790; Queens County; New York
 833
 </td>
 <td style="text-align:right;">
+44.4
+</td>
+<td style="text-align:right;">
 34.0
 </td>
 <td style="text-align:right;">
@@ -86432,6 +89799,9 @@ Census Tract 792; Queens County; New York
 </td>
 <td style="text-align:right;">
 874
+</td>
+<td style="text-align:right;">
+55.1
 </td>
 <td style="text-align:right;">
 21.3
@@ -86511,6 +89881,9 @@ Census Tract 797.01; Queens County; New York
 2925
 </td>
 <td style="text-align:right;">
+54.7
+</td>
+<td style="text-align:right;">
 17.5
 </td>
 <td style="text-align:right;">
@@ -86586,6 +89959,9 @@ Census Tract 799; Queens County; New York
 </td>
 <td style="text-align:right;">
 1098
+</td>
+<td style="text-align:right;">
+45.2
 </td>
 <td style="text-align:right;">
 29.3
@@ -86665,6 +90041,9 @@ Census Tract 803.01; Queens County; New York
 1092
 </td>
 <td style="text-align:right;">
+36.4
+</td>
+<td style="text-align:right;">
 38.1
 </td>
 <td style="text-align:right;">
@@ -86740,6 +90119,9 @@ Census Tract 814; Queens County; New York
 </td>
 <td style="text-align:right;">
 1008
+</td>
+<td style="text-align:right;">
+50.3
 </td>
 <td style="text-align:right;">
 38.0
@@ -86819,6 +90201,9 @@ Census Tract 818; Queens County; New York
 1049
 </td>
 <td style="text-align:right;">
+59.2
+</td>
+<td style="text-align:right;">
 39.4
 </td>
 <td style="text-align:right;">
@@ -86894,6 +90279,9 @@ Census Tract 838; Queens County; New York
 </td>
 <td style="text-align:right;">
 1597
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 36.7
@@ -86973,6 +90361,9 @@ Census Tract 840; Queens County; New York
 2005
 </td>
 <td style="text-align:right;">
+59.9
+</td>
+<td style="text-align:right;">
 31.1
 </td>
 <td style="text-align:right;">
@@ -87048,6 +90439,9 @@ Census Tract 846.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 794
+</td>
+<td style="text-align:right;">
+52.1
 </td>
 <td style="text-align:right;">
 38.7
@@ -87127,6 +90521,9 @@ Census Tract 846.02; Queens County; New York
 211
 </td>
 <td style="text-align:right;">
+49.8
+</td>
+<td style="text-align:right;">
 55.0
 </td>
 <td style="text-align:right;">
@@ -87202,6 +90599,9 @@ Census Tract 857; Queens County; New York
 </td>
 <td style="text-align:right;">
 1850
+</td>
+<td style="text-align:right;">
+44.2
 </td>
 <td style="text-align:right;">
 24.2
@@ -87281,6 +90681,9 @@ Census Tract 859; Queens County; New York
 2295
 </td>
 <td style="text-align:right;">
+49.1
+</td>
+<td style="text-align:right;">
 20.0
 </td>
 <td style="text-align:right;">
@@ -87356,6 +90759,9 @@ Census Tract 861; Queens County; New York
 </td>
 <td style="text-align:right;">
 801
+</td>
+<td style="text-align:right;">
+65.2
 </td>
 <td style="text-align:right;">
 14.5
@@ -87435,6 +90841,9 @@ Census Tract 863; Queens County; New York
 2212
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 30.0
 </td>
 <td style="text-align:right;">
@@ -87510,6 +90919,9 @@ Census Tract 864; Queens County; New York
 </td>
 <td style="text-align:right;">
 748
+</td>
+<td style="text-align:right;">
+36.0
 </td>
 <td style="text-align:right;">
 31.0
@@ -87589,6 +91001,9 @@ Census Tract 865; Queens County; New York
 2291
 </td>
 <td style="text-align:right;">
+51.8
+</td>
+<td style="text-align:right;">
 10.7
 </td>
 <td style="text-align:right;">
@@ -87664,6 +91079,9 @@ Census Tract 919; Queens County; New York
 </td>
 <td style="text-align:right;">
 1775
+</td>
+<td style="text-align:right;">
+60.3
 </td>
 <td style="text-align:right;">
 22.3
@@ -87743,6 +91161,9 @@ Census Tract 925; Queens County; New York
 1111
 </td>
 <td style="text-align:right;">
+55.4
+</td>
+<td style="text-align:right;">
 40.1
 </td>
 <td style="text-align:right;">
@@ -87818,6 +91239,9 @@ Census Tract 929; Queens County; New York
 </td>
 <td style="text-align:right;">
 2294
+</td>
+<td style="text-align:right;">
+54.4
 </td>
 <td style="text-align:right;">
 37.0
@@ -87897,6 +91321,9 @@ Census Tract 938; Queens County; New York
 1963
 </td>
 <td style="text-align:right;">
+51.4
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -87972,6 +91399,9 @@ Census Tract 939; Queens County; New York
 </td>
 <td style="text-align:right;">
 1879
+</td>
+<td style="text-align:right;">
+42.9
 </td>
 <td style="text-align:right;">
 40.1
@@ -88051,6 +91481,9 @@ Census Tract 942.01; Queens County; New York
 1350
 </td>
 <td style="text-align:right;">
+33.1
+</td>
+<td style="text-align:right;">
 23.9
 </td>
 <td style="text-align:right;">
@@ -88126,6 +91559,9 @@ Census Tract 945; Queens County; New York
 </td>
 <td style="text-align:right;">
 1308
+</td>
+<td style="text-align:right;">
+60.6
 </td>
 <td style="text-align:right;">
 36.2
@@ -88205,6 +91641,9 @@ Census Tract 947; Queens County; New York
 740
 </td>
 <td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
 29.5
 </td>
 <td style="text-align:right;">
@@ -88280,6 +91719,9 @@ Census Tract 954; Queens County; New York
 </td>
 <td style="text-align:right;">
 1905
+</td>
+<td style="text-align:right;">
+36.7
 </td>
 <td style="text-align:right;">
 48.3
@@ -88359,6 +91801,9 @@ Census Tract 964; Queens County; New York
 2292
 </td>
 <td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
 36.4
 </td>
 <td style="text-align:right;">
@@ -88434,6 +91879,9 @@ Census Tract 972.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1204
+</td>
+<td style="text-align:right;">
+36.2
 </td>
 <td style="text-align:right;">
 39.0
@@ -88513,6 +91961,9 @@ Census Tract 972.04; Queens County; New York
 1262
 </td>
 <td style="text-align:right;">
+37.3
+</td>
+<td style="text-align:right;">
 43.9
 </td>
 <td style="text-align:right;">
@@ -88588,6 +92039,9 @@ Census Tract 972.06; Queens County; New York
 </td>
 <td style="text-align:right;">
 1311
+</td>
+<td style="text-align:right;">
+37.8
 </td>
 <td style="text-align:right;">
 30.4
@@ -88667,6 +92121,9 @@ Census Tract 973; Queens County; New York
 787
 </td>
 <td style="text-align:right;">
+56.5
+</td>
+<td style="text-align:right;">
 24.3
 </td>
 <td style="text-align:right;">
@@ -88742,6 +92199,9 @@ Census Tract 981; Queens County; New York
 </td>
 <td style="text-align:right;">
 822
+</td>
+<td style="text-align:right;">
+53.9
 </td>
 <td style="text-align:right;">
 24.8
@@ -88821,6 +92281,9 @@ Census Tract 992; Queens County; New York
 1601
 </td>
 <td style="text-align:right;">
+41.2
+</td>
+<td style="text-align:right;">
 39.1
 </td>
 <td style="text-align:right;">
@@ -88896,6 +92359,9 @@ Census Tract 997.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1126
+</td>
+<td style="text-align:right;">
+58.7
 </td>
 <td style="text-align:right;">
 20.7
@@ -88975,6 +92441,9 @@ Census Tract 998.01; Queens County; New York
 2665
 </td>
 <td style="text-align:right;">
+50.9
+</td>
+<td style="text-align:right;">
 33.0
 </td>
 <td style="text-align:right;">
@@ -89050,6 +92519,9 @@ Census Tract 998.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2785
+</td>
+<td style="text-align:right;">
+57.5
 </td>
 <td style="text-align:right;">
 24.3
@@ -89129,6 +92601,9 @@ Census Tract 1008.01; Queens County; New York
 714
 </td>
 <td style="text-align:right;">
+59.0
+</td>
+<td style="text-align:right;">
 45.9
 </td>
 <td style="text-align:right;">
@@ -89204,6 +92679,9 @@ Census Tract 1008.03; Queens County; New York
 </td>
 <td style="text-align:right;">
 1151
+</td>
+<td style="text-align:right;">
+48.4
 </td>
 <td style="text-align:right;">
 33.4
@@ -89283,6 +92761,9 @@ Census Tract 1008.04; Queens County; New York
 1463
 </td>
 <td style="text-align:right;">
+43.1
+</td>
+<td style="text-align:right;">
 47.3
 </td>
 <td style="text-align:right;">
@@ -89358,6 +92839,9 @@ Census Tract 1010.03; Queens County; New York
 </td>
 <td style="text-align:right;">
 1068
+</td>
+<td style="text-align:right;">
+45.1
 </td>
 <td style="text-align:right;">
 48.5
@@ -89437,6 +92921,9 @@ Census Tract 1017; Queens County; New York
 2427
 </td>
 <td style="text-align:right;">
+63.7
+</td>
+<td style="text-align:right;">
 26.1
 </td>
 <td style="text-align:right;">
@@ -89512,6 +92999,9 @@ Census Tract 1029; Queens County; New York
 </td>
 <td style="text-align:right;">
 1545
+</td>
+<td style="text-align:right;">
+40.1
 </td>
 <td style="text-align:right;">
 27.2
@@ -89591,6 +93081,9 @@ Census Tract 1033; Queens County; New York
 1511
 </td>
 <td style="text-align:right;">
+55.3
+</td>
+<td style="text-align:right;">
 30.2
 </td>
 <td style="text-align:right;">
@@ -89666,6 +93159,9 @@ Census Tract 1039; Queens County; New York
 </td>
 <td style="text-align:right;">
 2451
+</td>
+<td style="text-align:right;">
+59.7
 </td>
 <td style="text-align:right;">
 30.8
@@ -89745,6 +93241,9 @@ Census Tract 1059; Queens County; New York
 1349
 </td>
 <td style="text-align:right;">
+50.7
+</td>
+<td style="text-align:right;">
 41.3
 </td>
 <td style="text-align:right;">
@@ -89820,6 +93319,9 @@ Census Tract 1085; Queens County; New York
 </td>
 <td style="text-align:right;">
 1027
+</td>
+<td style="text-align:right;">
+62.8
 </td>
 <td style="text-align:right;">
 21.2
@@ -89899,6 +93401,9 @@ Census Tract 1129; Queens County; New York
 828
 </td>
 <td style="text-align:right;">
+60.4
+</td>
+<td style="text-align:right;">
 28.4
 </td>
 <td style="text-align:right;">
@@ -89974,6 +93479,9 @@ Census Tract 1133; Queens County; New York
 </td>
 <td style="text-align:right;">
 609
+</td>
+<td style="text-align:right;">
+36.6
 </td>
 <td style="text-align:right;">
 17.9
@@ -90053,6 +93561,9 @@ Census Tract 1159; Queens County; New York
 1709
 </td>
 <td style="text-align:right;">
+37.7
+</td>
+<td style="text-align:right;">
 30.1
 </td>
 <td style="text-align:right;">
@@ -90128,6 +93639,9 @@ Census Tract 1161; Queens County; New York
 </td>
 <td style="text-align:right;">
 1339
+</td>
+<td style="text-align:right;">
+50.6
 </td>
 <td style="text-align:right;">
 16.7
@@ -90207,6 +93721,9 @@ Census Tract 1163.01; Queens County; New York
 1683
 </td>
 <td style="text-align:right;">
+31.6
+</td>
+<td style="text-align:right;">
 31.0
 </td>
 <td style="text-align:right;">
@@ -90282,6 +93799,9 @@ Census Tract 1163.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1269
+</td>
+<td style="text-align:right;">
+49.4
 </td>
 <td style="text-align:right;">
 19.5
@@ -90361,6 +93881,9 @@ Census Tract 1167; Queens County; New York
 595
 </td>
 <td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
 30.6
 </td>
 <td style="text-align:right;">
@@ -90436,6 +93959,9 @@ Census Tract 1181; Queens County; New York
 </td>
 <td style="text-align:right;">
 673
+</td>
+<td style="text-align:right;">
+51.0
 </td>
 <td style="text-align:right;">
 20.4
@@ -90515,6 +94041,9 @@ Census Tract 1185; Queens County; New York
 643
 </td>
 <td style="text-align:right;">
+47.9
+</td>
+<td style="text-align:right;">
 17.3
 </td>
 <td style="text-align:right;">
@@ -90590,6 +94119,9 @@ Census Tract 1191; Queens County; New York
 </td>
 <td style="text-align:right;">
 964
+</td>
+<td style="text-align:right;">
+47.0
 </td>
 <td style="text-align:right;">
 17.9
@@ -90669,6 +94201,9 @@ Census Tract 1193; Queens County; New York
 745
 </td>
 <td style="text-align:right;">
+59.6
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -90744,6 +94279,9 @@ Census Tract 1195; Queens County; New York
 </td>
 <td style="text-align:right;">
 414
+</td>
+<td style="text-align:right;">
+47.8
 </td>
 <td style="text-align:right;">
 22.2
@@ -90823,6 +94361,9 @@ Census Tract 1215; Queens County; New York
 1350
 </td>
 <td style="text-align:right;">
+39.1
+</td>
+<td style="text-align:right;">
 36.5
 </td>
 <td style="text-align:right;">
@@ -90898,6 +94439,9 @@ Census Tract 1223; Queens County; New York
 </td>
 <td style="text-align:right;">
 1326
+</td>
+<td style="text-align:right;">
+43.0
 </td>
 <td style="text-align:right;">
 43.7
@@ -90977,6 +94521,9 @@ Census Tract 1227.02; Queens County; New York
 2955
 </td>
 <td style="text-align:right;">
+41.9
+</td>
+<td style="text-align:right;">
 26.9
 </td>
 <td style="text-align:right;">
@@ -91052,6 +94599,9 @@ Census Tract 1227.03; Queens County; New York
 </td>
 <td style="text-align:right;">
 2642
+</td>
+<td style="text-align:right;">
+45.5
 </td>
 <td style="text-align:right;">
 38.0
@@ -91131,6 +94681,9 @@ Census Tract 1227.04; Queens County; New York
 1898
 </td>
 <td style="text-align:right;">
+46.3
+</td>
+<td style="text-align:right;">
 28.9
 </td>
 <td style="text-align:right;">
@@ -91206,6 +94759,9 @@ Census Tract 1241; Queens County; New York
 </td>
 <td style="text-align:right;">
 1431
+</td>
+<td style="text-align:right;">
+54.4
 </td>
 <td style="text-align:right;">
 20.6
@@ -91285,6 +94841,9 @@ Census Tract 1247; Queens County; New York
 1259
 </td>
 <td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
 29.0
 </td>
 <td style="text-align:right;">
@@ -91360,6 +94919,9 @@ Census Tract 1257; Queens County; New York
 </td>
 <td style="text-align:right;">
 1003
+</td>
+<td style="text-align:right;">
+56.7
 </td>
 <td style="text-align:right;">
 34.8
@@ -91439,6 +95001,9 @@ Census Tract 1265; Queens County; New York
 653
 </td>
 <td style="text-align:right;">
+68.6
+</td>
+<td style="text-align:right;">
 16.8
 </td>
 <td style="text-align:right;">
@@ -91514,6 +95079,9 @@ Census Tract 1301; Queens County; New York
 </td>
 <td style="text-align:right;">
 1538
+</td>
+<td style="text-align:right;">
+65.2
 </td>
 <td style="text-align:right;">
 18.4
@@ -91593,6 +95161,9 @@ Census Tract 1339; Queens County; New York
 419
 </td>
 <td style="text-align:right;">
+58.7
+</td>
+<td style="text-align:right;">
 35.8
 </td>
 <td style="text-align:right;">
@@ -91668,6 +95239,9 @@ Census Tract 1341; Queens County; New York
 </td>
 <td style="text-align:right;">
 1173
+</td>
+<td style="text-align:right;">
+43.6
 </td>
 <td style="text-align:right;">
 23.7
@@ -91747,6 +95321,9 @@ Census Tract 1347.01; Queens County; New York
 1994
 </td>
 <td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
 32.8
 </td>
 <td style="text-align:right;">
@@ -91822,6 +95399,9 @@ Census Tract 1403; Queens County; New York
 </td>
 <td style="text-align:right;">
 825
+</td>
+<td style="text-align:right;">
+59.0
 </td>
 <td style="text-align:right;">
 27.2
@@ -91901,6 +95481,9 @@ Census Tract 1409.01; Queens County; New York
 377
 </td>
 <td style="text-align:right;">
+47.2
+</td>
+<td style="text-align:right;">
 45.6
 </td>
 <td style="text-align:right;">
@@ -91976,6 +95559,9 @@ Census Tract 1429; Queens County; New York
 </td>
 <td style="text-align:right;">
 1363
+</td>
+<td style="text-align:right;">
+50.7
 </td>
 <td style="text-align:right;">
 30.2
@@ -92055,6 +95641,9 @@ Census Tract 1435; Queens County; New York
 714
 </td>
 <td style="text-align:right;">
+60.8
+</td>
+<td style="text-align:right;">
 40.6
 </td>
 <td style="text-align:right;">
@@ -92130,6 +95719,9 @@ Census Tract 1441; Queens County; New York
 </td>
 <td style="text-align:right;">
 1206
+</td>
+<td style="text-align:right;">
+41.8
 </td>
 <td style="text-align:right;">
 13.8
@@ -92209,6 +95801,9 @@ Census Tract 1451.01; Queens County; New York
 407
 </td>
 <td style="text-align:right;">
+59.7
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -92284,6 +95879,9 @@ Census Tract 1459; Queens County; New York
 </td>
 <td style="text-align:right;">
 957
+</td>
+<td style="text-align:right;">
+46.1
 </td>
 <td style="text-align:right;">
 22.0
@@ -92363,6 +95961,9 @@ Census Tract 1463; Queens County; New York
 1030
 </td>
 <td style="text-align:right;">
+51.2
+</td>
+<td style="text-align:right;">
 23.0
 </td>
 <td style="text-align:right;">
@@ -92438,6 +96039,9 @@ Census Tract 1571.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 2515
+</td>
+<td style="text-align:right;">
+61.2
 </td>
 <td style="text-align:right;">
 25.3
@@ -92517,6 +96121,9 @@ Census Tract 1571.02; Queens County; New York
 595
 </td>
 <td style="text-align:right;">
+61.0
+</td>
+<td style="text-align:right;">
 49.4
 </td>
 <td style="text-align:right;">
@@ -92592,6 +96199,9 @@ Census Tract 1579.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1256
+</td>
+<td style="text-align:right;">
+79.8
 </td>
 <td style="text-align:right;">
 30.4
@@ -92671,6 +96281,9 @@ Census Tract 1579.03; Queens County; New York
 1160
 </td>
 <td style="text-align:right;">
+63.5
+</td>
+<td style="text-align:right;">
 37.7
 </td>
 <td style="text-align:right;">
@@ -92746,6 +96359,9 @@ Census Tract 1617; Queens County; New York
 </td>
 <td style="text-align:right;">
 1521
+</td>
+<td style="text-align:right;">
+45.2
 </td>
 <td style="text-align:right;">
 31.0
@@ -92825,6 +96441,9 @@ Census Tract 1621; Queens County; New York
 1971
 </td>
 <td style="text-align:right;">
+45.2
+</td>
+<td style="text-align:right;">
 29.6
 </td>
 <td style="text-align:right;">
@@ -92900,6 +96519,9 @@ Census Tract 114.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1366
+</td>
+<td style="text-align:right;">
+41.3
 </td>
 <td style="text-align:right;">
 31.0
@@ -92979,6 +96601,9 @@ Census Tract 114.02; Richmond County; New York
 1230
 </td>
 <td style="text-align:right;">
+47.3
+</td>
+<td style="text-align:right;">
 33.5
 </td>
 <td style="text-align:right;">
@@ -93054,6 +96679,9 @@ Census Tract 141; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1064
+</td>
+<td style="text-align:right;">
+47.7
 </td>
 <td style="text-align:right;">
 21.4
@@ -93133,6 +96761,9 @@ Census Tract 146.07; Richmond County; New York
 1696
 </td>
 <td style="text-align:right;">
+40.4
+</td>
+<td style="text-align:right;">
 32.3
 </td>
 <td style="text-align:right;">
@@ -93208,6 +96839,9 @@ Census Tract 156.02; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1160
+</td>
+<td style="text-align:right;">
+47.7
 </td>
 <td style="text-align:right;">
 36.9
@@ -93287,6 +96921,9 @@ Census Tract 170.05; Richmond County; New York
 1734
 </td>
 <td style="text-align:right;">
+56.2
+</td>
+<td style="text-align:right;">
 34.5
 </td>
 <td style="text-align:right;">
@@ -93362,6 +96999,9 @@ Census Tract 170.09; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1621
+</td>
+<td style="text-align:right;">
+49.8
 </td>
 <td style="text-align:right;">
 39.0
@@ -93441,6 +97081,9 @@ Census Tract 170.11; Richmond County; New York
 1729
 </td>
 <td style="text-align:right;">
+48.6
+</td>
+<td style="text-align:right;">
 30.9
 </td>
 <td style="text-align:right;">
@@ -93516,6 +97159,9 @@ Census Tract 170.12; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1608
+</td>
+<td style="text-align:right;">
+57.3
 </td>
 <td style="text-align:right;">
 28.5
@@ -93595,6 +97241,9 @@ Census Tract 187.03; Richmond County; New York
 1255
 </td>
 <td style="text-align:right;">
+46.8
+</td>
+<td style="text-align:right;">
 41.4
 </td>
 <td style="text-align:right;">
@@ -93670,6 +97319,9 @@ Census Tract 187.04; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1179
+</td>
+<td style="text-align:right;">
+54.8
 </td>
 <td style="text-align:right;">
 25.3
@@ -93749,6 +97401,9 @@ Census Tract 207.02; Richmond County; New York
 881
 </td>
 <td style="text-align:right;">
+28.1
+</td>
+<td style="text-align:right;">
 19.3
 </td>
 <td style="text-align:right;">
@@ -93824,6 +97479,9 @@ Census Tract 177.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1657
+</td>
+<td style="text-align:right;">
+40.8
 </td>
 <td style="text-align:right;">
 47.0
@@ -93903,6 +97561,9 @@ Census Tract 370; Bronx County; New York
 683
 </td>
 <td style="text-align:right;">
+54.9
+</td>
+<td style="text-align:right;">
 44.9
 </td>
 <td style="text-align:right;">
@@ -93978,6 +97639,9 @@ Census Tract 392; Bronx County; New York
 </td>
 <td style="text-align:right;">
 663
+</td>
+<td style="text-align:right;">
+30.2
 </td>
 <td style="text-align:right;">
 26.4
@@ -94057,6 +97721,9 @@ Census Tract 399.02; Bronx County; New York
 1756
 </td>
 <td style="text-align:right;">
+22.8
+</td>
+<td style="text-align:right;">
 49.8
 </td>
 <td style="text-align:right;">
@@ -94132,6 +97799,9 @@ Census Tract 408; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1624
+</td>
+<td style="text-align:right;">
+28.4
 </td>
 <td style="text-align:right;">
 36.9
@@ -94211,6 +97881,9 @@ Census Tract 444; Bronx County; New York
 1355
 </td>
 <td style="text-align:right;">
+67.9
+</td>
+<td style="text-align:right;">
 31.2
 </td>
 <td style="text-align:right;">
@@ -94286,6 +97959,9 @@ Census Tract 484.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1236
+</td>
+<td style="text-align:right;">
+51.8
 </td>
 <td style="text-align:right;">
 38.8
@@ -94365,6 +98041,9 @@ Census Tract 35; Kings County; New York
 1141
 </td>
 <td style="text-align:right;">
+23.9
+</td>
+<td style="text-align:right;">
 12.2
 </td>
 <td style="text-align:right;">
@@ -94440,6 +98119,9 @@ Census Tract 171; Kings County; New York
 </td>
 <td style="text-align:right;">
 1634
+</td>
+<td style="text-align:right;">
+28.9
 </td>
 <td style="text-align:right;">
 43.1
@@ -94519,6 +98201,9 @@ Census Tract 218; Kings County; New York
 840
 </td>
 <td style="text-align:right;">
+33.3
+</td>
+<td style="text-align:right;">
 42.7
 </td>
 <td style="text-align:right;">
@@ -94594,6 +98279,9 @@ Census Tract 792.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 778
+</td>
+<td style="text-align:right;">
+38.4
 </td>
 <td style="text-align:right;">
 36.5
@@ -94673,6 +98361,9 @@ Census Tract 826; Kings County; New York
 1811
 </td>
 <td style="text-align:right;">
+47.2
+</td>
+<td style="text-align:right;">
 27.8
 </td>
 <td style="text-align:right;">
@@ -94748,6 +98439,9 @@ Census Tract 1190; Kings County; New York
 </td>
 <td style="text-align:right;">
 755
+</td>
+<td style="text-align:right;">
+41.9
 </td>
 <td style="text-align:right;">
 30.6
@@ -94827,6 +98521,9 @@ Census Tract 145; Queens County; New York
 996
 </td>
 <td style="text-align:right;">
+27.2
+</td>
+<td style="text-align:right;">
 15.0
 </td>
 <td style="text-align:right;">
@@ -94902,6 +98599,9 @@ Census Tract 274; Queens County; New York
 </td>
 <td style="text-align:right;">
 663
+</td>
+<td style="text-align:right;">
+60.0
 </td>
 <td style="text-align:right;">
 36.5
@@ -94981,6 +98681,9 @@ Census Tract 280; Queens County; New York
 564
 </td>
 <td style="text-align:right;">
+56.7
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -95056,6 +98759,9 @@ Census Tract 288.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 661
+</td>
+<td style="text-align:right;">
+56.3
 </td>
 <td style="text-align:right;">
 28.0
@@ -95135,6 +98841,9 @@ Census Tract 297; Queens County; New York
 731
 </td>
 <td style="text-align:right;">
+26.9
+</td>
+<td style="text-align:right;">
 35.6
 </td>
 <td style="text-align:right;">
@@ -95210,6 +98919,9 @@ Census Tract 366; Queens County; New York
 </td>
 <td style="text-align:right;">
 1021
+</td>
+<td style="text-align:right;">
+63.7
 </td>
 <td style="text-align:right;">
 30.3
@@ -95289,6 +99001,9 @@ Census Tract 432; Queens County; New York
 383
 </td>
 <td style="text-align:right;">
+44.1
+</td>
+<td style="text-align:right;">
 40.7
 </td>
 <td style="text-align:right;">
@@ -95364,6 +99079,9 @@ Census Tract 623; Queens County; New York
 </td>
 <td style="text-align:right;">
 879
+</td>
+<td style="text-align:right;">
+43.8
 </td>
 <td style="text-align:right;">
 25.3
@@ -95443,6 +99161,9 @@ Census Tract 745; Queens County; New York
 1590
 </td>
 <td style="text-align:right;">
+61.6
+</td>
+<td style="text-align:right;">
 15.0
 </td>
 <td style="text-align:right;">
@@ -95518,6 +99239,9 @@ Census Tract 17; Richmond County; New York
 </td>
 <td style="text-align:right;">
 627
+</td>
+<td style="text-align:right;">
+46.9
 </td>
 <td style="text-align:right;">
 26.8
@@ -95597,6 +99321,9 @@ Census Tract 244.01; Richmond County; New York
 1921
 </td>
 <td style="text-align:right;">
+42.6
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -95672,6 +99399,9 @@ Census Tract 60; Bronx County; New York
 </td>
 <td style="text-align:right;">
 375
+</td>
+<td style="text-align:right;">
+41.1
 </td>
 <td style="text-align:right;">
 35.5
@@ -95751,6 +99481,9 @@ Census Tract 86; Bronx County; New York
 1591
 </td>
 <td style="text-align:right;">
+53.5
+</td>
+<td style="text-align:right;">
 28.7
 </td>
 <td style="text-align:right;">
@@ -95826,6 +99559,9 @@ Census Tract 364; Bronx County; New York
 </td>
 <td style="text-align:right;">
 844
+</td>
+<td style="text-align:right;">
+54.1
 </td>
 <td style="text-align:right;">
 36.1
@@ -95905,6 +99641,9 @@ Census Tract 394; Bronx County; New York
 1651
 </td>
 <td style="text-align:right;">
+34.8
+</td>
+<td style="text-align:right;">
 41.1
 </td>
 <td style="text-align:right;">
@@ -95980,6 +99719,9 @@ Census Tract 448; Bronx County; New York
 </td>
 <td style="text-align:right;">
 697
+</td>
+<td style="text-align:right;">
+60.3
 </td>
 <td style="text-align:right;">
 42.6
@@ -96059,6 +99801,9 @@ Census Tract 349.01; Kings County; New York
 770
 </td>
 <td style="text-align:right;">
+29.9
+</td>
+<td style="text-align:right;">
 32.6
 </td>
 <td style="text-align:right;">
@@ -96134,6 +99879,9 @@ Census Tract 400; Kings County; New York
 </td>
 <td style="text-align:right;">
 904
+</td>
+<td style="text-align:right;">
+47.3
 </td>
 <td style="text-align:right;">
 44.5
@@ -96213,6 +99961,9 @@ Census Tract 600; Kings County; New York
 2645
 </td>
 <td style="text-align:right;">
+47.3
+</td>
+<td style="text-align:right;">
 20.6
 </td>
 <td style="text-align:right;">
@@ -96288,6 +100039,9 @@ Census Tract 153; Queens County; New York
 </td>
 <td style="text-align:right;">
 795
+</td>
+<td style="text-align:right;">
+27.7
 </td>
 <td style="text-align:right;">
 10.3
@@ -96367,6 +100121,9 @@ Census Tract 330; Queens County; New York
 2112
 </td>
 <td style="text-align:right;">
+55.4
+</td>
+<td style="text-align:right;">
 34.2
 </td>
 <td style="text-align:right;">
@@ -96442,6 +100199,9 @@ Census Tract 457; Queens County; New York
 </td>
 <td style="text-align:right;">
 1202
+</td>
+<td style="text-align:right;">
+39.4
 </td>
 <td style="text-align:right;">
 38.4
@@ -96521,6 +100281,9 @@ Census Tract 465; Queens County; New York
 1056
 </td>
 <td style="text-align:right;">
+23.9
+</td>
+<td style="text-align:right;">
 54.4
 </td>
 <td style="text-align:right;">
@@ -96596,6 +100359,9 @@ Census Tract 884; Queens County; New York
 </td>
 <td style="text-align:right;">
 3314
+</td>
+<td style="text-align:right;">
+69.8
 </td>
 <td style="text-align:right;">
 24.7
@@ -96675,6 +100441,9 @@ Census Tract 187.01; Richmond County; New York
 669
 </td>
 <td style="text-align:right;">
+33.6
+</td>
+<td style="text-align:right;">
 41.6
 </td>
 <td style="text-align:right;">
@@ -96750,6 +100519,9 @@ Census Tract 208.03; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2543
+</td>
+<td style="text-align:right;">
+49.2
 </td>
 <td style="text-align:right;">
 44.4
@@ -96829,6 +100601,9 @@ Census Tract 430; Bronx County; New York
 1302
 </td>
 <td style="text-align:right;">
+60.9
+</td>
+<td style="text-align:right;">
 39.2
 </td>
 <td style="text-align:right;">
@@ -96904,6 +100679,9 @@ Census Tract 434; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1454
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 28.1
@@ -96983,6 +100761,9 @@ Census Tract 205; Kings County; New York
 1580
 </td>
 <td style="text-align:right;">
+12.3
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -97058,6 +100839,9 @@ Census Tract 336; Kings County; New York
 </td>
 <td style="text-align:right;">
 1584
+</td>
+<td style="text-align:right;">
+63.0
 </td>
 <td style="text-align:right;">
 28.4
@@ -97137,6 +100921,9 @@ Census Tract 405; Kings County; New York
 627
 </td>
 <td style="text-align:right;">
+23.9
+</td>
+<td style="text-align:right;">
 14.0
 </td>
 <td style="text-align:right;">
@@ -97212,6 +100999,9 @@ Census Tract 476; Kings County; New York
 </td>
 <td style="text-align:right;">
 860
+</td>
+<td style="text-align:right;">
+52.0
 </td>
 <td style="text-align:right;">
 41.7
@@ -97291,6 +101081,9 @@ Census Tract 594.02; Kings County; New York
 2314
 </td>
 <td style="text-align:right;">
+50.1
+</td>
+<td style="text-align:right;">
 29.8
 </td>
 <td style="text-align:right;">
@@ -97366,6 +101159,9 @@ Census Tract 928; Kings County; New York
 </td>
 <td style="text-align:right;">
 1122
+</td>
+<td style="text-align:right;">
+65.3
 </td>
 <td style="text-align:right;">
 16.1
@@ -97445,6 +101241,9 @@ Census Tract 273.01; Queens County; New York
 910
 </td>
 <td style="text-align:right;">
+18.9
+</td>
+<td style="text-align:right;">
 33.3
 </td>
 <td style="text-align:right;">
@@ -97520,6 +101319,9 @@ Census Tract 463; Queens County; New York
 </td>
 <td style="text-align:right;">
 1058
+</td>
+<td style="text-align:right;">
+34.3
 </td>
 <td style="text-align:right;">
 54.4
@@ -97599,6 +101401,9 @@ Census Tract 719; Queens County; New York
 1043
 </td>
 <td style="text-align:right;">
+49.3
+</td>
+<td style="text-align:right;">
 35.3
 </td>
 <td style="text-align:right;">
@@ -97674,6 +101479,9 @@ Census Tract 96.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1617
+</td>
+<td style="text-align:right;">
+50.6
 </td>
 <td style="text-align:right;">
 25.8
@@ -97753,6 +101561,9 @@ Census Tract 97.01; Richmond County; New York
 1541
 </td>
 <td style="text-align:right;">
+34.8
+</td>
+<td style="text-align:right;">
 44.3
 </td>
 <td style="text-align:right;">
@@ -97828,6 +101639,9 @@ Census Tract 115.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1439
+</td>
+<td style="text-align:right;">
+43.8
 </td>
 <td style="text-align:right;">
 44.3
@@ -97907,6 +101721,9 @@ Census Tract 197; Kings County; New York
 1742
 </td>
 <td style="text-align:right;">
+26.2
+</td>
+<td style="text-align:right;">
 27.6
 </td>
 <td style="text-align:right;">
@@ -97982,6 +101799,9 @@ Census Tract 216; Kings County; New York
 </td>
 <td style="text-align:right;">
 918
+</td>
+<td style="text-align:right;">
+35.7
 </td>
 <td style="text-align:right;">
 51.9
@@ -98061,6 +101881,9 @@ Census Tract 1176.01; Kings County; New York
 1015
 </td>
 <td style="text-align:right;">
+38.4
+</td>
+<td style="text-align:right;">
 42.6
 </td>
 <td style="text-align:right;">
@@ -98136,6 +101959,9 @@ Census Tract 187; Queens County; New York
 </td>
 <td style="text-align:right;">
 1001
+</td>
+<td style="text-align:right;">
+28.6
 </td>
 <td style="text-align:right;">
 31.2
@@ -98215,6 +102041,9 @@ Census Tract 942.03; Queens County; New York
 2922
 </td>
 <td style="text-align:right;">
+63.0
+</td>
+<td style="text-align:right;">
 22.1
 </td>
 <td style="text-align:right;">
@@ -98290,6 +102119,9 @@ Census Tract 1451.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 911
+</td>
+<td style="text-align:right;">
+56.2
 </td>
 <td style="text-align:right;">
 34.5
@@ -98369,6 +102201,9 @@ Census Tract 242; Kings County; New York
 700
 </td>
 <td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
 48.4
 </td>
 <td style="text-align:right;">
@@ -98444,6 +102279,9 @@ Census Tract 61; Queens County; New York
 </td>
 <td style="text-align:right;">
 2564
+</td>
+<td style="text-align:right;">
+19.3
 </td>
 <td style="text-align:right;">
 17.1
@@ -98523,6 +102361,9 @@ Census Tract 9; Richmond County; New York
 790
 </td>
 <td style="text-align:right;">
+28.1
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -98598,6 +102439,9 @@ Census Tract 46; Bronx County; New York
 </td>
 <td style="text-align:right;">
 672
+</td>
+<td style="text-align:right;">
+37.4
 </td>
 <td style="text-align:right;">
 40.8
@@ -98677,6 +102521,9 @@ Census Tract 262; Kings County; New York
 793
 </td>
 <td style="text-align:right;">
+60.0
+</td>
+<td style="text-align:right;">
 34.8
 </td>
 <td style="text-align:right;">
@@ -98752,6 +102599,9 @@ Census Tract 890; Kings County; New York
 </td>
 <td style="text-align:right;">
 2283
+</td>
+<td style="text-align:right;">
+34.5
 </td>
 <td style="text-align:right;">
 33.6
@@ -98831,6 +102681,9 @@ Census Tract 172; Queens County; New York
 566
 </td>
 <td style="text-align:right;">
+54.1
+</td>
+<td style="text-align:right;">
 21.2
 </td>
 <td style="text-align:right;">
@@ -98906,6 +102759,9 @@ Census Tract 459; Queens County; New York
 </td>
 <td style="text-align:right;">
 1019
+</td>
+<td style="text-align:right;">
+40.0
 </td>
 <td style="text-align:right;">
 50.8
@@ -98985,6 +102841,9 @@ Census Tract 461; Queens County; New York
 701
 </td>
 <td style="text-align:right;">
+34.0
+</td>
+<td style="text-align:right;">
 33.8
 </td>
 <td style="text-align:right;">
@@ -99060,6 +102919,9 @@ Census Tract 366; Kings County; New York
 </td>
 <td style="text-align:right;">
 1243
+</td>
+<td style="text-align:right;">
+40.5
 </td>
 <td style="text-align:right;">
 39.7
@@ -99139,6 +103001,9 @@ Census Tract 170; Queens County; New York
 684
 </td>
 <td style="text-align:right;">
+43.9
+</td>
+<td style="text-align:right;">
 39.2
 </td>
 <td style="text-align:right;">
@@ -99214,6 +103079,9 @@ Census Tract 837; Queens County; New York
 </td>
 <td style="text-align:right;">
 1555
+</td>
+<td style="text-align:right;">
+62.1
 </td>
 <td style="text-align:right;">
 22.3
@@ -99293,6 +103161,9 @@ Census Tract 118; Kings County; New York
 618
 </td>
 <td style="text-align:right;">
+33.5
+</td>
+<td style="text-align:right;">
 32.5
 </td>
 <td style="text-align:right;">
@@ -99368,6 +103239,9 @@ Census Tract 75; Queens County; New York
 </td>
 <td style="text-align:right;">
 2404
+</td>
+<td style="text-align:right;">
+45.9
 </td>
 <td style="text-align:right;">
 10.3
@@ -99447,6 +103321,9 @@ Census Tract 1032.01; Queens County; New York
 1884
 </td>
 <td style="text-align:right;">
+44.3
+</td>
+<td style="text-align:right;">
 53.3
 </td>
 <td style="text-align:right;">
@@ -99522,6 +103399,9 @@ Census Tract 222; Kings County; New York
 </td>
 <td style="text-align:right;">
 1072
+</td>
+<td style="text-align:right;">
+49.3
 </td>
 <td style="text-align:right;">
 43.4
@@ -99601,6 +103481,9 @@ Census Tract 439; Kings County; New York
 1072
 </td>
 <td style="text-align:right;">
+45.7
+</td>
+<td style="text-align:right;">
 36.6
 </td>
 <td style="text-align:right;">
@@ -99676,6 +103559,9 @@ Census Tract 148.02; New York County; New York
 </td>
 <td style="text-align:right;">
 3097
+</td>
+<td style="text-align:right;">
+33.9
 </td>
 <td style="text-align:right;">
 25.7
@@ -99755,6 +103641,9 @@ Census Tract 158.01; Queens County; New York
 1084
 </td>
 <td style="text-align:right;">
+58.3
+</td>
+<td style="text-align:right;">
 36.3
 </td>
 <td style="text-align:right;">
@@ -99830,6 +103719,9 @@ Census Tract 426; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2144
+</td>
+<td style="text-align:right;">
+57.6
 </td>
 <td style="text-align:right;">
 32.4
@@ -99909,6 +103801,9 @@ Census Tract 148.01; New York County; New York
 1260
 </td>
 <td style="text-align:right;">
+50.8
+</td>
+<td style="text-align:right;">
 30.6
 </td>
 <td style="text-align:right;">
@@ -99984,6 +103879,9 @@ Census Tract 845; Queens County; New York
 </td>
 <td style="text-align:right;">
 2041
+</td>
+<td style="text-align:right;">
+68.9
 </td>
 <td style="text-align:right;">
 12.5
@@ -100063,6 +103961,9 @@ Census Tract 1202; Kings County; New York
 541
 </td>
 <td style="text-align:right;">
+55.5
+</td>
+<td style="text-align:right;">
 21.3
 </td>
 <td style="text-align:right;">
@@ -100138,6 +104039,9 @@ Census Tract 158.01; New York County; New York
 </td>
 <td style="text-align:right;">
 2417
+</td>
+<td style="text-align:right;">
+44.6
 </td>
 <td style="text-align:right;">
 18.4
@@ -100217,6 +104121,9 @@ Census Tract 20.02; Bronx County; New York
 1868
 </td>
 <td style="text-align:right;">
+51.2
+</td>
+<td style="text-align:right;">
 25.5
 </td>
 <td style="text-align:right;">
@@ -100292,6 +104199,9 @@ Census Tract 273.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1477
+</td>
+<td style="text-align:right;">
+53.4
 </td>
 <td style="text-align:right;">
 37.6
@@ -100371,6 +104281,9 @@ Census Tract 240; Kings County; New York
 1512
 </td>
 <td style="text-align:right;">
+32.3
+</td>
+<td style="text-align:right;">
 58.0
 </td>
 <td style="text-align:right;">
@@ -100446,6 +104359,9 @@ Census Tract 610.03; Kings County; New York
 </td>
 <td style="text-align:right;">
 605
+</td>
+<td style="text-align:right;">
+43.5
 </td>
 <td style="text-align:right;">
 29.4
@@ -100525,6 +104441,9 @@ Census Tract 152; Queens County; New York
 709
 </td>
 <td style="text-align:right;">
+41.2
+</td>
+<td style="text-align:right;">
 55.3
 </td>
 <td style="text-align:right;">
@@ -100600,6 +104519,9 @@ Census Tract 633.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 510
+</td>
+<td style="text-align:right;">
+43.5
 </td>
 <td style="text-align:right;">
 46.3
@@ -100679,6 +104601,9 @@ Census Tract 161; Kings County; New York
 1539
 </td>
 <td style="text-align:right;">
+37.8
+</td>
+<td style="text-align:right;">
 16.2
 </td>
 <td style="text-align:right;">
@@ -100754,6 +104679,9 @@ Census Tract 302; Kings County; New York
 </td>
 <td style="text-align:right;">
 1319
+</td>
+<td style="text-align:right;">
+59.4
 </td>
 <td style="text-align:right;">
 33.3
@@ -100833,6 +104761,9 @@ Census Tract 397; Kings County; New York
 1313
 </td>
 <td style="text-align:right;">
+28.7
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -100908,6 +104839,9 @@ Census Tract 300; Kings County; New York
 </td>
 <td style="text-align:right;">
 1314
+</td>
+<td style="text-align:right;">
+46.7
 </td>
 <td style="text-align:right;">
 33.9
@@ -100987,6 +104921,9 @@ Census Tract 1128; Kings County; New York
 1462
 </td>
 <td style="text-align:right;">
+42.0
+</td>
+<td style="text-align:right;">
 29.7
 </td>
 <td style="text-align:right;">
@@ -101062,6 +104999,9 @@ Census Tract 6; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1307
+</td>
+<td style="text-align:right;">
+66.4
 </td>
 <td style="text-align:right;">
 20.4
@@ -101141,6 +105081,9 @@ Census Tract 7; Kings County; New York
 1865
 </td>
 <td style="text-align:right;">
+28.2
+</td>
+<td style="text-align:right;">
 26.1
 </td>
 <td style="text-align:right;">
@@ -101216,6 +105159,9 @@ Census Tract 486; Kings County; New York
 </td>
 <td style="text-align:right;">
 802
+</td>
+<td style="text-align:right;">
+36.7
 </td>
 <td style="text-align:right;">
 42.9
@@ -101298,6 +105244,9 @@ Census Tract 151; Kings County; New York
 27.7
 </td>
 <td style="text-align:right;">
+27.7
+</td>
+<td style="text-align:right;">
 72.3
 </td>
 <td style="text-align:right;">
@@ -101370,6 +105319,9 @@ Census Tract 1172.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 764
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 38.4
@@ -101449,6 +105401,9 @@ Census Tract 1032.02; Queens County; New York
 2133
 </td>
 <td style="text-align:right;">
+38.5
+</td>
+<td style="text-align:right;">
 52.1
 </td>
 <td style="text-align:right;">
@@ -101524,6 +105479,9 @@ Census Tract 84; Bronx County; New York
 </td>
 <td style="text-align:right;">
 993
+</td>
+<td style="text-align:right;">
+71.4
 </td>
 <td style="text-align:right;">
 22.6
@@ -101603,6 +105561,9 @@ Census Tract 341; Kings County; New York
 1205
 </td>
 <td style="text-align:right;">
+42.1
+</td>
+<td style="text-align:right;">
 24.7
 </td>
 <td style="text-align:right;">
@@ -101678,6 +105639,9 @@ Census Tract 396; Kings County; New York
 </td>
 <td style="text-align:right;">
 679
+</td>
+<td style="text-align:right;">
+49.6
 </td>
 <td style="text-align:right;">
 23.6
@@ -101757,6 +105721,9 @@ Census Tract 1126; Kings County; New York
 1717
 </td>
 <td style="text-align:right;">
+49.8
+</td>
+<td style="text-align:right;">
 27.1
 </td>
 <td style="text-align:right;">
@@ -101832,6 +105799,9 @@ Census Tract 155; Queens County; New York
 </td>
 <td style="text-align:right;">
 742
+</td>
+<td style="text-align:right;">
+23.9
 </td>
 <td style="text-align:right;">
 13.1
@@ -101911,6 +105881,9 @@ Census Tract 192; Queens County; New York
 617
 </td>
 <td style="text-align:right;">
+51.2
+</td>
+<td style="text-align:right;">
 43.6
 </td>
 <td style="text-align:right;">
@@ -101986,6 +105959,9 @@ Census Tract 696.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1954
+</td>
+<td style="text-align:right;">
+51.7
 </td>
 <td style="text-align:right;">
 25.1
@@ -102065,6 +106041,9 @@ Census Tract 50; New York County; New York
 2754
 </td>
 <td style="text-align:right;">
+27.9
+</td>
+<td style="text-align:right;">
 15.2
 </td>
 <td style="text-align:right;">
@@ -102140,6 +106119,9 @@ Census Tract 136.02; New York County; New York
 </td>
 <td style="text-align:right;">
 2660
+</td>
+<td style="text-align:right;">
+39.5
 </td>
 <td style="text-align:right;">
 35.5
@@ -102219,6 +106201,9 @@ Census Tract 1010.04; Queens County; New York
 2436
 </td>
 <td style="text-align:right;">
+42.4
+</td>
+<td style="text-align:right;">
 23.2
 </td>
 <td style="text-align:right;">
@@ -102294,6 +106279,9 @@ Census Tract 1158; Kings County; New York
 </td>
 <td style="text-align:right;">
 867
+</td>
+<td style="text-align:right;">
+50.7
 </td>
 <td style="text-align:right;">
 38.1
@@ -102373,6 +106361,9 @@ Census Tract 1178; Kings County; New York
 559
 </td>
 <td style="text-align:right;">
+45.8
+</td>
+<td style="text-align:right;">
 48.1
 </td>
 <td style="text-align:right;">
@@ -102448,6 +106439,9 @@ Census Tract 108.03; New York County; New York
 </td>
 <td style="text-align:right;">
 948
+</td>
+<td style="text-align:right;">
+36.5
 </td>
 <td style="text-align:right;">
 20.1
@@ -102527,6 +106521,9 @@ Census Tract 334.01; Queens County; New York
 1371
 </td>
 <td style="text-align:right;">
+55.1
+</td>
+<td style="text-align:right;">
 50.9
 </td>
 <td style="text-align:right;">
@@ -102602,6 +106599,9 @@ Census Tract 315; Kings County; New York
 </td>
 <td style="text-align:right;">
 2464
+</td>
+<td style="text-align:right;">
+22.8
 </td>
 <td style="text-align:right;">
 12.4
@@ -102681,6 +106681,9 @@ Census Tract 214; Kings County; New York
 529
 </td>
 <td style="text-align:right;">
+38.4
+</td>
+<td style="text-align:right;">
 51.4
 </td>
 <td style="text-align:right;">
@@ -102756,6 +106759,9 @@ Census Tract 198; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2449
+</td>
+<td style="text-align:right;">
+45.9
 </td>
 <td style="text-align:right;">
 38.2
@@ -102835,6 +106841,9 @@ Census Tract 392; Kings County; New York
 1179
 </td>
 <td style="text-align:right;">
+34.8
+</td>
+<td style="text-align:right;">
 37.1
 </td>
 <td style="text-align:right;">
@@ -102910,6 +106919,9 @@ Census Tract 65; New York County; New York
 </td>
 <td style="text-align:right;">
 3041
+</td>
+<td style="text-align:right;">
+22.3
 </td>
 <td style="text-align:right;">
 6.3
@@ -102989,6 +107001,9 @@ Census Tract 608; Kings County; New York
 1680
 </td>
 <td style="text-align:right;">
+50.1
+</td>
+<td style="text-align:right;">
 23.5
 </td>
 <td style="text-align:right;">
@@ -103064,6 +107079,9 @@ Census Tract 424; Queens County; New York
 </td>
 <td style="text-align:right;">
 875
+</td>
+<td style="text-align:right;">
+62.5
 </td>
 <td style="text-align:right;">
 27.4
@@ -103143,6 +107161,9 @@ Census Tract 1205; Queens County; New York
 930
 </td>
 <td style="text-align:right;">
+82.6
+</td>
+<td style="text-align:right;">
 16.6
 </td>
 <td style="text-align:right;">
@@ -103218,6 +107239,9 @@ Census Tract 196; Kings County; New York
 </td>
 <td style="text-align:right;">
 1586
+</td>
+<td style="text-align:right;">
+46.6
 </td>
 <td style="text-align:right;">
 45.3
@@ -103297,6 +107321,9 @@ Census Tract 137; Queens County; New York
 845
 </td>
 <td style="text-align:right;">
+29.3
+</td>
+<td style="text-align:right;">
 18.3
 </td>
 <td style="text-align:right;">
@@ -103372,6 +107399,9 @@ Census Tract 1174; Kings County; New York
 </td>
 <td style="text-align:right;">
 1334
+</td>
+<td style="text-align:right;">
+43.0
 </td>
 <td style="text-align:right;">
 35.1
@@ -103451,6 +107481,9 @@ Census Tract 118; New York County; New York
 5251
 </td>
 <td style="text-align:right;">
+34.6
+</td>
+<td style="text-align:right;">
 17.3
 </td>
 <td style="text-align:right;">
@@ -103526,6 +107559,9 @@ Census Tract 231; Bronx County; New York
 </td>
 <td style="text-align:right;">
 427
+</td>
+<td style="text-align:right;">
+48.7
 </td>
 <td style="text-align:right;">
 38.4
@@ -103605,6 +107641,9 @@ Census Tract 190; Kings County; New York
 1574
 </td>
 <td style="text-align:right;">
+41.6
+</td>
+<td style="text-align:right;">
 33.7
 </td>
 <td style="text-align:right;">
@@ -103680,6 +107719,9 @@ Census Tract 371; Kings County; New York
 </td>
 <td style="text-align:right;">
 1660
+</td>
+<td style="text-align:right;">
+28.0
 </td>
 <td style="text-align:right;">
 40.2
@@ -103759,6 +107801,9 @@ Census Tract 1447; Queens County; New York
 1005
 </td>
 <td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -103834,6 +107879,9 @@ Census Tract 64; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1182
+</td>
+<td style="text-align:right;">
+50.8
 </td>
 <td style="text-align:right;">
 20.5
@@ -103913,6 +107961,9 @@ Census Tract 176; Richmond County; New York
 1485
 </td>
 <td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
 39.9
 </td>
 <td style="text-align:right;">
@@ -103988,6 +108039,9 @@ Census Tract 1; Kings County; New York
 </td>
 <td style="text-align:right;">
 2579
+</td>
+<td style="text-align:right;">
+42.2
 </td>
 <td style="text-align:right;">
 19.8
@@ -104067,6 +108121,9 @@ Census Tract 221; Kings County; New York
 1472
 </td>
 <td style="text-align:right;">
+37.4
+</td>
+<td style="text-align:right;">
 13.5
 </td>
 <td style="text-align:right;">
@@ -104142,6 +108199,9 @@ Census Tract 586; Kings County; New York
 </td>
 <td style="text-align:right;">
 831
+</td>
+<td style="text-align:right;">
+49.0
 </td>
 <td style="text-align:right;">
 31.8
@@ -104221,6 +108281,9 @@ Census Tract 110; New York County; New York
 3934
 </td>
 <td style="text-align:right;">
+25.9
+</td>
+<td style="text-align:right;">
 18.3
 </td>
 <td style="text-align:right;">
@@ -104296,6 +108359,9 @@ Census Tract 134; New York County; New York
 </td>
 <td style="text-align:right;">
 5923
+</td>
+<td style="text-align:right;">
+31.1
 </td>
 <td style="text-align:right;">
 21.1
@@ -104375,6 +108441,9 @@ Census Tract 435; Kings County; New York
 1702
 </td>
 <td style="text-align:right;">
+27.8
+</td>
+<td style="text-align:right;">
 34.1
 </td>
 <td style="text-align:right;">
@@ -104450,6 +108519,9 @@ Census Tract 169; Kings County; New York
 </td>
 <td style="text-align:right;">
 2059
+</td>
+<td style="text-align:right;">
+24.6
 </td>
 <td style="text-align:right;">
 45.2
@@ -104529,6 +108601,9 @@ Census Tract 896; Kings County; New York
 1737
 </td>
 <td style="text-align:right;">
+55.3
+</td>
+<td style="text-align:right;">
 18.3
 </td>
 <td style="text-align:right;">
@@ -104604,6 +108679,9 @@ Census Tract 213; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1550
+</td>
+<td style="text-align:right;">
+37.0
 </td>
 <td style="text-align:right;">
 44.5
@@ -104683,6 +108761,9 @@ Census Tract 399; Kings County; New York
 1706
 </td>
 <td style="text-align:right;">
+38.3
+</td>
+<td style="text-align:right;">
 26.8
 </td>
 <td style="text-align:right;">
@@ -104758,6 +108839,9 @@ Census Tract 153.01; New York County; New York
 </td>
 <td style="text-align:right;">
 2381
+</td>
+<td style="text-align:right;">
+47.2
 </td>
 <td style="text-align:right;">
 18.2
@@ -104837,6 +108921,9 @@ Census Tract 535; Kings County; New York
 931
 </td>
 <td style="text-align:right;">
+33.2
+</td>
+<td style="text-align:right;">
 57.1
 </td>
 <td style="text-align:right;">
@@ -104912,6 +108999,9 @@ Census Tract 942.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2075
+</td>
+<td style="text-align:right;">
+37.2
 </td>
 <td style="text-align:right;">
 42.8
@@ -104991,6 +109081,9 @@ Census Tract 20.01; Richmond County; New York
 1506
 </td>
 <td style="text-align:right;">
+59.0
+</td>
+<td style="text-align:right;">
 8.8
 </td>
 <td style="text-align:right;">
@@ -105066,6 +109159,9 @@ Census Tract 169.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1079
+</td>
+<td style="text-align:right;">
+42.7
 </td>
 <td style="text-align:right;">
 45.6
@@ -105145,6 +109241,9 @@ Census Tract 591; Kings County; New York
 1901
 </td>
 <td style="text-align:right;">
+20.9
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -105220,6 +109319,9 @@ Census Tract 824; Kings County; New York
 </td>
 <td style="text-align:right;">
 1977
+</td>
+<td style="text-align:right;">
+42.9
 </td>
 <td style="text-align:right;">
 27.9
@@ -105299,6 +109401,9 @@ Census Tract 226.01; Richmond County; New York
 2324
 </td>
 <td style="text-align:right;">
+45.4
+</td>
+<td style="text-align:right;">
 44.4
 </td>
 <td style="text-align:right;">
@@ -105374,6 +109479,9 @@ Census Tract 247; Richmond County; New York
 </td>
 <td style="text-align:right;">
 827
+</td>
+<td style="text-align:right;">
+40.3
 </td>
 <td style="text-align:right;">
 45.8
@@ -105453,6 +109561,9 @@ Census Tract 1146; Kings County; New York
 826
 </td>
 <td style="text-align:right;">
+40.6
+</td>
+<td style="text-align:right;">
 43.9
 </td>
 <td style="text-align:right;">
@@ -105528,6 +109639,9 @@ Census Tract 190; Queens County; New York
 </td>
 <td style="text-align:right;">
 819
+</td>
+<td style="text-align:right;">
+32.6
 </td>
 <td style="text-align:right;">
 33.0
@@ -105607,6 +109721,9 @@ Census Tract 189.01; Richmond County; New York
 1683
 </td>
 <td style="text-align:right;">
+51.0
+</td>
+<td style="text-align:right;">
 36.2
 </td>
 <td style="text-align:right;">
@@ -105682,6 +109799,9 @@ Census Tract 210; Kings County; New York
 </td>
 <td style="text-align:right;">
 1226
+</td>
+<td style="text-align:right;">
+49.3
 </td>
 <td style="text-align:right;">
 37.5
@@ -105761,6 +109881,9 @@ Census Tract 533; Kings County; New York
 1535
 </td>
 <td style="text-align:right;">
+35.4
+</td>
+<td style="text-align:right;">
 58.0
 </td>
 <td style="text-align:right;">
@@ -105836,6 +109959,9 @@ Census Tract 1010.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1787
+</td>
+<td style="text-align:right;">
+37.6
 </td>
 <td style="text-align:right;">
 42.8
@@ -105915,6 +110041,9 @@ Census Tract 379; Bronx County; New York
 1930
 </td>
 <td style="text-align:right;">
+27.2
+</td>
+<td style="text-align:right;">
 42.3
 </td>
 <td style="text-align:right;">
@@ -105990,6 +110119,9 @@ Census Tract 431; Kings County; New York
 </td>
 <td style="text-align:right;">
 1687
+</td>
+<td style="text-align:right;">
+15.7
 </td>
 <td style="text-align:right;">
 14.2
@@ -106069,6 +110201,9 @@ Census Tract 433; Kings County; New York
 1278
 </td>
 <td style="text-align:right;">
+40.8
+</td>
+<td style="text-align:right;">
 24.7
 </td>
 <td style="text-align:right;">
@@ -106144,6 +110279,9 @@ Census Tract 144.01; New York County; New York
 </td>
 <td style="text-align:right;">
 2355
+</td>
+<td style="text-align:right;">
+42.1
 </td>
 <td style="text-align:right;">
 18.0
@@ -106223,6 +110361,9 @@ Census Tract 853; Queens County; New York
 2501
 </td>
 <td style="text-align:right;">
+65.7
+</td>
+<td style="text-align:right;">
 16.9
 </td>
 <td style="text-align:right;">
@@ -106298,6 +110439,9 @@ Census Tract 70.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1043
+</td>
+<td style="text-align:right;">
+70.8
 </td>
 <td style="text-align:right;">
 23.1
@@ -106377,6 +110521,9 @@ Census Tract 88; Kings County; New York
 1182
 </td>
 <td style="text-align:right;">
+30.3
+</td>
+<td style="text-align:right;">
 20.3
 </td>
 <td style="text-align:right;">
@@ -106452,6 +110599,9 @@ Census Tract 149.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 663
+</td>
+<td style="text-align:right;">
+28.4
 </td>
 <td style="text-align:right;">
 30.3
@@ -106531,6 +110681,9 @@ Census Tract 395; Kings County; New York
 1836
 </td>
 <td style="text-align:right;">
+29.2
+</td>
+<td style="text-align:right;">
 8.4
 </td>
 <td style="text-align:right;">
@@ -106606,6 +110759,9 @@ Census Tract 429; Kings County; New York
 </td>
 <td style="text-align:right;">
 1940
+</td>
+<td style="text-align:right;">
+16.8
 </td>
 <td style="text-align:right;">
 23.2
@@ -106685,6 +110841,9 @@ Census Tract 900; Kings County; New York
 1748
 </td>
 <td style="text-align:right;">
+38.8
+</td>
+<td style="text-align:right;">
 27.9
 </td>
 <td style="text-align:right;">
@@ -106760,6 +110919,9 @@ Census Tract 1196; Kings County; New York
 </td>
 <td style="text-align:right;">
 2107
+</td>
+<td style="text-align:right;">
+35.3
 </td>
 <td style="text-align:right;">
 33.8
@@ -106839,6 +111001,9 @@ Census Tract 136.04; New York County; New York
 2237
 </td>
 <td style="text-align:right;">
+33.8
+</td>
+<td style="text-align:right;">
 3.4
 </td>
 <td style="text-align:right;">
@@ -106914,6 +111079,9 @@ Census Tract 7; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1862
+</td>
+<td style="text-align:right;">
+41.5
 </td>
 <td style="text-align:right;">
 27.1
@@ -106993,6 +111161,9 @@ Census Tract 415; Kings County; New York
 1615
 </td>
 <td style="text-align:right;">
+36.8
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -107068,6 +111239,9 @@ Census Tract 369; Kings County; New York
 </td>
 <td style="text-align:right;">
 2485
+</td>
+<td style="text-align:right;">
+30.5
 </td>
 <td style="text-align:right;">
 16.5
@@ -107147,6 +111321,9 @@ Census Tract 402; Kings County; New York
 841
 </td>
 <td style="text-align:right;">
+40.8
+</td>
+<td style="text-align:right;">
 30.2
 </td>
 <td style="text-align:right;">
@@ -107222,6 +111399,9 @@ Census Tract 561; Kings County; New York
 </td>
 <td style="text-align:right;">
 1705
+</td>
+<td style="text-align:right;">
+25.2
 </td>
 <td style="text-align:right;">
 9.4
@@ -107301,6 +111481,9 @@ Census Tract 138; New York County; New York
 6934
 </td>
 <td style="text-align:right;">
+25.8
+</td>
+<td style="text-align:right;">
 13.9
 </td>
 <td style="text-align:right;">
@@ -107376,6 +111559,9 @@ Census Tract 81; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1710
+</td>
+<td style="text-align:right;">
+62.9
 </td>
 <td style="text-align:right;">
 21.9
@@ -107455,6 +111641,9 @@ Census Tract 133.02; Richmond County; New York
 1008
 </td>
 <td style="text-align:right;">
+34.6
+</td>
+<td style="text-align:right;">
 66.2
 </td>
 <td style="text-align:right;">
@@ -107530,6 +111719,9 @@ Census Tract 565; Kings County; New York
 </td>
 <td style="text-align:right;">
 1901
+</td>
+<td style="text-align:right;">
+24.1
 </td>
 <td style="text-align:right;">
 9.0
@@ -107609,6 +111801,9 @@ Census Tract 571; Kings County; New York
 1983
 </td>
 <td style="text-align:right;">
+24.4
+</td>
+<td style="text-align:right;">
 18.6
 </td>
 <td style="text-align:right;">
@@ -107684,6 +111879,9 @@ Census Tract 50; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1431
+</td>
+<td style="text-align:right;">
+50.5
 </td>
 <td style="text-align:right;">
 38.6
@@ -107763,6 +111961,9 @@ Census Tract 622; Kings County; New York
 1107
 </td>
 <td style="text-align:right;">
+51.5
+</td>
+<td style="text-align:right;">
 29.2
 </td>
 <td style="text-align:right;">
@@ -107838,6 +112039,9 @@ Census Tract 1099; Queens County; New York
 </td>
 <td style="text-align:right;">
 1283
+</td>
+<td style="text-align:right;">
+37.3
 </td>
 <td style="text-align:right;">
 30.5
@@ -107917,6 +112121,9 @@ Census Tract 569; Kings County; New York
 847
 </td>
 <td style="text-align:right;">
+29.6
+</td>
+<td style="text-align:right;">
 14.9
 </td>
 <td style="text-align:right;">
@@ -107992,6 +112199,9 @@ Census Tract 596; Kings County; New York
 </td>
 <td style="text-align:right;">
 1239
+</td>
+<td style="text-align:right;">
+56.7
 </td>
 <td style="text-align:right;">
 14.0
@@ -108071,6 +112281,9 @@ Census Tract 28; Bronx County; New York
 2542
 </td>
 <td style="text-align:right;">
+55.2
+</td>
+<td style="text-align:right;">
 21.0
 </td>
 <td style="text-align:right;">
@@ -108146,6 +112359,9 @@ Census Tract 152; New York County; New York
 </td>
 <td style="text-align:right;">
 3524
+</td>
+<td style="text-align:right;">
+40.8
 </td>
 <td style="text-align:right;">
 25.2
@@ -108225,6 +112441,9 @@ Census Tract 156.03; Richmond County; New York
 1678
 </td>
 <td style="text-align:right;">
+55.7
+</td>
+<td style="text-align:right;">
 36.8
 </td>
 <td style="text-align:right;">
@@ -108300,6 +112519,9 @@ Census Tract 201; Kings County; New York
 </td>
 <td style="text-align:right;">
 1990
+</td>
+<td style="text-align:right;">
+23.9
 </td>
 <td style="text-align:right;">
 17.0
@@ -108379,6 +112601,9 @@ Census Tract 133; Kings County; New York
 1804
 </td>
 <td style="text-align:right;">
+25.8
+</td>
+<td style="text-align:right;">
 34.1
 </td>
 <td style="text-align:right;">
@@ -108454,6 +112679,9 @@ Census Tract 898; Kings County; New York
 </td>
 <td style="text-align:right;">
 743
+</td>
+<td style="text-align:right;">
+32.7
 </td>
 <td style="text-align:right;">
 33.1
@@ -108533,6 +112761,9 @@ Census Tract 207.01; Richmond County; New York
 1021
 </td>
 <td style="text-align:right;">
+35.9
+</td>
+<td style="text-align:right;">
 24.0
 </td>
 <td style="text-align:right;">
@@ -108608,6 +112839,9 @@ Census Tract 20.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1774
+</td>
+<td style="text-align:right;">
+40.0
 </td>
 <td style="text-align:right;">
 31.7
@@ -108687,6 +112921,9 @@ Census Tract 135; Kings County; New York
 1506
 </td>
 <td style="text-align:right;">
+21.0
+</td>
+<td style="text-align:right;">
 41.9
 </td>
 <td style="text-align:right;">
@@ -108762,6 +112999,9 @@ Census Tract 168; New York County; New York
 </td>
 <td style="text-align:right;">
 1843
+</td>
+<td style="text-align:right;">
+48.0
 </td>
 <td style="text-align:right;">
 27.5
@@ -108841,6 +113081,9 @@ Census Tract 137; Kings County; New York
 1486
 </td>
 <td style="text-align:right;">
+21.0
+</td>
+<td style="text-align:right;">
 25.1
 </td>
 <td style="text-align:right;">
@@ -108916,6 +113159,9 @@ Census Tract 179; Kings County; New York
 </td>
 <td style="text-align:right;">
 1422
+</td>
+<td style="text-align:right;">
+36.3
 </td>
 <td style="text-align:right;">
 29.7
@@ -108995,6 +113241,9 @@ Census Tract 232; Kings County; New York
 1181
 </td>
 <td style="text-align:right;">
+39.2
+</td>
+<td style="text-align:right;">
 59.4
 </td>
 <td style="text-align:right;">
@@ -109070,6 +113319,9 @@ Census Tract 8; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1804
+</td>
+<td style="text-align:right;">
+46.1
 </td>
 <td style="text-align:right;">
 38.5
@@ -109149,6 +113401,9 @@ Census Tract 393; Kings County; New York
 1531
 </td>
 <td style="text-align:right;">
+11.4
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -109224,6 +113479,9 @@ Census Tract 11; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1151
+</td>
+<td style="text-align:right;">
+34.0
 </td>
 <td style="text-align:right;">
 42.6
@@ -109303,6 +113561,9 @@ Census Tract 199; Kings County; New York
 1951
 </td>
 <td style="text-align:right;">
+15.8
+</td>
+<td style="text-align:right;">
 16.7
 </td>
 <td style="text-align:right;">
@@ -109378,6 +113639,9 @@ Census Tract 361; Queens County; New York
 </td>
 <td style="text-align:right;">
 679
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 28.9
@@ -109457,6 +113721,9 @@ Census Tract 248; Richmond County; New York
 1713
 </td>
 <td style="text-align:right;">
+32.6
+</td>
+<td style="text-align:right;">
 38.8
 </td>
 <td style="text-align:right;">
@@ -109532,6 +113799,9 @@ Census Tract 112.03; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2121
+</td>
+<td style="text-align:right;">
+52.5
 </td>
 <td style="text-align:right;">
 33.7
@@ -109611,6 +113881,9 @@ Census Tract 377; Kings County; New York
 1882
 </td>
 <td style="text-align:right;">
+32.9
+</td>
+<td style="text-align:right;">
 35.2
 </td>
 <td style="text-align:right;">
@@ -109686,6 +113959,9 @@ Census Tract 590; Kings County; New York
 </td>
 <td style="text-align:right;">
 676
+</td>
+<td style="text-align:right;">
+46.9
 </td>
 <td style="text-align:right;">
 25.4
@@ -109765,6 +114041,9 @@ Census Tract 2; Bronx County; New York
 1425
 </td>
 <td style="text-align:right;">
+56.3
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -109840,6 +114119,9 @@ Census Tract 33; Kings County; New York
 </td>
 <td style="text-align:right;">
 2474
+</td>
+<td style="text-align:right;">
+12.5
 </td>
 <td style="text-align:right;">
 14.8
@@ -109919,6 +114201,9 @@ Census Tract 499; Kings County; New York
 962
 </td>
 <td style="text-align:right;">
+15.3
+</td>
+<td style="text-align:right;">
 19.1
 </td>
 <td style="text-align:right;">
@@ -109994,6 +114279,9 @@ Census Tract 77; Queens County; New York
 </td>
 <td style="text-align:right;">
 851
+</td>
+<td style="text-align:right;">
+20.6
 </td>
 <td style="text-align:right;">
 13.7
@@ -110073,6 +114361,9 @@ Census Tract 128.06; Richmond County; New York
 2332
 </td>
 <td style="text-align:right;">
+47.1
+</td>
+<td style="text-align:right;">
 25.1
 </td>
 <td style="text-align:right;">
@@ -110148,6 +114439,9 @@ Census Tract 397; Bronx County; New York
 </td>
 <td style="text-align:right;">
 439
+</td>
+<td style="text-align:right;">
+59.5
 </td>
 <td style="text-align:right;">
 11.4
@@ -110227,6 +114521,9 @@ Census Tract 120; Kings County; New York
 311
 </td>
 <td style="text-align:right;">
+46.3
+</td>
+<td style="text-align:right;">
 64.3
 </td>
 <td style="text-align:right;">
@@ -110302,6 +114599,9 @@ Census Tract 129.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1407
+</td>
+<td style="text-align:right;">
+17.7
 </td>
 <td style="text-align:right;">
 17.3
@@ -110381,6 +114681,9 @@ Census Tract 79; Queens County; New York
 1205
 </td>
 <td style="text-align:right;">
+37.2
+</td>
+<td style="text-align:right;">
 24.4
 </td>
 <td style="text-align:right;">
@@ -110456,6 +114759,9 @@ Census Tract 305; Kings County; New York
 </td>
 <td style="text-align:right;">
 3161
+</td>
+<td style="text-align:right;">
+12.7
 </td>
 <td style="text-align:right;">
 19.8
@@ -110535,6 +114841,9 @@ Census Tract 1124; Kings County; New York
 1186
 </td>
 <td style="text-align:right;">
+27.3
+</td>
+<td style="text-align:right;">
 30.9
 </td>
 <td style="text-align:right;">
@@ -110610,6 +114919,9 @@ Census Tract 20; Kings County; New York
 </td>
 <td style="text-align:right;">
 399
+</td>
+<td style="text-align:right;">
+31.1
 </td>
 <td style="text-align:right;">
 60.2
@@ -110689,6 +115001,9 @@ Census Tract 183; Kings County; New York
 1291
 </td>
 <td style="text-align:right;">
+12.0
+</td>
+<td style="text-align:right;">
 23.2
 </td>
 <td style="text-align:right;">
@@ -110764,6 +115079,9 @@ Census Tract 478; Kings County; New York
 </td>
 <td style="text-align:right;">
 1066
+</td>
+<td style="text-align:right;">
+37.1
 </td>
 <td style="text-align:right;">
 42.7
@@ -110843,6 +115161,9 @@ Census Tract 1160; Kings County; New York
 938
 </td>
 <td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
 41.5
 </td>
 <td style="text-align:right;">
@@ -110918,6 +115239,9 @@ Census Tract 112; Kings County; New York
 </td>
 <td style="text-align:right;">
 1964
+</td>
+<td style="text-align:right;">
+47.6
 </td>
 <td style="text-align:right;">
 35.1
@@ -110997,6 +115321,9 @@ Census Tract 379; Kings County; New York
 1610
 </td>
 <td style="text-align:right;">
+50.6
+</td>
+<td style="text-align:right;">
 36.6
 </td>
 <td style="text-align:right;">
@@ -111072,6 +115399,9 @@ Census Tract 67; New York County; New York
 </td>
 <td style="text-align:right;">
 3268
+</td>
+<td style="text-align:right;">
+30.2
 </td>
 <td style="text-align:right;">
 0.9
@@ -111151,6 +115481,9 @@ Census Tract 149; New York County; New York
 2887
 </td>
 <td style="text-align:right;">
+53.4
+</td>
+<td style="text-align:right;">
 21.0
 </td>
 <td style="text-align:right;">
@@ -111226,6 +115559,9 @@ Census Tract 343; Kings County; New York
 </td>
 <td style="text-align:right;">
 1970
+</td>
+<td style="text-align:right;">
+41.5
 </td>
 <td style="text-align:right;">
 26.4
@@ -111305,6 +115641,9 @@ Census Tract 1122; Kings County; New York
 1397
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 21.5
 </td>
 <td style="text-align:right;">
@@ -111380,6 +115719,9 @@ Census Tract 195; Kings County; New York
 </td>
 <td style="text-align:right;">
 1718
+</td>
+<td style="text-align:right;">
+35.4
 </td>
 <td style="text-align:right;">
 22.0
@@ -111459,6 +115801,9 @@ Census Tract 313; Kings County; New York
 2199
 </td>
 <td style="text-align:right;">
+31.8
+</td>
+<td style="text-align:right;">
 15.7
 </td>
 <td style="text-align:right;">
@@ -111534,6 +115879,9 @@ Census Tract 356.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 2959
+</td>
+<td style="text-align:right;">
+56.2
 </td>
 <td style="text-align:right;">
 19.3
@@ -111613,6 +115961,9 @@ Census Tract 373; Queens County; New York
 553
 </td>
 <td style="text-align:right;">
+34.7
+</td>
+<td style="text-align:right;">
 51.4
 </td>
 <td style="text-align:right;">
@@ -111688,6 +116039,9 @@ Census Tract 621; Queens County; New York
 </td>
 <td style="text-align:right;">
 996
+</td>
+<td style="text-align:right;">
+48.9
 </td>
 <td style="text-align:right;">
 41.5
@@ -111767,6 +116121,9 @@ Census Tract 106.02; New York County; New York
 2133
 </td>
 <td style="text-align:right;">
+33.6
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -111842,6 +116199,9 @@ Census Tract 108.02; New York County; New York
 </td>
 <td style="text-align:right;">
 2198
+</td>
+<td style="text-align:right;">
+60.4
 </td>
 <td style="text-align:right;">
 14.2
@@ -111921,6 +116281,9 @@ Census Tract 22; Kings County; New York
 1558
 </td>
 <td style="text-align:right;">
+48.8
+</td>
+<td style="text-align:right;">
 32.2
 </td>
 <td style="text-align:right;">
@@ -111996,6 +116359,9 @@ Census Tract 228; Kings County; New York
 </td>
 <td style="text-align:right;">
 813
+</td>
+<td style="text-align:right;">
+34.2
 </td>
 <td style="text-align:right;">
 54.2
@@ -112075,6 +116441,9 @@ Census Tract 42; Bronx County; New York
 2922
 </td>
 <td style="text-align:right;">
+43.7
+</td>
+<td style="text-align:right;">
 51.6
 </td>
 <td style="text-align:right;">
@@ -112150,6 +116519,9 @@ Census Tract 131; Kings County; New York
 </td>
 <td style="text-align:right;">
 1789
+</td>
+<td style="text-align:right;">
+26.6
 </td>
 <td style="text-align:right;">
 19.1
@@ -112229,6 +116601,9 @@ Census Tract 304; Kings County; New York
 1597
 </td>
 <td style="text-align:right;">
+54.2
+</td>
+<td style="text-align:right;">
 26.2
 </td>
 <td style="text-align:right;">
@@ -112304,6 +116679,9 @@ Census Tract 68; New York County; New York
 </td>
 <td style="text-align:right;">
 3453
+</td>
+<td style="text-align:right;">
+24.8
 </td>
 <td style="text-align:right;">
 9.7
@@ -112383,6 +116761,9 @@ Census Tract 119; Queens County; New York
 688
 </td>
 <td style="text-align:right;">
+28.8
+</td>
+<td style="text-align:right;">
 14.7
 </td>
 <td style="text-align:right;">
@@ -112458,6 +116839,9 @@ Census Tract 359; Kings County; New York
 </td>
 <td style="text-align:right;">
 2364
+</td>
+<td style="text-align:right;">
+31.3
 </td>
 <td style="text-align:right;">
 20.9
@@ -112537,6 +116921,9 @@ Census Tract 77; Richmond County; New York
 536
 </td>
 <td style="text-align:right;">
+37.9
+</td>
+<td style="text-align:right;">
 47.0
 </td>
 <td style="text-align:right;">
@@ -112612,6 +116999,9 @@ Census Tract 112.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1837
+</td>
+<td style="text-align:right;">
+44.5
 </td>
 <td style="text-align:right;">
 37.8
@@ -112691,6 +117081,9 @@ Census Tract 2; Kings County; New York
 353
 </td>
 <td style="text-align:right;">
+32.0
+</td>
+<td style="text-align:right;">
 41.6
 </td>
 <td style="text-align:right;">
@@ -112766,6 +117159,9 @@ Census Tract 72; New York County; New York
 </td>
 <td style="text-align:right;">
 4179
+</td>
+<td style="text-align:right;">
+18.4
 </td>
 <td style="text-align:right;">
 4.8
@@ -112845,6 +117241,9 @@ Census Tract 227; New York County; New York
 2180
 </td>
 <td style="text-align:right;">
+26.6
+</td>
+<td style="text-align:right;">
 15.5
 </td>
 <td style="text-align:right;">
@@ -112920,6 +117319,9 @@ Census Tract 235.01; New York County; New York
 </td>
 <td style="text-align:right;">
 2662
+</td>
+<td style="text-align:right;">
+32.7
 </td>
 <td style="text-align:right;">
 31.0
@@ -112999,6 +117401,9 @@ Census Tract 353; Queens County; New York
 702
 </td>
 <td style="text-align:right;">
+39.9
+</td>
+<td style="text-align:right;">
 25.8
 </td>
 <td style="text-align:right;">
@@ -113074,6 +117479,9 @@ Census Tract 375; Kings County; New York
 </td>
 <td style="text-align:right;">
 1520
+</td>
+<td style="text-align:right;">
+26.4
 </td>
 <td style="text-align:right;">
 20.0
@@ -113153,6 +117561,9 @@ Census Tract 141; Queens County; New York
 744
 </td>
 <td style="text-align:right;">
+28.9
+</td>
+<td style="text-align:right;">
 15.2
 </td>
 <td style="text-align:right;">
@@ -113228,6 +117639,9 @@ Census Tract 589.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 806
+</td>
+<td style="text-align:right;">
+26.8
 </td>
 <td style="text-align:right;">
 26.1
@@ -113307,6 +117721,9 @@ Census Tract 797.02; Queens County; New York
 1501
 </td>
 <td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
 37.6
 </td>
 <td style="text-align:right;">
@@ -113382,6 +117799,9 @@ Census Tract 149.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1868
+</td>
+<td style="text-align:right;">
+11.7
 </td>
 <td style="text-align:right;">
 24.9
@@ -113461,6 +117881,9 @@ Census Tract 361; Kings County; New York
 1239
 </td>
 <td style="text-align:right;">
+42.2
+</td>
+<td style="text-align:right;">
 25.9
 </td>
 <td style="text-align:right;">
@@ -113536,6 +117959,9 @@ Census Tract 1104; Kings County; New York
 </td>
 <td style="text-align:right;">
 1688
+</td>
+<td style="text-align:right;">
+42.8
 </td>
 <td style="text-align:right;">
 33.5
@@ -113615,6 +118041,9 @@ Census Tract 205; Queens County; New York
 407
 </td>
 <td style="text-align:right;">
+42.3
+</td>
+<td style="text-align:right;">
 44.5
 </td>
 <td style="text-align:right;">
@@ -113690,6 +118119,9 @@ Census Tract 266; Queens County; New York
 </td>
 <td style="text-align:right;">
 697
+</td>
+<td style="text-align:right;">
+79.5
 </td>
 <td style="text-align:right;">
 9.0
@@ -113769,6 +118201,9 @@ Census Tract 386; Bronx County; New York
 2883
 </td>
 <td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
 38.2
 </td>
 <td style="text-align:right;">
@@ -113844,6 +118279,9 @@ Census Tract 250; Kings County; New York
 </td>
 <td style="text-align:right;">
 553
+</td>
+<td style="text-align:right;">
+59.5
 </td>
 <td style="text-align:right;">
 28.9
@@ -113923,6 +118361,9 @@ Census Tract 345; Kings County; New York
 1037
 </td>
 <td style="text-align:right;">
+24.0
+</td>
+<td style="text-align:right;">
 27.8
 </td>
 <td style="text-align:right;">
@@ -113998,6 +118439,9 @@ Census Tract 231; New York County; New York
 </td>
 <td style="text-align:right;">
 2594
+</td>
+<td style="text-align:right;">
+36.2
 </td>
 <td style="text-align:right;">
 20.4
@@ -114077,6 +118521,9 @@ Census Tract 606; Kings County; New York
 1326
 </td>
 <td style="text-align:right;">
+50.6
+</td>
+<td style="text-align:right;">
 23.8
 </td>
 <td style="text-align:right;">
@@ -114152,6 +118599,9 @@ Census Tract 108.01; New York County; New York
 </td>
 <td style="text-align:right;">
 1731
+</td>
+<td style="text-align:right;">
+30.3
 </td>
 <td style="text-align:right;">
 7.7
@@ -114231,6 +118681,9 @@ Census Tract 441; Kings County; New York
 1912
 </td>
 <td style="text-align:right;">
+31.4
+</td>
+<td style="text-align:right;">
 24.6
 </td>
 <td style="text-align:right;">
@@ -114306,6 +118759,9 @@ Census Tract 165; Bronx County; New York
 </td>
 <td style="text-align:right;">
 333
+</td>
+<td style="text-align:right;">
+17.7
 </td>
 <td style="text-align:right;">
 57.4
@@ -114385,6 +118841,9 @@ Census Tract 370; Kings County; New York
 1402
 </td>
 <td style="text-align:right;">
+52.0
+</td>
+<td style="text-align:right;">
 22.8
 </td>
 <td style="text-align:right;">
@@ -114460,6 +118919,9 @@ Census Tract 443; Kings County; New York
 </td>
 <td style="text-align:right;">
 1905
+</td>
+<td style="text-align:right;">
+25.2
 </td>
 <td style="text-align:right;">
 16.7
@@ -114539,6 +119001,9 @@ Census Tract 81; New York County; New York
 3998
 </td>
 <td style="text-align:right;">
+32.0
+</td>
+<td style="text-align:right;">
 15.4
 </td>
 <td style="text-align:right;">
@@ -114614,6 +119079,9 @@ Census Tract 445; Kings County; New York
 </td>
 <td style="text-align:right;">
 1670
+</td>
+<td style="text-align:right;">
+31.4
 </td>
 <td style="text-align:right;">
 22.8
@@ -114693,6 +119161,9 @@ Census Tract 98; New York County; New York
 4317
 </td>
 <td style="text-align:right;">
+37.2
+</td>
+<td style="text-align:right;">
 13.7
 </td>
 <td style="text-align:right;">
@@ -114768,6 +119239,9 @@ Census Tract 584; Kings County; New York
 </td>
 <td style="text-align:right;">
 1350
+</td>
+<td style="text-align:right;">
+38.1
 </td>
 <td style="text-align:right;">
 32.1
@@ -114847,6 +119321,9 @@ Census Tract 1200; Kings County; New York
 969
 </td>
 <td style="text-align:right;">
+38.9
+</td>
+<td style="text-align:right;">
 32.5
 </td>
 <td style="text-align:right;">
@@ -114922,6 +119399,9 @@ Census Tract 158.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1912
+</td>
+<td style="text-align:right;">
+29.6
 </td>
 <td style="text-align:right;">
 7.8
@@ -115001,6 +119481,9 @@ Census Tract 128.05; Richmond County; New York
 757
 </td>
 <td style="text-align:right;">
+44.5
+</td>
+<td style="text-align:right;">
 39.9
 </td>
 <td style="text-align:right;">
@@ -115076,6 +119559,9 @@ Census Tract 193; Kings County; New York
 </td>
 <td style="text-align:right;">
 2483
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 6.3
@@ -115155,6 +119641,9 @@ Census Tract 226; Kings County; New York
 556
 </td>
 <td style="text-align:right;">
+29.9
+</td>
+<td style="text-align:right;">
 51.3
 </td>
 <td style="text-align:right;">
@@ -115230,6 +119719,9 @@ Census Tract 545; Kings County; New York
 </td>
 <td style="text-align:right;">
 2507
+</td>
+<td style="text-align:right;">
+41.9
 </td>
 <td style="text-align:right;">
 35.3
@@ -115309,6 +119801,9 @@ Census Tract 539; Kings County; New York
 929
 </td>
 <td style="text-align:right;">
+53.1
+</td>
+<td style="text-align:right;">
 24.8
 </td>
 <td style="text-align:right;">
@@ -115384,6 +119879,9 @@ Census Tract 83; New York County; New York
 </td>
 <td style="text-align:right;">
 2171
+</td>
+<td style="text-align:right;">
+32.5
 </td>
 <td style="text-align:right;">
 6.2
@@ -115463,6 +119961,9 @@ Census Tract 167; Bronx County; New York
 1150
 </td>
 <td style="text-align:right;">
+20.8
+</td>
+<td style="text-align:right;">
 46.0
 </td>
 <td style="text-align:right;">
@@ -115538,6 +120039,9 @@ Census Tract 347; Kings County; New York
 </td>
 <td style="text-align:right;">
 1825
+</td>
+<td style="text-align:right;">
+38.2
 </td>
 <td style="text-align:right;">
 21.8
@@ -115617,6 +120121,9 @@ Census Tract 390; Kings County; New York
 738
 </td>
 <td style="text-align:right;">
+51.9
+</td>
+<td style="text-align:right;">
 41.2
 </td>
 <td style="text-align:right;">
@@ -115692,6 +120199,9 @@ Census Tract 537; Kings County; New York
 </td>
 <td style="text-align:right;">
 770
+</td>
+<td style="text-align:right;">
+29.2
 </td>
 <td style="text-align:right;">
 68.2
@@ -115771,6 +120281,9 @@ Census Tract 570; Kings County; New York
 1619
 </td>
 <td style="text-align:right;">
+67.2
+</td>
+<td style="text-align:right;">
 19.8
 </td>
 <td style="text-align:right;">
@@ -115846,6 +120359,9 @@ Census Tract 632; Kings County; New York
 </td>
 <td style="text-align:right;">
 640
+</td>
+<td style="text-align:right;">
+66.1
 </td>
 <td style="text-align:right;">
 20.2
@@ -115925,6 +120441,9 @@ Census Tract 619; Queens County; New York
 1170
 </td>
 <td style="text-align:right;">
+42.4
+</td>
+<td style="text-align:right;">
 44.3
 </td>
 <td style="text-align:right;">
@@ -116000,6 +120519,9 @@ Census Tract 356.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1458
+</td>
+<td style="text-align:right;">
+72.4
 </td>
 <td style="text-align:right;">
 8.8
@@ -116079,6 +120601,9 @@ Census Tract 573; Kings County; New York
 1280
 </td>
 <td style="text-align:right;">
+34.4
+</td>
+<td style="text-align:right;">
 9.4
 </td>
 <td style="text-align:right;">
@@ -116154,6 +120679,9 @@ Census Tract 1152; Kings County; New York
 </td>
 <td style="text-align:right;">
 1091
+</td>
+<td style="text-align:right;">
+41.9
 </td>
 <td style="text-align:right;">
 37.3
@@ -116233,6 +120761,9 @@ Census Tract 1168; Kings County; New York
 669
 </td>
 <td style="text-align:right;">
+29.9
+</td>
+<td style="text-align:right;">
 50.8
 </td>
 <td style="text-align:right;">
@@ -116308,6 +120839,9 @@ Census Tract 3; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1039
+</td>
+<td style="text-align:right;">
+35.1
 </td>
 <td style="text-align:right;">
 13.2
@@ -116387,6 +120921,9 @@ Census Tract 16; Bronx County; New York
 2205
 </td>
 <td style="text-align:right;">
+56.0
+</td>
+<td style="text-align:right;">
 34.8
 </td>
 <td style="text-align:right;">
@@ -116462,6 +120999,9 @@ Census Tract 84; Kings County; New York
 </td>
 <td style="text-align:right;">
 1195
+</td>
+<td style="text-align:right;">
+28.2
 </td>
 <td style="text-align:right;">
 33.0
@@ -116541,6 +121081,9 @@ Census Tract 575; Kings County; New York
 2343
 </td>
 <td style="text-align:right;">
+9.3
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -116616,6 +121159,9 @@ Census Tract 1502; Kings County; New York
 </td>
 <td style="text-align:right;">
 1055
+</td>
+<td style="text-align:right;">
+31.6
 </td>
 <td style="text-align:right;">
 44.5
@@ -116695,6 +121241,9 @@ Census Tract 83; Queens County; New York
 902
 </td>
 <td style="text-align:right;">
+29.3
+</td>
+<td style="text-align:right;">
 25.9
 </td>
 <td style="text-align:right;">
@@ -116770,6 +121319,9 @@ Census Tract 36; Richmond County; New York
 </td>
 <td style="text-align:right;">
 957
+</td>
+<td style="text-align:right;">
+58.3
 </td>
 <td style="text-align:right;">
 43.1
@@ -116849,6 +121401,9 @@ Census Tract 354; Kings County; New York
 2814
 </td>
 <td style="text-align:right;">
+71.0
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -116924,6 +121479,9 @@ Census Tract 889.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2374
+</td>
+<td style="text-align:right;">
+63.7
 </td>
 <td style="text-align:right;">
 14.2
@@ -117003,6 +121561,9 @@ Census Tract 70.02; Richmond County; New York
 1767
 </td>
 <td style="text-align:right;">
+59.9
+</td>
+<td style="text-align:right;">
 43.1
 </td>
 <td style="text-align:right;">
@@ -117078,6 +121639,9 @@ Census Tract 460; Bronx County; New York
 </td>
 <td style="text-align:right;">
 944
+</td>
+<td style="text-align:right;">
+22.1
 </td>
 <td style="text-align:right;">
 27.8
@@ -117157,6 +121721,9 @@ Census Tract 9; Kings County; New York
 2370
 </td>
 <td style="text-align:right;">
+16.8
+</td>
+<td style="text-align:right;">
 21.8
 </td>
 <td style="text-align:right;">
@@ -117232,6 +121799,9 @@ Census Tract 398; Kings County; New York
 </td>
 <td style="text-align:right;">
 890
+</td>
+<td style="text-align:right;">
+54.9
 </td>
 <td style="text-align:right;">
 47.8
@@ -117311,6 +121881,9 @@ Census Tract 1194; Kings County; New York
 1493
 </td>
 <td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
 45.0
 </td>
 <td style="text-align:right;">
@@ -117386,6 +121959,9 @@ Census Tract 145; New York County; New York
 </td>
 <td style="text-align:right;">
 3095
+</td>
+<td style="text-align:right;">
+36.7
 </td>
 <td style="text-align:right;">
 17.1
@@ -117465,6 +122041,9 @@ Census Tract 444; Queens County; New York
 1125
 </td>
 <td style="text-align:right;">
+52.8
+</td>
+<td style="text-align:right;">
 32.6
 </td>
 <td style="text-align:right;">
@@ -117540,6 +122119,9 @@ Census Tract 458; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2014
+</td>
+<td style="text-align:right;">
+41.7
 </td>
 <td style="text-align:right;">
 40.6
@@ -117619,6 +122201,9 @@ Census Tract 598; Kings County; New York
 1323
 </td>
 <td style="text-align:right;">
+46.0
+</td>
+<td style="text-align:right;">
 30.2
 </td>
 <td style="text-align:right;">
@@ -117694,6 +122279,9 @@ Census Tract 139; Kings County; New York
 </td>
 <td style="text-align:right;">
 1400
+</td>
+<td style="text-align:right;">
+22.0
 </td>
 <td style="text-align:right;">
 28.1
@@ -117773,6 +122361,9 @@ Census Tract 91; Queens County; New York
 922
 </td>
 <td style="text-align:right;">
+27.8
+</td>
+<td style="text-align:right;">
 25.8
 </td>
 <td style="text-align:right;">
@@ -117848,6 +122439,9 @@ Census Tract 74; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1341
+</td>
+<td style="text-align:right;">
+73.9
 </td>
 <td style="text-align:right;">
 22.9
@@ -117927,6 +122521,9 @@ Census Tract 869; Queens County; New York
 824
 </td>
 <td style="text-align:right;">
+40.2
+</td>
+<td style="text-align:right;">
 10.3
 </td>
 <td style="text-align:right;">
@@ -118002,6 +122599,9 @@ Census Tract 40.04; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1121
+</td>
+<td style="text-align:right;">
+44.6
 </td>
 <td style="text-align:right;">
 42.8
@@ -118081,6 +122681,9 @@ Census Tract 133.01; Richmond County; New York
 499
 </td>
 <td style="text-align:right;">
+44.1
+</td>
+<td style="text-align:right;">
 29.1
 </td>
 <td style="text-align:right;">
@@ -118156,6 +122759,9 @@ Census Tract 145; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2418
+</td>
+<td style="text-align:right;">
+40.6
 </td>
 <td style="text-align:right;">
 41.6
@@ -118235,6 +122841,9 @@ Census Tract 192; Kings County; New York
 729
 </td>
 <td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
 45.3
 </td>
 <td style="text-align:right;">
@@ -118310,6 +122919,9 @@ Census Tract 374.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1812
+</td>
+<td style="text-align:right;">
+45.2
 </td>
 <td style="text-align:right;">
 37.2
@@ -118389,6 +123001,9 @@ Census Tract 388; Kings County; New York
 1614
 </td>
 <td style="text-align:right;">
+34.6
+</td>
+<td style="text-align:right;">
 33.0
 </td>
 <td style="text-align:right;">
@@ -118464,6 +123079,9 @@ Census Tract 447; Kings County; New York
 </td>
 <td style="text-align:right;">
 925
+</td>
+<td style="text-align:right;">
+12.1
 </td>
 <td style="text-align:right;">
 13.9
@@ -118543,6 +123161,9 @@ Census Tract 517; Kings County; New York
 1399
 </td>
 <td style="text-align:right;">
+8.3
+</td>
+<td style="text-align:right;">
 16.3
 </td>
 <td style="text-align:right;">
@@ -118618,6 +123239,9 @@ Census Tract 90; New York County; New York
 </td>
 <td style="text-align:right;">
 4200
+</td>
+<td style="text-align:right;">
+33.7
 </td>
 <td style="text-align:right;">
 2.8
@@ -118697,6 +123321,9 @@ Census Tract 38; Bronx County; New York
 366
 </td>
 <td style="text-align:right;">
+48.1
+</td>
+<td style="text-align:right;">
 41.8
 </td>
 <td style="text-align:right;">
@@ -118772,6 +123399,9 @@ Census Tract 147.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2064
+</td>
+<td style="text-align:right;">
+41.6
 </td>
 <td style="text-align:right;">
 24.1
@@ -118851,6 +123481,9 @@ Census Tract 380; Bronx County; New York
 1937
 </td>
 <td style="text-align:right;">
+39.8
+</td>
+<td style="text-align:right;">
 27.8
 </td>
 <td style="text-align:right;">
@@ -118926,6 +123559,9 @@ Census Tract 383.04; Bronx County; New York
 </td>
 <td style="text-align:right;">
 788
+</td>
+<td style="text-align:right;">
+23.0
 </td>
 <td style="text-align:right;">
 37.4
@@ -119005,6 +123641,9 @@ Census Tract 367; Kings County; New York
 700
 </td>
 <td style="text-align:right;">
+25.0
+</td>
+<td style="text-align:right;">
 22.7
 </td>
 <td style="text-align:right;">
@@ -119080,6 +123719,9 @@ Census Tract 922; Kings County; New York
 </td>
 <td style="text-align:right;">
 1360
+</td>
+<td style="text-align:right;">
+44.7
 </td>
 <td style="text-align:right;">
 19.6
@@ -119159,6 +123801,9 @@ Census Tract 1192; Kings County; New York
 1153
 </td>
 <td style="text-align:right;">
+36.1
+</td>
+<td style="text-align:right;">
 45.6
 </td>
 <td style="text-align:right;">
@@ -119234,6 +123879,9 @@ Census Tract 1208.03; Kings County; New York
 </td>
 <td style="text-align:right;">
 567
+</td>
+<td style="text-align:right;">
+37.7
 </td>
 <td style="text-align:right;">
 20.3
@@ -119313,6 +123961,9 @@ Census Tract 194; Queens County; New York
 852
 </td>
 <td style="text-align:right;">
+63.4
+</td>
+<td style="text-align:right;">
 37.8
 </td>
 <td style="text-align:right;">
@@ -119388,6 +124039,9 @@ Census Tract 264; Queens County; New York
 </td>
 <td style="text-align:right;">
 813
+</td>
+<td style="text-align:right;">
+54.6
 </td>
 <td style="text-align:right;">
 30.9
@@ -119467,6 +124121,9 @@ Census Tract 270; Queens County; New York
 495
 </td>
 <td style="text-align:right;">
+45.3
+</td>
+<td style="text-align:right;">
 45.1
 </td>
 <td style="text-align:right;">
@@ -119542,6 +124199,9 @@ Census Tract 294; Queens County; New York
 </td>
 <td style="text-align:right;">
 2426
+</td>
+<td style="text-align:right;">
+34.2
 </td>
 <td style="text-align:right;">
 48.2
@@ -119621,6 +124281,9 @@ Census Tract 365; Queens County; New York
 757
 </td>
 <td style="text-align:right;">
+30.4
+</td>
+<td style="text-align:right;">
 39.9
 </td>
 <td style="text-align:right;">
@@ -119696,6 +124359,9 @@ Census Tract 375.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 319
+</td>
+<td style="text-align:right;">
+14.7
 </td>
 <td style="text-align:right;">
 54.5
@@ -119775,6 +124441,9 @@ Census Tract 437.01; Queens County; New York
 851
 </td>
 <td style="text-align:right;">
+35.4
+</td>
+<td style="text-align:right;">
 39.5
 </td>
 <td style="text-align:right;">
@@ -119850,6 +124519,9 @@ Census Tract 680; Queens County; New York
 </td>
 <td style="text-align:right;">
 1604
+</td>
+<td style="text-align:right;">
+44.1
 </td>
 <td style="text-align:right;">
 33.4
@@ -119929,6 +124601,9 @@ Census Tract 74; Richmond County; New York
 1855
 </td>
 <td style="text-align:right;">
+44.4
+</td>
+<td style="text-align:right;">
 30.1
 </td>
 <td style="text-align:right;">
@@ -120004,6 +124679,9 @@ Census Tract 128.04; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1523
+</td>
+<td style="text-align:right;">
+42.6
 </td>
 <td style="text-align:right;">
 34.5
@@ -120083,6 +124761,9 @@ Census Tract 4; Bronx County; New York
 2309
 </td>
 <td style="text-align:right;">
+39.1
+</td>
+<td style="text-align:right;">
 34.8
 </td>
 <td style="text-align:right;">
@@ -120158,6 +124839,9 @@ Census Tract 19.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 940
+</td>
+<td style="text-align:right;">
+8.9
 </td>
 <td style="text-align:right;">
 32.1
@@ -120240,6 +124924,9 @@ Census Tract 19.02; Bronx County; New York
 26.5
 </td>
 <td style="text-align:right;">
+26.5
+</td>
+<td style="text-align:right;">
 73.5
 </td>
 <td style="text-align:right;">
@@ -120312,6 +124999,9 @@ Census Tract 23; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1923
+</td>
+<td style="text-align:right;">
+39.4
 </td>
 <td style="text-align:right;">
 33.9
@@ -120391,6 +125081,9 @@ Census Tract 25; Bronx County; New York
 1944
 </td>
 <td style="text-align:right;">
+39.8
+</td>
+<td style="text-align:right;">
 31.4
 </td>
 <td style="text-align:right;">
@@ -120466,6 +125159,9 @@ Census Tract 27.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1159
+</td>
+<td style="text-align:right;">
+39.4
 </td>
 <td style="text-align:right;">
 41.3
@@ -120545,6 +125241,9 @@ Census Tract 27.02; Bronx County; New York
 1530
 </td>
 <td style="text-align:right;">
+32.4
+</td>
+<td style="text-align:right;">
 45.8
 </td>
 <td style="text-align:right;">
@@ -120620,6 +125319,9 @@ Census Tract 33; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1220
+</td>
+<td style="text-align:right;">
+35.2
 </td>
 <td style="text-align:right;">
 46.6
@@ -120699,6 +125401,9 @@ Census Tract 35; Bronx County; New York
 1478
 </td>
 <td style="text-align:right;">
+26.7
+</td>
+<td style="text-align:right;">
 45.5
 </td>
 <td style="text-align:right;">
@@ -120774,6 +125479,9 @@ Census Tract 37; Bronx County; New York
 </td>
 <td style="text-align:right;">
 188
+</td>
+<td style="text-align:right;">
+30.3
 </td>
 <td style="text-align:right;">
 25.5
@@ -120853,6 +125561,9 @@ Census Tract 39; Bronx County; New York
 2330
 </td>
 <td style="text-align:right;">
+54.9
+</td>
+<td style="text-align:right;">
 32.1
 </td>
 <td style="text-align:right;">
@@ -120928,6 +125639,9 @@ Census Tract 41; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2444
+</td>
+<td style="text-align:right;">
+33.1
 </td>
 <td style="text-align:right;">
 26.8
@@ -121007,6 +125721,9 @@ Census Tract 43; Bronx County; New York
 2213
 </td>
 <td style="text-align:right;">
+34.7
+</td>
+<td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
@@ -121082,6 +125799,9 @@ Census Tract 51; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2360
+</td>
+<td style="text-align:right;">
+39.4
 </td>
 <td style="text-align:right;">
 41.6
@@ -121161,6 +125881,9 @@ Census Tract 65; Bronx County; New York
 2157
 </td>
 <td style="text-align:right;">
+26.3
+</td>
+<td style="text-align:right;">
 37.0
 </td>
 <td style="text-align:right;">
@@ -121236,6 +125959,9 @@ Census Tract 67; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2586
+</td>
+<td style="text-align:right;">
+32.5
 </td>
 <td style="text-align:right;">
 50.9
@@ -121315,6 +126041,9 @@ Census Tract 69; Bronx County; New York
 2889
 </td>
 <td style="text-align:right;">
+34.9
+</td>
+<td style="text-align:right;">
 37.5
 </td>
 <td style="text-align:right;">
@@ -121390,6 +126119,9 @@ Census Tract 71; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1256
+</td>
+<td style="text-align:right;">
+27.5
 </td>
 <td style="text-align:right;">
 38.2
@@ -121469,6 +126201,9 @@ Census Tract 73; Bronx County; New York
 1535
 </td>
 <td style="text-align:right;">
+33.7
+</td>
+<td style="text-align:right;">
 43.2
 </td>
 <td style="text-align:right;">
@@ -121544,6 +126279,9 @@ Census Tract 75; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2391
+</td>
+<td style="text-align:right;">
+37.8
 </td>
 <td style="text-align:right;">
 36.4
@@ -121623,6 +126361,9 @@ Census Tract 77; Bronx County; New York
 570
 </td>
 <td style="text-align:right;">
+38.4
+</td>
+<td style="text-align:right;">
 41.1
 </td>
 <td style="text-align:right;">
@@ -121698,6 +126439,9 @@ Census Tract 79; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2332
+</td>
+<td style="text-align:right;">
+32.5
 </td>
 <td style="text-align:right;">
 45.4
@@ -121777,6 +126521,9 @@ Census Tract 83; Bronx County; New York
 2317
 </td>
 <td style="text-align:right;">
+41.5
+</td>
+<td style="text-align:right;">
 36.9
 </td>
 <td style="text-align:right;">
@@ -121852,6 +126599,9 @@ Census Tract 85; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2148
+</td>
+<td style="text-align:right;">
+33.0
 </td>
 <td style="text-align:right;">
 28.5
@@ -121931,6 +126681,9 @@ Census Tract 87; Bronx County; New York
 2088
 </td>
 <td style="text-align:right;">
+39.3
+</td>
+<td style="text-align:right;">
 51.9
 </td>
 <td style="text-align:right;">
@@ -122006,6 +126759,9 @@ Census Tract 89; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1294
+</td>
+<td style="text-align:right;">
+64.8
 </td>
 <td style="text-align:right;">
 19.9
@@ -122085,6 +126841,9 @@ Census Tract 119; Bronx County; New York
 1944
 </td>
 <td style="text-align:right;">
+37.9
+</td>
+<td style="text-align:right;">
 48.6
 </td>
 <td style="text-align:right;">
@@ -122160,6 +126919,9 @@ Census Tract 121.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1030
+</td>
+<td style="text-align:right;">
+31.3
 </td>
 <td style="text-align:right;">
 39.9
@@ -122239,6 +127001,9 @@ Census Tract 121.02; Bronx County; New York
 522
 </td>
 <td style="text-align:right;">
+52.9
+</td>
+<td style="text-align:right;">
 26.8
 </td>
 <td style="text-align:right;">
@@ -122314,6 +127079,9 @@ Census Tract 123; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1699
+</td>
+<td style="text-align:right;">
+32.4
 </td>
 <td style="text-align:right;">
 41.6
@@ -122393,6 +127161,9 @@ Census Tract 125; Bronx County; New York
 1386
 </td>
 <td style="text-align:right;">
+27.6
+</td>
+<td style="text-align:right;">
 38.0
 </td>
 <td style="text-align:right;">
@@ -122468,6 +127239,9 @@ Census Tract 127.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 780
+</td>
+<td style="text-align:right;">
+47.9
 </td>
 <td style="text-align:right;">
 48.1
@@ -122547,6 +127321,9 @@ Census Tract 129.01; Bronx County; New York
 1739
 </td>
 <td style="text-align:right;">
+36.4
+</td>
+<td style="text-align:right;">
 50.3
 </td>
 <td style="text-align:right;">
@@ -122622,6 +127399,9 @@ Census Tract 131; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2107
+</td>
+<td style="text-align:right;">
+39.5
 </td>
 <td style="text-align:right;">
 23.3
@@ -122701,6 +127481,9 @@ Census Tract 133; Bronx County; New York
 2272
 </td>
 <td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
 38.8
 </td>
 <td style="text-align:right;">
@@ -122776,6 +127559,9 @@ Census Tract 135; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1479
+</td>
+<td style="text-align:right;">
+36.6
 </td>
 <td style="text-align:right;">
 51.6
@@ -122855,6 +127641,9 @@ Census Tract 141; Bronx County; New York
 2836
 </td>
 <td style="text-align:right;">
+26.5
+</td>
+<td style="text-align:right;">
 36.5
 </td>
 <td style="text-align:right;">
@@ -122930,6 +127719,9 @@ Census Tract 147.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1934
+</td>
+<td style="text-align:right;">
+48.1
 </td>
 <td style="text-align:right;">
 31.5
@@ -123009,6 +127801,9 @@ Census Tract 149; Bronx County; New York
 1485
 </td>
 <td style="text-align:right;">
+37.8
+</td>
+<td style="text-align:right;">
 42.5
 </td>
 <td style="text-align:right;">
@@ -123084,6 +127879,9 @@ Census Tract 151; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2088
+</td>
+<td style="text-align:right;">
+44.8
 </td>
 <td style="text-align:right;">
 24.2
@@ -123163,6 +127961,9 @@ Census Tract 153; Bronx County; New York
 1753
 </td>
 <td style="text-align:right;">
+32.8
+</td>
+<td style="text-align:right;">
 33.9
 </td>
 <td style="text-align:right;">
@@ -123238,6 +128039,9 @@ Census Tract 155; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1107
+</td>
+<td style="text-align:right;">
+42.6
 </td>
 <td style="text-align:right;">
 37.7
@@ -123317,6 +128121,9 @@ Census Tract 157; Bronx County; New York
 2095
 </td>
 <td style="text-align:right;">
+19.6
+</td>
+<td style="text-align:right;">
 39.2
 </td>
 <td style="text-align:right;">
@@ -123392,6 +128199,9 @@ Census Tract 159; Bronx County; New York
 </td>
 <td style="text-align:right;">
 873
+</td>
+<td style="text-align:right;">
+46.4
 </td>
 <td style="text-align:right;">
 15.5
@@ -123471,6 +128281,9 @@ Census Tract 161; Bronx County; New York
 1957
 </td>
 <td style="text-align:right;">
+47.7
+</td>
+<td style="text-align:right;">
 34.4
 </td>
 <td style="text-align:right;">
@@ -123546,6 +128359,9 @@ Census Tract 169; Bronx County; New York
 </td>
 <td style="text-align:right;">
 564
+</td>
+<td style="text-align:right;">
+30.5
 </td>
 <td style="text-align:right;">
 37.6
@@ -123625,6 +128441,9 @@ Census Tract 185.01; Bronx County; New York
 1240
 </td>
 <td style="text-align:right;">
+23.5
+</td>
+<td style="text-align:right;">
 28.8
 </td>
 <td style="text-align:right;">
@@ -123700,6 +128519,9 @@ Census Tract 185.02; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2100
+</td>
+<td style="text-align:right;">
+41.2
 </td>
 <td style="text-align:right;">
 33.9
@@ -123779,6 +128601,9 @@ Census Tract 359; Bronx County; New York
 1175
 </td>
 <td style="text-align:right;">
+28.4
+</td>
+<td style="text-align:right;">
 43.0
 </td>
 <td style="text-align:right;">
@@ -123854,6 +128679,9 @@ Census Tract 361; Bronx County; New York
 </td>
 <td style="text-align:right;">
 2164
+</td>
+<td style="text-align:right;">
+40.1
 </td>
 <td style="text-align:right;">
 44.4
@@ -123933,6 +128761,9 @@ Census Tract 363; Bronx County; New York
 2368
 </td>
 <td style="text-align:right;">
+30.6
+</td>
+<td style="text-align:right;">
 32.9
 </td>
 <td style="text-align:right;">
@@ -124008,6 +128839,9 @@ Census Tract 365.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1407
+</td>
+<td style="text-align:right;">
+37.1
 </td>
 <td style="text-align:right;">
 38.0
@@ -124087,6 +128921,9 @@ Census Tract 365.02; Bronx County; New York
 781
 </td>
 <td style="text-align:right;">
+22.9
+</td>
+<td style="text-align:right;">
 50.6
 </td>
 <td style="text-align:right;">
@@ -124162,6 +128999,9 @@ Census Tract 367; Bronx County; New York
 </td>
 <td style="text-align:right;">
 661
+</td>
+<td style="text-align:right;">
+30.6
 </td>
 <td style="text-align:right;">
 41.5
@@ -124241,6 +129081,9 @@ Census Tract 368; Bronx County; New York
 626
 </td>
 <td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
 38.7
 </td>
 <td style="text-align:right;">
@@ -124316,6 +129159,9 @@ Census Tract 369.01; Bronx County; New York
 </td>
 <td style="text-align:right;">
 750
+</td>
+<td style="text-align:right;">
+34.0
 </td>
 <td style="text-align:right;">
 38.3
@@ -124395,6 +129241,9 @@ Census Tract 369.02; Bronx County; New York
 822
 </td>
 <td style="text-align:right;">
+24.5
+</td>
+<td style="text-align:right;">
 45.9
 </td>
 <td style="text-align:right;">
@@ -124470,6 +129319,9 @@ Census Tract 371; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1731
+</td>
+<td style="text-align:right;">
+51.4
 </td>
 <td style="text-align:right;">
 28.6
@@ -124549,6 +129401,9 @@ Census Tract 373; Bronx County; New York
 2062
 </td>
 <td style="text-align:right;">
+36.3
+</td>
+<td style="text-align:right;">
 51.3
 </td>
 <td style="text-align:right;">
@@ -124624,6 +129479,9 @@ Census Tract 375.04; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1394
+</td>
+<td style="text-align:right;">
+29.8
 </td>
 <td style="text-align:right;">
 44.3
@@ -124703,6 +129561,9 @@ Census Tract 382; Bronx County; New York
 958
 </td>
 <td style="text-align:right;">
+50.7
+</td>
+<td style="text-align:right;">
 29.4
 </td>
 <td style="text-align:right;">
@@ -124778,6 +129639,9 @@ Census Tract 385; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1736
+</td>
+<td style="text-align:right;">
+30.2
 </td>
 <td style="text-align:right;">
 48.3
@@ -124857,6 +129721,9 @@ Census Tract 387; Bronx County; New York
 1448
 </td>
 <td style="text-align:right;">
+28.2
+</td>
+<td style="text-align:right;">
 34.9
 </td>
 <td style="text-align:right;">
@@ -124932,6 +129799,9 @@ Census Tract 388; Bronx County; New York
 </td>
 <td style="text-align:right;">
 981
+</td>
+<td style="text-align:right;">
+37.0
 </td>
 <td style="text-align:right;">
 48.9
@@ -125011,6 +129881,9 @@ Census Tract 389; Bronx County; New York
 1834
 </td>
 <td style="text-align:right;">
+25.5
+</td>
+<td style="text-align:right;">
 28.0
 </td>
 <td style="text-align:right;">
@@ -125086,6 +129959,9 @@ Census Tract 390; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1076
+</td>
+<td style="text-align:right;">
+34.9
 </td>
 <td style="text-align:right;">
 32.6
@@ -125165,6 +130041,9 @@ Census Tract 391; Bronx County; New York
 2896
 </td>
 <td style="text-align:right;">
+39.5
+</td>
+<td style="text-align:right;">
 28.9
 </td>
 <td style="text-align:right;">
@@ -125240,6 +130119,9 @@ Census Tract 393; Bronx County; New York
 </td>
 <td style="text-align:right;">
 3030
+</td>
+<td style="text-align:right;">
+31.6
 </td>
 <td style="text-align:right;">
 44.3
@@ -125319,6 +130201,9 @@ Census Tract 395; Bronx County; New York
 1738
 </td>
 <td style="text-align:right;">
+33.7
+</td>
+<td style="text-align:right;">
 40.2
 </td>
 <td style="text-align:right;">
@@ -125394,6 +130279,9 @@ Census Tract 396; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1485
+</td>
+<td style="text-align:right;">
+40.5
 </td>
 <td style="text-align:right;">
 31.2
@@ -125473,6 +130361,9 @@ Census Tract 398; Bronx County; New York
 1221
 </td>
 <td style="text-align:right;">
+47.9
+</td>
+<td style="text-align:right;">
 37.8
 </td>
 <td style="text-align:right;">
@@ -125548,6 +130439,9 @@ Census Tract 404; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1114
+</td>
+<td style="text-align:right;">
+48.7
 </td>
 <td style="text-align:right;">
 42.9
@@ -125627,6 +130521,9 @@ Census Tract 406; Bronx County; New York
 1353
 </td>
 <td style="text-align:right;">
+44.1
+</td>
+<td style="text-align:right;">
 38.4
 </td>
 <td style="text-align:right;">
@@ -125702,6 +130599,9 @@ Census Tract 422; Bronx County; New York
 </td>
 <td style="text-align:right;">
 1183
+</td>
+<td style="text-align:right;">
+35.9
 </td>
 <td style="text-align:right;">
 23.2
@@ -125781,6 +130681,9 @@ Census Tract 424; Bronx County; New York
 793
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 52.0
 </td>
 <td style="text-align:right;">
@@ -125856,6 +130759,9 @@ Census Tract 11; Kings County; New York
 </td>
 <td style="text-align:right;">
 853
+</td>
+<td style="text-align:right;">
+3.5
 </td>
 <td style="text-align:right;">
 12.9
@@ -125935,6 +130841,9 @@ Census Tract 13; Kings County; New York
 1187
 </td>
 <td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
 9.9
 </td>
 <td style="text-align:right;">
@@ -126010,6 +130919,9 @@ Census Tract 15.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 2217
+</td>
+<td style="text-align:right;">
+20.7
 </td>
 <td style="text-align:right;">
 25.5
@@ -126089,6 +131001,9 @@ Census Tract 15.02; Kings County; New York
 2867
 </td>
 <td style="text-align:right;">
+8.8
+</td>
+<td style="text-align:right;">
 10.3
 </td>
 <td style="text-align:right;">
@@ -126164,6 +131079,9 @@ Census Tract 23; Kings County; New York
 </td>
 <td style="text-align:right;">
 1522
+</td>
+<td style="text-align:right;">
+59.1
 </td>
 <td style="text-align:right;">
 27.4
@@ -126243,6 +131161,9 @@ Census Tract 29.01; Kings County; New York
 1442
 </td>
 <td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
 43.1
 </td>
 <td style="text-align:right;">
@@ -126318,6 +131239,9 @@ Census Tract 31.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1465
+</td>
+<td style="text-align:right;">
+14.5
 </td>
 <td style="text-align:right;">
 17.3
@@ -126397,6 +131321,9 @@ Census Tract 37; Kings County; New York
 2288
 </td>
 <td style="text-align:right;">
+8.1
+</td>
+<td style="text-align:right;">
 13.8
 </td>
 <td style="text-align:right;">
@@ -126472,6 +131399,9 @@ Census Tract 39; Kings County; New York
 </td>
 <td style="text-align:right;">
 1064
+</td>
+<td style="text-align:right;">
+22.5
 </td>
 <td style="text-align:right;">
 24.2
@@ -126551,6 +131481,9 @@ Census Tract 41; Kings County; New York
 1281
 </td>
 <td style="text-align:right;">
+15.2
+</td>
+<td style="text-align:right;">
 27.2
 </td>
 <td style="text-align:right;">
@@ -126626,6 +131559,9 @@ Census Tract 43; Kings County; New York
 </td>
 <td style="text-align:right;">
 1874
+</td>
+<td style="text-align:right;">
+18.5
 </td>
 <td style="text-align:right;">
 21.7
@@ -126705,6 +131641,9 @@ Census Tract 45; Kings County; New York
 1600
 </td>
 <td style="text-align:right;">
+31.1
+</td>
+<td style="text-align:right;">
 16.9
 </td>
 <td style="text-align:right;">
@@ -126780,6 +131719,9 @@ Census Tract 47; Kings County; New York
 </td>
 <td style="text-align:right;">
 823
+</td>
+<td style="text-align:right;">
+22.1
 </td>
 <td style="text-align:right;">
 39.7
@@ -126859,6 +131801,9 @@ Census Tract 49; Kings County; New York
 1083
 </td>
 <td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
 30.2
 </td>
 <td style="text-align:right;">
@@ -126934,6 +131879,9 @@ Census Tract 51; Kings County; New York
 </td>
 <td style="text-align:right;">
 1065
+</td>
+<td style="text-align:right;">
+17.7
 </td>
 <td style="text-align:right;">
 31.9
@@ -127013,6 +131961,9 @@ Census Tract 53.01; Kings County; New York
 919
 </td>
 <td style="text-align:right;">
+23.4
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -127088,6 +132039,9 @@ Census Tract 59; Kings County; New York
 </td>
 <td style="text-align:right;">
 565
+</td>
+<td style="text-align:right;">
+31.7
 </td>
 <td style="text-align:right;">
 18.9
@@ -127167,6 +132121,9 @@ Census Tract 63; Kings County; New York
 982
 </td>
 <td style="text-align:right;">
+18.9
+</td>
+<td style="text-align:right;">
 22.9
 </td>
 <td style="text-align:right;">
@@ -127242,6 +132199,9 @@ Census Tract 65; Kings County; New York
 </td>
 <td style="text-align:right;">
 2408
+</td>
+<td style="text-align:right;">
+22.1
 </td>
 <td style="text-align:right;">
 25.9
@@ -127321,6 +132281,9 @@ Census Tract 67; Kings County; New York
 1554
 </td>
 <td style="text-align:right;">
+22.5
+</td>
+<td style="text-align:right;">
 39.1
 </td>
 <td style="text-align:right;">
@@ -127396,6 +132359,9 @@ Census Tract 69.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 826
+</td>
+<td style="text-align:right;">
+25.8
 </td>
 <td style="text-align:right;">
 17.1
@@ -127475,6 +132441,9 @@ Census Tract 69.02; Kings County; New York
 862
 </td>
 <td style="text-align:right;">
+13.1
+</td>
+<td style="text-align:right;">
 21.3
 </td>
 <td style="text-align:right;">
@@ -127550,6 +132519,9 @@ Census Tract 71; Kings County; New York
 </td>
 <td style="text-align:right;">
 1703
+</td>
+<td style="text-align:right;">
+50.9
 </td>
 <td style="text-align:right;">
 34.3
@@ -127629,6 +132601,9 @@ Census Tract 75; Kings County; New York
 2182
 </td>
 <td style="text-align:right;">
+30.0
+</td>
+<td style="text-align:right;">
 23.4
 </td>
 <td style="text-align:right;">
@@ -127704,6 +132679,9 @@ Census Tract 77; Kings County; New York
 </td>
 <td style="text-align:right;">
 2621
+</td>
+<td style="text-align:right;">
+21.8
 </td>
 <td style="text-align:right;">
 29.2
@@ -127783,6 +132761,9 @@ Census Tract 85; Kings County; New York
 3051
 </td>
 <td style="text-align:right;">
+36.8
+</td>
+<td style="text-align:right;">
 40.5
 </td>
 <td style="text-align:right;">
@@ -127858,6 +132839,9 @@ Census Tract 101; Kings County; New York
 </td>
 <td style="text-align:right;">
 1526
+</td>
+<td style="text-align:right;">
+27.7
 </td>
 <td style="text-align:right;">
 32.0
@@ -127937,6 +132921,9 @@ Census Tract 110; Kings County; New York
 568
 </td>
 <td style="text-align:right;">
+53.7
+</td>
+<td style="text-align:right;">
 34.5
 </td>
 <td style="text-align:right;">
@@ -128012,6 +132999,9 @@ Census Tract 117; Kings County; New York
 </td>
 <td style="text-align:right;">
 1142
+</td>
+<td style="text-align:right;">
+27.8
 </td>
 <td style="text-align:right;">
 40.4
@@ -128091,6 +133081,9 @@ Census Tract 119.01; Kings County; New York
 584
 </td>
 <td style="text-align:right;">
+33.7
+</td>
+<td style="text-align:right;">
 13.2
 </td>
 <td style="text-align:right;">
@@ -128166,6 +133159,9 @@ Census Tract 121; Kings County; New York
 </td>
 <td style="text-align:right;">
 852
+</td>
+<td style="text-align:right;">
+19.1
 </td>
 <td style="text-align:right;">
 19.8
@@ -128245,6 +133241,9 @@ Census Tract 127; Kings County; New York
 1666
 </td>
 <td style="text-align:right;">
+33.3
+</td>
+<td style="text-align:right;">
 20.9
 </td>
 <td style="text-align:right;">
@@ -128320,6 +133319,9 @@ Census Tract 129.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 913
+</td>
+<td style="text-align:right;">
+17.2
 </td>
 <td style="text-align:right;">
 32.9
@@ -128399,6 +133401,9 @@ Census Tract 141.01; Kings County; New York
 473
 </td>
 <td style="text-align:right;">
+19.7
+</td>
+<td style="text-align:right;">
 29.6
 </td>
 <td style="text-align:right;">
@@ -128474,6 +133479,9 @@ Census Tract 141.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 831
+</td>
+<td style="text-align:right;">
+32.9
 </td>
 <td style="text-align:right;">
 31.3
@@ -128553,6 +133561,9 @@ Census Tract 143; Kings County; New York
 1473
 </td>
 <td style="text-align:right;">
+30.1
+</td>
+<td style="text-align:right;">
 28.2
 </td>
 <td style="text-align:right;">
@@ -128628,6 +133639,9 @@ Census Tract 145; Kings County; New York
 </td>
 <td style="text-align:right;">
 1901
+</td>
+<td style="text-align:right;">
+14.0
 </td>
 <td style="text-align:right;">
 24.1
@@ -128707,6 +133721,9 @@ Census Tract 147; Kings County; New York
 855
 </td>
 <td style="text-align:right;">
+14.4
+</td>
+<td style="text-align:right;">
 42.9
 </td>
 <td style="text-align:right;">
@@ -128782,6 +133799,9 @@ Census Tract 185.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1806
+</td>
+<td style="text-align:right;">
+44.9
 </td>
 <td style="text-align:right;">
 35.9
@@ -128861,6 +133881,9 @@ Census Tract 187; Kings County; New York
 520
 </td>
 <td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
 18.8
 </td>
 <td style="text-align:right;">
@@ -128936,6 +133959,9 @@ Census Tract 191; Kings County; New York
 </td>
 <td style="text-align:right;">
 1161
+</td>
+<td style="text-align:right;">
+4.9
 </td>
 <td style="text-align:right;">
 27.8
@@ -129015,6 +134041,9 @@ Census Tract 194; Kings County; New York
 1081
 </td>
 <td style="text-align:right;">
+44.9
+</td>
+<td style="text-align:right;">
 59.6
 </td>
 <td style="text-align:right;">
@@ -129090,6 +134119,9 @@ Census Tract 203; Kings County; New York
 </td>
 <td style="text-align:right;">
 805
+</td>
+<td style="text-align:right;">
+14.3
 </td>
 <td style="text-align:right;">
 23.1
@@ -129169,6 +134201,9 @@ Census Tract 211; Kings County; New York
 1121
 </td>
 <td style="text-align:right;">
+21.5
+</td>
+<td style="text-align:right;">
 22.6
 </td>
 <td style="text-align:right;">
@@ -129244,6 +134279,9 @@ Census Tract 212; Kings County; New York
 </td>
 <td style="text-align:right;">
 1275
+</td>
+<td style="text-align:right;">
+45.3
 </td>
 <td style="text-align:right;">
 35.6
@@ -129323,6 +134361,9 @@ Census Tract 224; Kings County; New York
 1285
 </td>
 <td style="text-align:right;">
+26.3
+</td>
+<td style="text-align:right;">
 53.9
 </td>
 <td style="text-align:right;">
@@ -129398,6 +134439,9 @@ Census Tract 227; Kings County; New York
 </td>
 <td style="text-align:right;">
 1926
+</td>
+<td style="text-align:right;">
+14.5
 </td>
 <td style="text-align:right;">
 24.4
@@ -129477,6 +134521,9 @@ Census Tract 229; Kings County; New York
 1541
 </td>
 <td style="text-align:right;">
+18.3
+</td>
+<td style="text-align:right;">
 20.1
 </td>
 <td style="text-align:right;">
@@ -129552,6 +134599,9 @@ Census Tract 230; Kings County; New York
 </td>
 <td style="text-align:right;">
 959
+</td>
+<td style="text-align:right;">
+46.7
 </td>
 <td style="text-align:right;">
 49.7
@@ -129631,6 +134681,9 @@ Census Tract 231; Kings County; New York
 1683
 </td>
 <td style="text-align:right;">
+24.4
+</td>
+<td style="text-align:right;">
 14.7
 </td>
 <td style="text-align:right;">
@@ -129706,6 +134759,9 @@ Census Tract 233; Kings County; New York
 </td>
 <td style="text-align:right;">
 2188
+</td>
+<td style="text-align:right;">
+24.2
 </td>
 <td style="text-align:right;">
 38.3
@@ -129785,6 +134841,9 @@ Census Tract 235; Kings County; New York
 1363
 </td>
 <td style="text-align:right;">
+11.3
+</td>
+<td style="text-align:right;">
 42.0
 </td>
 <td style="text-align:right;">
@@ -129860,6 +134919,9 @@ Census Tract 241; Kings County; New York
 </td>
 <td style="text-align:right;">
 1090
+</td>
+<td style="text-align:right;">
+18.9
 </td>
 <td style="text-align:right;">
 22.5
@@ -129939,6 +135001,9 @@ Census Tract 243; Kings County; New York
 1965
 </td>
 <td style="text-align:right;">
+31.1
+</td>
+<td style="text-align:right;">
 17.0
 </td>
 <td style="text-align:right;">
@@ -130014,6 +135079,9 @@ Census Tract 245; Kings County; New York
 </td>
 <td style="text-align:right;">
 1985
+</td>
+<td style="text-align:right;">
+27.2
 </td>
 <td style="text-align:right;">
 24.7
@@ -130093,6 +135161,9 @@ Census Tract 247; Kings County; New York
 1306
 </td>
 <td style="text-align:right;">
+26.4
+</td>
+<td style="text-align:right;">
 14.8
 </td>
 <td style="text-align:right;">
@@ -130168,6 +135239,9 @@ Census Tract 249; Kings County; New York
 </td>
 <td style="text-align:right;">
 1877
+</td>
+<td style="text-align:right;">
+16.4
 </td>
 <td style="text-align:right;">
 16.8
@@ -130247,6 +135321,9 @@ Census Tract 251; Kings County; New York
 1696
 </td>
 <td style="text-align:right;">
+31.7
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -130322,6 +135399,9 @@ Census Tract 253; Kings County; New York
 </td>
 <td style="text-align:right;">
 1333
+</td>
+<td style="text-align:right;">
+23.1
 </td>
 <td style="text-align:right;">
 32.9
@@ -130401,6 +135481,9 @@ Census Tract 255; Kings County; New York
 2148
 </td>
 <td style="text-align:right;">
+34.4
+</td>
+<td style="text-align:right;">
 25.1
 </td>
 <td style="text-align:right;">
@@ -130476,6 +135559,9 @@ Census Tract 257; Kings County; New York
 </td>
 <td style="text-align:right;">
 862
+</td>
+<td style="text-align:right;">
+16.2
 </td>
 <td style="text-align:right;">
 32.1
@@ -130555,6 +135641,9 @@ Census Tract 259.01; Kings County; New York
 789
 </td>
 <td style="text-align:right;">
+19.0
+</td>
+<td style="text-align:right;">
 19.9
 </td>
 <td style="text-align:right;">
@@ -130630,6 +135719,9 @@ Census Tract 259.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1431
+</td>
+<td style="text-align:right;">
+24.5
 </td>
 <td style="text-align:right;">
 43.4
@@ -130709,6 +135801,9 @@ Census Tract 261; Kings County; New York
 2231
 </td>
 <td style="text-align:right;">
+22.5
+</td>
+<td style="text-align:right;">
 13.6
 </td>
 <td style="text-align:right;">
@@ -130784,6 +135879,9 @@ Census Tract 263; Kings County; New York
 </td>
 <td style="text-align:right;">
 968
+</td>
+<td style="text-align:right;">
+22.6
 </td>
 <td style="text-align:right;">
 23.2
@@ -130863,6 +135961,9 @@ Census Tract 265; Kings County; New York
 1869
 </td>
 <td style="text-align:right;">
+23.6
+</td>
+<td style="text-align:right;">
 17.7
 </td>
 <td style="text-align:right;">
@@ -130938,6 +136039,9 @@ Census Tract 267; Kings County; New York
 </td>
 <td style="text-align:right;">
 1972
+</td>
+<td style="text-align:right;">
+33.8
 </td>
 <td style="text-align:right;">
 18.3
@@ -131017,6 +136121,9 @@ Census Tract 269; Kings County; New York
 1237
 </td>
 <td style="text-align:right;">
+20.9
+</td>
+<td style="text-align:right;">
 33.7
 </td>
 <td style="text-align:right;">
@@ -131092,6 +136199,9 @@ Census Tract 271; Kings County; New York
 </td>
 <td style="text-align:right;">
 1373
+</td>
+<td style="text-align:right;">
+23.7
 </td>
 <td style="text-align:right;">
 29.1
@@ -131171,6 +136281,9 @@ Census Tract 273; Kings County; New York
 1440
 </td>
 <td style="text-align:right;">
+33.2
+</td>
+<td style="text-align:right;">
 24.5
 </td>
 <td style="text-align:right;">
@@ -131246,6 +136359,9 @@ Census Tract 275; Kings County; New York
 </td>
 <td style="text-align:right;">
 1831
+</td>
+<td style="text-align:right;">
+29.1
 </td>
 <td style="text-align:right;">
 14.7
@@ -131325,6 +136441,9 @@ Census Tract 277; Kings County; New York
 1586
 </td>
 <td style="text-align:right;">
+23.1
+</td>
+<td style="text-align:right;">
 30.3
 </td>
 <td style="text-align:right;">
@@ -131400,6 +136519,9 @@ Census Tract 279; Kings County; New York
 </td>
 <td style="text-align:right;">
 1684
+</td>
+<td style="text-align:right;">
+28.9
 </td>
 <td style="text-align:right;">
 20.6
@@ -131479,6 +136601,9 @@ Census Tract 281; Kings County; New York
 1818
 </td>
 <td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
 30.5
 </td>
 <td style="text-align:right;">
@@ -131554,6 +136679,9 @@ Census Tract 283; Kings County; New York
 </td>
 <td style="text-align:right;">
 1595
+</td>
+<td style="text-align:right;">
+40.5
 </td>
 <td style="text-align:right;">
 26.2
@@ -131633,6 +136761,9 @@ Census Tract 285.01; Kings County; New York
 226
 </td>
 <td style="text-align:right;">
+4.9
+</td>
+<td style="text-align:right;">
 5.8
 </td>
 <td style="text-align:right;">
@@ -131708,6 +136839,9 @@ Census Tract 285.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 1167
+</td>
+<td style="text-align:right;">
+52.4
 </td>
 <td style="text-align:right;">
 38.0
@@ -131787,6 +136921,9 @@ Census Tract 287; Kings County; New York
 1264
 </td>
 <td style="text-align:right;">
+11.5
+</td>
+<td style="text-align:right;">
 29.8
 </td>
 <td style="text-align:right;">
@@ -131862,6 +136999,9 @@ Census Tract 289; Kings County; New York
 </td>
 <td style="text-align:right;">
 1548
+</td>
+<td style="text-align:right;">
+31.5
 </td>
 <td style="text-align:right;">
 24.4
@@ -131941,6 +137081,9 @@ Census Tract 291; Kings County; New York
 1413
 </td>
 <td style="text-align:right;">
+35.2
+</td>
+<td style="text-align:right;">
 18.9
 </td>
 <td style="text-align:right;">
@@ -132016,6 +137159,9 @@ Census Tract 293; Kings County; New York
 </td>
 <td style="text-align:right;">
 1463
+</td>
+<td style="text-align:right;">
+39.5
 </td>
 <td style="text-align:right;">
 29.3
@@ -132095,6 +137241,9 @@ Census Tract 295; Kings County; New York
 1896
 </td>
 <td style="text-align:right;">
+18.5
+</td>
+<td style="text-align:right;">
 25.6
 </td>
 <td style="text-align:right;">
@@ -132170,6 +137319,9 @@ Census Tract 297; Kings County; New York
 </td>
 <td style="text-align:right;">
 1766
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 34.5
@@ -132249,6 +137401,9 @@ Census Tract 299; Kings County; New York
 913
 </td>
 <td style="text-align:right;">
+24.1
+</td>
+<td style="text-align:right;">
 39.9
 </td>
 <td style="text-align:right;">
@@ -132324,6 +137479,9 @@ Census Tract 301; Kings County; New York
 </td>
 <td style="text-align:right;">
 1103
+</td>
+<td style="text-align:right;">
+41.5
 </td>
 <td style="text-align:right;">
 39.7
@@ -132403,6 +137561,9 @@ Census Tract 303; Kings County; New York
 2149
 </td>
 <td style="text-align:right;">
+48.0
+</td>
+<td style="text-align:right;">
 18.6
 </td>
 <td style="text-align:right;">
@@ -132478,6 +137639,9 @@ Census Tract 306; Kings County; New York
 </td>
 <td style="text-align:right;">
 668
+</td>
+<td style="text-align:right;">
+48.2
 </td>
 <td style="text-align:right;">
 23.1
@@ -132557,6 +137721,9 @@ Census Tract 307; Kings County; New York
 3065
 </td>
 <td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
 25.5
 </td>
 <td style="text-align:right;">
@@ -132632,6 +137799,9 @@ Census Tract 308; Kings County; New York
 </td>
 <td style="text-align:right;">
 730
+</td>
+<td style="text-align:right;">
+61.1
 </td>
 <td style="text-align:right;">
 20.0
@@ -132711,6 +137881,9 @@ Census Tract 309; Kings County; New York
 921
 </td>
 <td style="text-align:right;">
+33.2
+</td>
+<td style="text-align:right;">
 45.4
 </td>
 <td style="text-align:right;">
@@ -132786,6 +137959,9 @@ Census Tract 311; Kings County; New York
 </td>
 <td style="text-align:right;">
 1193
+</td>
+<td style="text-align:right;">
+23.2
 </td>
 <td style="text-align:right;">
 24.0
@@ -132865,6 +138041,9 @@ Census Tract 314.01; Kings County; New York
 1828
 </td>
 <td style="text-align:right;">
+60.8
+</td>
+<td style="text-align:right;">
 25.4
 </td>
 <td style="text-align:right;">
@@ -132940,6 +138119,9 @@ Census Tract 326; Kings County; New York
 </td>
 <td style="text-align:right;">
 2808
+</td>
+<td style="text-align:right;">
+43.6
 </td>
 <td style="text-align:right;">
 35.7
@@ -133019,6 +138201,9 @@ Census Tract 328; Kings County; New York
 1164
 </td>
 <td style="text-align:right;">
+55.1
+</td>
+<td style="text-align:right;">
 22.9
 </td>
 <td style="text-align:right;">
@@ -133094,6 +138279,9 @@ Census Tract 330; Kings County; New York
 </td>
 <td style="text-align:right;">
 1800
+</td>
+<td style="text-align:right;">
+48.3
 </td>
 <td style="text-align:right;">
 32.6
@@ -133173,6 +138361,9 @@ Census Tract 340; Kings County; New York
 630
 </td>
 <td style="text-align:right;">
+59.2
+</td>
+<td style="text-align:right;">
 27.6
 </td>
 <td style="text-align:right;">
@@ -133248,6 +138439,9 @@ Census Tract 342; Kings County; New York
 </td>
 <td style="text-align:right;">
 2832
+</td>
+<td style="text-align:right;">
+54.7
 </td>
 <td style="text-align:right;">
 22.8
@@ -133327,6 +138521,9 @@ Census Tract 348; Kings County; New York
 817
 </td>
 <td style="text-align:right;">
+21.1
+</td>
+<td style="text-align:right;">
 44.4
 </td>
 <td style="text-align:right;">
@@ -133402,6 +138599,9 @@ Census Tract 357.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1014
+</td>
+<td style="text-align:right;">
+29.4
 </td>
 <td style="text-align:right;">
 25.0
@@ -133481,6 +138681,9 @@ Census Tract 363; Kings County; New York
 2167
 </td>
 <td style="text-align:right;">
+42.7
+</td>
+<td style="text-align:right;">
 32.2
 </td>
 <td style="text-align:right;">
@@ -133556,6 +138759,9 @@ Census Tract 365.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1318
+</td>
+<td style="text-align:right;">
+43.2
 </td>
 <td style="text-align:right;">
 36.1
@@ -133635,6 +138841,9 @@ Census Tract 365.02; Kings County; New York
 534
 </td>
 <td style="text-align:right;">
+9.4
+</td>
+<td style="text-align:right;">
 60.5
 </td>
 <td style="text-align:right;">
@@ -133710,6 +138919,9 @@ Census Tract 374.02; Kings County; New York
 </td>
 <td style="text-align:right;">
 2112
+</td>
+<td style="text-align:right;">
+55.7
 </td>
 <td style="text-align:right;">
 25.2
@@ -133789,6 +139001,9 @@ Census Tract 381; Kings County; New York
 2475
 </td>
 <td style="text-align:right;">
+32.3
+</td>
+<td style="text-align:right;">
 24.8
 </td>
 <td style="text-align:right;">
@@ -133864,6 +139079,9 @@ Census Tract 382; Kings County; New York
 </td>
 <td style="text-align:right;">
 1909
+</td>
+<td style="text-align:right;">
+47.7
 </td>
 <td style="text-align:right;">
 42.8
@@ -133943,6 +139161,9 @@ Census Tract 383; Kings County; New York
 2162
 </td>
 <td style="text-align:right;">
+28.0
+</td>
+<td style="text-align:right;">
 24.7
 </td>
 <td style="text-align:right;">
@@ -134018,6 +139239,9 @@ Census Tract 385; Kings County; New York
 </td>
 <td style="text-align:right;">
 1499
+</td>
+<td style="text-align:right;">
+42.9
 </td>
 <td style="text-align:right;">
 25.3
@@ -134097,6 +139321,9 @@ Census Tract 386; Kings County; New York
 1040
 </td>
 <td style="text-align:right;">
+38.4
+</td>
+<td style="text-align:right;">
 35.9
 </td>
 <td style="text-align:right;">
@@ -134172,6 +139399,9 @@ Census Tract 387; Kings County; New York
 </td>
 <td style="text-align:right;">
 1929
+</td>
+<td style="text-align:right;">
+23.5
 </td>
 <td style="text-align:right;">
 31.9
@@ -134251,6 +139481,9 @@ Census Tract 389; Kings County; New York
 1333
 </td>
 <td style="text-align:right;">
+22.6
+</td>
+<td style="text-align:right;">
 23.5
 </td>
 <td style="text-align:right;">
@@ -134326,6 +139559,9 @@ Census Tract 391; Kings County; New York
 </td>
 <td style="text-align:right;">
 2055
+</td>
+<td style="text-align:right;">
+23.1
 </td>
 <td style="text-align:right;">
 21.9
@@ -134405,6 +139641,9 @@ Census Tract 417; Kings County; New York
 1379
 </td>
 <td style="text-align:right;">
+41.0
+</td>
+<td style="text-align:right;">
 24.1
 </td>
 <td style="text-align:right;">
@@ -134480,6 +139719,9 @@ Census Tract 419; Kings County; New York
 </td>
 <td style="text-align:right;">
 1218
+</td>
+<td style="text-align:right;">
+33.3
 </td>
 <td style="text-align:right;">
 24.5
@@ -134559,6 +139801,9 @@ Census Tract 421; Kings County; New York
 1745
 </td>
 <td style="text-align:right;">
+27.2
+</td>
+<td style="text-align:right;">
 17.0
 </td>
 <td style="text-align:right;">
@@ -134634,6 +139879,9 @@ Census Tract 423; Kings County; New York
 </td>
 <td style="text-align:right;">
 1452
+</td>
+<td style="text-align:right;">
+16.9
 </td>
 <td style="text-align:right;">
 15.2
@@ -134713,6 +139961,9 @@ Census Tract 425; Kings County; New York
 1087
 </td>
 <td style="text-align:right;">
+16.4
+</td>
+<td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
@@ -134788,6 +140039,9 @@ Census Tract 427; Kings County; New York
 </td>
 <td style="text-align:right;">
 1784
+</td>
+<td style="text-align:right;">
+9.9
 </td>
 <td style="text-align:right;">
 21.1
@@ -134867,6 +140121,9 @@ Census Tract 453; Kings County; New York
 671
 </td>
 <td style="text-align:right;">
+16.4
+</td>
+<td style="text-align:right;">
 13.1
 </td>
 <td style="text-align:right;">
@@ -134942,6 +140199,9 @@ Census Tract 477; Kings County; New York
 </td>
 <td style="text-align:right;">
 1844
+</td>
+<td style="text-align:right;">
+8.0
 </td>
 <td style="text-align:right;">
 15.8
@@ -135021,6 +140281,9 @@ Census Tract 481; Kings County; New York
 1340
 </td>
 <td style="text-align:right;">
+29.6
+</td>
+<td style="text-align:right;">
 11.9
 </td>
 <td style="text-align:right;">
@@ -135096,6 +140359,9 @@ Census Tract 485; Kings County; New York
 </td>
 <td style="text-align:right;">
 1013
+</td>
+<td style="text-align:right;">
+19.2
 </td>
 <td style="text-align:right;">
 17.2
@@ -135175,6 +140441,9 @@ Census Tract 489; Kings County; New York
 1536
 </td>
 <td style="text-align:right;">
+43.8
+</td>
+<td style="text-align:right;">
 25.5
 </td>
 <td style="text-align:right;">
@@ -135250,6 +140519,9 @@ Census Tract 491; Kings County; New York
 </td>
 <td style="text-align:right;">
 2717
+</td>
+<td style="text-align:right;">
+49.9
 </td>
 <td style="text-align:right;">
 26.2
@@ -135329,6 +140601,9 @@ Census Tract 493.02; Kings County; New York
 2322
 </td>
 <td style="text-align:right;">
+33.3
+</td>
+<td style="text-align:right;">
 14.9
 </td>
 <td style="text-align:right;">
@@ -135404,6 +140679,9 @@ Census Tract 495; Kings County; New York
 </td>
 <td style="text-align:right;">
 1363
+</td>
+<td style="text-align:right;">
+7.5
 </td>
 <td style="text-align:right;">
 12.3
@@ -135483,6 +140761,9 @@ Census Tract 497; Kings County; New York
 1604
 </td>
 <td style="text-align:right;">
+15.6
+</td>
+<td style="text-align:right;">
 19.1
 </td>
 <td style="text-align:right;">
@@ -135558,6 +140839,9 @@ Census Tract 501; Kings County; New York
 </td>
 <td style="text-align:right;">
 1520
+</td>
+<td style="text-align:right;">
+22.3
 </td>
 <td style="text-align:right;">
 11.6
@@ -135637,6 +140921,9 @@ Census Tract 503; Kings County; New York
 1383
 </td>
 <td style="text-align:right;">
+10.1
+</td>
+<td style="text-align:right;">
 9.7
 </td>
 <td style="text-align:right;">
@@ -135712,6 +140999,9 @@ Census Tract 505; Kings County; New York
 </td>
 <td style="text-align:right;">
 1947
+</td>
+<td style="text-align:right;">
+31.9
 </td>
 <td style="text-align:right;">
 23.0
@@ -135791,6 +141081,9 @@ Census Tract 507; Kings County; New York
 692
 </td>
 <td style="text-align:right;">
+15.2
+</td>
+<td style="text-align:right;">
 65.9
 </td>
 <td style="text-align:right;">
@@ -135866,6 +141159,9 @@ Census Tract 509; Kings County; New York
 </td>
 <td style="text-align:right;">
 978
+</td>
+<td style="text-align:right;">
+14.7
 </td>
 <td style="text-align:right;">
 74.1
@@ -135945,6 +141241,9 @@ Census Tract 511; Kings County; New York
 1952
 </td>
 <td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
 11.5
 </td>
 <td style="text-align:right;">
@@ -136020,6 +141319,9 @@ Census Tract 513; Kings County; New York
 </td>
 <td style="text-align:right;">
 2520
+</td>
+<td style="text-align:right;">
+14.2
 </td>
 <td style="text-align:right;">
 12.3
@@ -136099,6 +141401,9 @@ Census Tract 515; Kings County; New York
 1244
 </td>
 <td style="text-align:right;">
+11.2
+</td>
+<td style="text-align:right;">
 16.0
 </td>
 <td style="text-align:right;">
@@ -136174,6 +141479,9 @@ Census Tract 519; Kings County; New York
 </td>
 <td style="text-align:right;">
 3142
+</td>
+<td style="text-align:right;">
+7.6
 </td>
 <td style="text-align:right;">
 6.1
@@ -136253,6 +141561,9 @@ Census Tract 523; Kings County; New York
 2214
 </td>
 <td style="text-align:right;">
+28.2
+</td>
+<td style="text-align:right;">
 15.8
 </td>
 <td style="text-align:right;">
@@ -136328,6 +141639,9 @@ Census Tract 525; Kings County; New York
 </td>
 <td style="text-align:right;">
 1331
+</td>
+<td style="text-align:right;">
+47.3
 </td>
 <td style="text-align:right;">
 25.7
@@ -136407,6 +141721,9 @@ Census Tract 527; Kings County; New York
 2384
 </td>
 <td style="text-align:right;">
+25.6
+</td>
+<td style="text-align:right;">
 28.4
 </td>
 <td style="text-align:right;">
@@ -136482,6 +141799,9 @@ Census Tract 529; Kings County; New York
 </td>
 <td style="text-align:right;">
 910
+</td>
+<td style="text-align:right;">
+27.8
 </td>
 <td style="text-align:right;">
 37.8
@@ -136561,6 +141881,9 @@ Census Tract 531.01; Kings County; New York
 565
 </td>
 <td style="text-align:right;">
+14.2
+</td>
+<td style="text-align:right;">
 62.1
 </td>
 <td style="text-align:right;">
@@ -136636,6 +141959,9 @@ Census Tract 547; Kings County; New York
 </td>
 <td style="text-align:right;">
 2414
+</td>
+<td style="text-align:right;">
+14.7
 </td>
 <td style="text-align:right;">
 35.4
@@ -136715,6 +142041,9 @@ Census Tract 549; Kings County; New York
 1948
 </td>
 <td style="text-align:right;">
+6.3
+</td>
+<td style="text-align:right;">
 18.7
 </td>
 <td style="text-align:right;">
@@ -136790,6 +142119,9 @@ Census Tract 551; Kings County; New York
 </td>
 <td style="text-align:right;">
 2799
+</td>
+<td style="text-align:right;">
+17.1
 </td>
 <td style="text-align:right;">
 22.2
@@ -136869,6 +142201,9 @@ Census Tract 553; Kings County; New York
 1440
 </td>
 <td style="text-align:right;">
+19.2
+</td>
+<td style="text-align:right;">
 11.8
 </td>
 <td style="text-align:right;">
@@ -136944,6 +142279,9 @@ Census Tract 557; Kings County; New York
 </td>
 <td style="text-align:right;">
 990
+</td>
+<td style="text-align:right;">
+6.9
 </td>
 <td style="text-align:right;">
 13.1
@@ -137023,6 +142361,9 @@ Census Tract 563.01; Kings County; New York
 1957
 </td>
 <td style="text-align:right;">
+26.2
+</td>
+<td style="text-align:right;">
 17.3
 </td>
 <td style="text-align:right;">
@@ -137098,6 +142439,9 @@ Census Tract 572; Kings County; New York
 </td>
 <td style="text-align:right;">
 2098
+</td>
+<td style="text-align:right;">
+45.3
 </td>
 <td style="text-align:right;">
 32.1
@@ -137177,6 +142521,9 @@ Census Tract 588; Kings County; New York
 1414
 </td>
 <td style="text-align:right;">
+46.7
+</td>
+<td style="text-align:right;">
 17.1
 </td>
 <td style="text-align:right;">
@@ -137252,6 +142599,9 @@ Census Tract 593; Kings County; New York
 </td>
 <td style="text-align:right;">
 968
+</td>
+<td style="text-align:right;">
+21.4
 </td>
 <td style="text-align:right;">
 27.2
@@ -137331,6 +142681,9 @@ Census Tract 626; Kings County; New York
 1125
 </td>
 <td style="text-align:right;">
+55.2
+</td>
+<td style="text-align:right;">
 24.5
 </td>
 <td style="text-align:right;">
@@ -137406,6 +142759,9 @@ Census Tract 628; Kings County; New York
 </td>
 <td style="text-align:right;">
 1714
+</td>
+<td style="text-align:right;">
+53.0
 </td>
 <td style="text-align:right;">
 30.9
@@ -137485,6 +142841,9 @@ Census Tract 700; Kings County; New York
 668
 </td>
 <td style="text-align:right;">
+46.9
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -137560,6 +142919,9 @@ Census Tract 706.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 920
+</td>
+<td style="text-align:right;">
+53.9
 </td>
 <td style="text-align:right;">
 40.5
@@ -137639,6 +143001,9 @@ Census Tract 902; Kings County; New York
 905
 </td>
 <td style="text-align:right;">
+55.5
+</td>
+<td style="text-align:right;">
 30.7
 </td>
 <td style="text-align:right;">
@@ -137714,6 +143079,9 @@ Census Tract 906; Kings County; New York
 </td>
 <td style="text-align:right;">
 1767
+</td>
+<td style="text-align:right;">
+20.9
 </td>
 <td style="text-align:right;">
 42.3
@@ -137793,6 +143161,9 @@ Census Tract 908; Kings County; New York
 1506
 </td>
 <td style="text-align:right;">
+43.2
+</td>
+<td style="text-align:right;">
 15.8
 </td>
 <td style="text-align:right;">
@@ -137868,6 +143239,9 @@ Census Tract 910; Kings County; New York
 </td>
 <td style="text-align:right;">
 2542
+</td>
+<td style="text-align:right;">
+55.0
 </td>
 <td style="text-align:right;">
 29.2
@@ -137947,6 +143321,9 @@ Census Tract 912; Kings County; New York
 2513
 </td>
 <td style="text-align:right;">
+45.7
+</td>
+<td style="text-align:right;">
 32.9
 </td>
 <td style="text-align:right;">
@@ -138022,6 +143399,9 @@ Census Tract 916; Kings County; New York
 </td>
 <td style="text-align:right;">
 1715
+</td>
+<td style="text-align:right;">
+47.2
 </td>
 <td style="text-align:right;">
 31.2
@@ -138101,6 +143481,9 @@ Census Tract 918; Kings County; New York
 1143
 </td>
 <td style="text-align:right;">
+41.7
+</td>
+<td style="text-align:right;">
 21.1
 </td>
 <td style="text-align:right;">
@@ -138176,6 +143559,9 @@ Census Tract 920; Kings County; New York
 </td>
 <td style="text-align:right;">
 1089
+</td>
+<td style="text-align:right;">
+57.6
 </td>
 <td style="text-align:right;">
 31.2
@@ -138255,6 +143641,9 @@ Census Tract 924; Kings County; New York
 943
 </td>
 <td style="text-align:right;">
+43.5
+</td>
+<td style="text-align:right;">
 35.9
 </td>
 <td style="text-align:right;">
@@ -138330,6 +143719,9 @@ Census Tract 954; Kings County; New York
 </td>
 <td style="text-align:right;">
 1639
+</td>
+<td style="text-align:right;">
+46.5
 </td>
 <td style="text-align:right;">
 28.4
@@ -138409,6 +143801,9 @@ Census Tract 956; Kings County; New York
 1463
 </td>
 <td style="text-align:right;">
+53.0
+</td>
+<td style="text-align:right;">
 23.4
 </td>
 <td style="text-align:right;">
@@ -138484,6 +143879,9 @@ Census Tract 958; Kings County; New York
 </td>
 <td style="text-align:right;">
 1133
+</td>
+<td style="text-align:right;">
+53.5
 </td>
 <td style="text-align:right;">
 27.1
@@ -138563,6 +143961,9 @@ Census Tract 962; Kings County; New York
 400
 </td>
 <td style="text-align:right;">
+39.3
+</td>
+<td style="text-align:right;">
 49.3
 </td>
 <td style="text-align:right;">
@@ -138638,6 +144039,9 @@ Census Tract 964; Kings County; New York
 </td>
 <td style="text-align:right;">
 831
+</td>
+<td style="text-align:right;">
+52.9
 </td>
 <td style="text-align:right;">
 45.4
@@ -138717,6 +144121,9 @@ Census Tract 966; Kings County; New York
 732
 </td>
 <td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
 45.1
 </td>
 <td style="text-align:right;">
@@ -138792,6 +144199,9 @@ Census Tract 968; Kings County; New York
 </td>
 <td style="text-align:right;">
 425
+</td>
+<td style="text-align:right;">
+61.2
 </td>
 <td style="text-align:right;">
 37.6
@@ -138871,6 +144281,9 @@ Census Tract 970; Kings County; New York
 865
 </td>
 <td style="text-align:right;">
+55.7
+</td>
+<td style="text-align:right;">
 31.8
 </td>
 <td style="text-align:right;">
@@ -138946,6 +144359,9 @@ Census Tract 974; Kings County; New York
 </td>
 <td style="text-align:right;">
 691
+</td>
+<td style="text-align:right;">
+49.2
 </td>
 <td style="text-align:right;">
 33.7
@@ -139025,6 +144441,9 @@ Census Tract 982; Kings County; New York
 1639
 </td>
 <td style="text-align:right;">
+38.3
+</td>
+<td style="text-align:right;">
 39.0
 </td>
 <td style="text-align:right;">
@@ -139100,6 +144519,9 @@ Census Tract 984; Kings County; New York
 </td>
 <td style="text-align:right;">
 603
+</td>
+<td style="text-align:right;">
+56.4
 </td>
 <td style="text-align:right;">
 25.2
@@ -139179,6 +144601,9 @@ Census Tract 986; Kings County; New York
 979
 </td>
 <td style="text-align:right;">
+41.0
+</td>
+<td style="text-align:right;">
 24.7
 </td>
 <td style="text-align:right;">
@@ -139254,6 +144679,9 @@ Census Tract 988; Kings County; New York
 </td>
 <td style="text-align:right;">
 1012
+</td>
+<td style="text-align:right;">
+48.8
 </td>
 <td style="text-align:right;">
 32.7
@@ -139333,6 +144761,9 @@ Census Tract 990; Kings County; New York
 493
 </td>
 <td style="text-align:right;">
+57.6
+</td>
+<td style="text-align:right;">
 41.6
 </td>
 <td style="text-align:right;">
@@ -139408,6 +144839,9 @@ Census Tract 992; Kings County; New York
 </td>
 <td style="text-align:right;">
 728
+</td>
+<td style="text-align:right;">
+51.8
 </td>
 <td style="text-align:right;">
 36.4
@@ -139487,6 +144921,9 @@ Census Tract 994; Kings County; New York
 624
 </td>
 <td style="text-align:right;">
+48.4
+</td>
+<td style="text-align:right;">
 42.1
 </td>
 <td style="text-align:right;">
@@ -139562,6 +144999,9 @@ Census Tract 996; Kings County; New York
 </td>
 <td style="text-align:right;">
 1155
+</td>
+<td style="text-align:right;">
+60.0
 </td>
 <td style="text-align:right;">
 40.4
@@ -139641,6 +145081,9 @@ Census Tract 1006; Kings County; New York
 934
 </td>
 <td style="text-align:right;">
+46.4
+</td>
+<td style="text-align:right;">
 31.5
 </td>
 <td style="text-align:right;">
@@ -139716,6 +145159,9 @@ Census Tract 1008; Kings County; New York
 </td>
 <td style="text-align:right;">
 691
+</td>
+<td style="text-align:right;">
+61.2
 </td>
 <td style="text-align:right;">
 42.0
@@ -139795,6 +145241,9 @@ Census Tract 1010; Kings County; New York
 879
 </td>
 <td style="text-align:right;">
+51.1
+</td>
+<td style="text-align:right;">
 35.5
 </td>
 <td style="text-align:right;">
@@ -139870,6 +145319,9 @@ Census Tract 1012; Kings County; New York
 </td>
 <td style="text-align:right;">
 846
+</td>
+<td style="text-align:right;">
+40.2
 </td>
 <td style="text-align:right;">
 28.6
@@ -139949,6 +145401,9 @@ Census Tract 1020; Kings County; New York
 704
 </td>
 <td style="text-align:right;">
+39.9
+</td>
+<td style="text-align:right;">
 24.9
 </td>
 <td style="text-align:right;">
@@ -140024,6 +145479,9 @@ Census Tract 1022; Kings County; New York
 </td>
 <td style="text-align:right;">
 764
+</td>
+<td style="text-align:right;">
+32.1
 </td>
 <td style="text-align:right;">
 43.1
@@ -140103,6 +145561,9 @@ Census Tract 1024; Kings County; New York
 610
 </td>
 <td style="text-align:right;">
+41.5
+</td>
+<td style="text-align:right;">
 36.1
 </td>
 <td style="text-align:right;">
@@ -140178,6 +145639,9 @@ Census Tract 1028.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 512
+</td>
+<td style="text-align:right;">
+67.0
 </td>
 <td style="text-align:right;">
 19.7
@@ -140257,6 +145721,9 @@ Census Tract 1078; Kings County; New York
 1818
 </td>
 <td style="text-align:right;">
+60.5
+</td>
+<td style="text-align:right;">
 20.7
 </td>
 <td style="text-align:right;">
@@ -140332,6 +145799,9 @@ Census Tract 1098; Kings County; New York
 </td>
 <td style="text-align:right;">
 664
+</td>
+<td style="text-align:right;">
+44.6
 </td>
 <td style="text-align:right;">
 47.7
@@ -140411,6 +145881,9 @@ Census Tract 1110; Kings County; New York
 1463
 </td>
 <td style="text-align:right;">
+49.6
+</td>
+<td style="text-align:right;">
 23.4
 </td>
 <td style="text-align:right;">
@@ -140486,6 +145959,9 @@ Census Tract 1116; Kings County; New York
 </td>
 <td style="text-align:right;">
 1141
+</td>
+<td style="text-align:right;">
+43.2
 </td>
 <td style="text-align:right;">
 56.8
@@ -140565,6 +146041,9 @@ Census Tract 1118; Kings County; New York
 1324
 </td>
 <td style="text-align:right;">
+34.1
+</td>
+<td style="text-align:right;">
 54.0
 </td>
 <td style="text-align:right;">
@@ -140640,6 +146119,9 @@ Census Tract 1120; Kings County; New York
 </td>
 <td style="text-align:right;">
 1173
+</td>
+<td style="text-align:right;">
+65.0
 </td>
 <td style="text-align:right;">
 32.6
@@ -140719,6 +146201,9 @@ Census Tract 1130; Kings County; New York
 1642
 </td>
 <td style="text-align:right;">
+39.1
+</td>
+<td style="text-align:right;">
 29.9
 </td>
 <td style="text-align:right;">
@@ -140794,6 +146279,9 @@ Census Tract 1132; Kings County; New York
 </td>
 <td style="text-align:right;">
 808
+</td>
+<td style="text-align:right;">
+32.2
 </td>
 <td style="text-align:right;">
 46.5
@@ -140873,6 +146361,9 @@ Census Tract 1134; Kings County; New York
 1015
 </td>
 <td style="text-align:right;">
+34.1
+</td>
+<td style="text-align:right;">
 34.4
 </td>
 <td style="text-align:right;">
@@ -140948,6 +146439,9 @@ Census Tract 1144; Kings County; New York
 </td>
 <td style="text-align:right;">
 826
+</td>
+<td style="text-align:right;">
+46.7
 </td>
 <td style="text-align:right;">
 28.7
@@ -141027,6 +146521,9 @@ Census Tract 1150; Kings County; New York
 892
 </td>
 <td style="text-align:right;">
+29.4
+</td>
+<td style="text-align:right;">
 39.9
 </td>
 <td style="text-align:right;">
@@ -141102,6 +146599,9 @@ Census Tract 1156; Kings County; New York
 </td>
 <td style="text-align:right;">
 1791
+</td>
+<td style="text-align:right;">
+37.1
 </td>
 <td style="text-align:right;">
 45.1
@@ -141181,6 +146681,9 @@ Census Tract 1162; Kings County; New York
 910
 </td>
 <td style="text-align:right;">
+46.6
+</td>
+<td style="text-align:right;">
 36.0
 </td>
 <td style="text-align:right;">
@@ -141256,6 +146759,9 @@ Census Tract 1164; Kings County; New York
 </td>
 <td style="text-align:right;">
 1197
+</td>
+<td style="text-align:right;">
+43.5
 </td>
 <td style="text-align:right;">
 45.6
@@ -141335,6 +146841,9 @@ Census Tract 1166; Kings County; New York
 1099
 </td>
 <td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
 39.7
 </td>
 <td style="text-align:right;">
@@ -141410,6 +146919,9 @@ Census Tract 1170; Kings County; New York
 </td>
 <td style="text-align:right;">
 741
+</td>
+<td style="text-align:right;">
+31.0
 </td>
 <td style="text-align:right;">
 26.0
@@ -141489,6 +147001,9 @@ Census Tract 1198; Kings County; New York
 1159
 </td>
 <td style="text-align:right;">
+15.6
+</td>
+<td style="text-align:right;">
 50.4
 </td>
 <td style="text-align:right;">
@@ -141564,6 +147079,9 @@ Census Tract 1208.01; Kings County; New York
 </td>
 <td style="text-align:right;">
 1432
+</td>
+<td style="text-align:right;">
+56.2
 </td>
 <td style="text-align:right;">
 47.6
@@ -141643,6 +147161,9 @@ Census Tract 1208.02; Kings County; New York
 1661
 </td>
 <td style="text-align:right;">
+40.0
+</td>
+<td style="text-align:right;">
 43.9
 </td>
 <td style="text-align:right;">
@@ -141718,6 +147239,9 @@ Census Tract 1210; Kings County; New York
 </td>
 <td style="text-align:right;">
 1641
+</td>
+<td style="text-align:right;">
+46.6
 </td>
 <td style="text-align:right;">
 44.2
@@ -141797,6 +147321,9 @@ Census Tract 1214; Kings County; New York
 1566
 </td>
 <td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
 44.6
 </td>
 <td style="text-align:right;">
@@ -141872,6 +147399,9 @@ Census Tract 1220; Kings County; New York
 </td>
 <td style="text-align:right;">
 2366
+</td>
+<td style="text-align:right;">
+36.0
 </td>
 <td style="text-align:right;">
 51.8
@@ -141951,6 +147481,9 @@ Census Tract 1237; Kings County; New York
 1271
 </td>
 <td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
 88.3
 </td>
 <td style="text-align:right;">
@@ -142026,6 +147559,9 @@ Census Tract 2.01; New York County; New York
 </td>
 <td style="text-align:right;">
 878
+</td>
+<td style="text-align:right;">
+28.7
 </td>
 <td style="text-align:right;">
 37.8
@@ -142105,6 +147641,9 @@ Census Tract 2.02; New York County; New York
 3293
 </td>
 <td style="text-align:right;">
+40.2
+</td>
+<td style="text-align:right;">
 17.6
 </td>
 <td style="text-align:right;">
@@ -142180,6 +147719,9 @@ Census Tract 6; New York County; New York
 </td>
 <td style="text-align:right;">
 5191
+</td>
+<td style="text-align:right;">
+53.1
 </td>
 <td style="text-align:right;">
 13.1
@@ -142259,6 +147801,9 @@ Census Tract 8; New York County; New York
 4293
 </td>
 <td style="text-align:right;">
+48.1
+</td>
+<td style="text-align:right;">
 14.7
 </td>
 <td style="text-align:right;">
@@ -142334,6 +147879,9 @@ Census Tract 10.01; New York County; New York
 </td>
 <td style="text-align:right;">
 788
+</td>
+<td style="text-align:right;">
+40.2
 </td>
 <td style="text-align:right;">
 24.9
@@ -142413,6 +147961,9 @@ Census Tract 10.02; New York County; New York
 2483
 </td>
 <td style="text-align:right;">
+50.3
+</td>
+<td style="text-align:right;">
 22.6
 </td>
 <td style="text-align:right;">
@@ -142488,6 +148039,9 @@ Census Tract 12; New York County; New York
 </td>
 <td style="text-align:right;">
 1954
+</td>
+<td style="text-align:right;">
+49.2
 </td>
 <td style="text-align:right;">
 22.8
@@ -142567,6 +148121,9 @@ Census Tract 14.01; New York County; New York
 1648
 </td>
 <td style="text-align:right;">
+59.5
+</td>
+<td style="text-align:right;">
 15.7
 </td>
 <td style="text-align:right;">
@@ -142642,6 +148199,9 @@ Census Tract 14.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1733
+</td>
+<td style="text-align:right;">
+45.4
 </td>
 <td style="text-align:right;">
 14.8
@@ -142721,6 +148281,9 @@ Census Tract 16; New York County; New York
 3523
 </td>
 <td style="text-align:right;">
+46.0
+</td>
+<td style="text-align:right;">
 14.8
 </td>
 <td style="text-align:right;">
@@ -142796,6 +148359,9 @@ Census Tract 18; New York County; New York
 </td>
 <td style="text-align:right;">
 3075
+</td>
+<td style="text-align:right;">
+27.0
 </td>
 <td style="text-align:right;">
 7.8
@@ -142875,6 +148441,9 @@ Census Tract 20; New York County; New York
 2021
 </td>
 <td style="text-align:right;">
+44.8
+</td>
+<td style="text-align:right;">
 25.4
 </td>
 <td style="text-align:right;">
@@ -142950,6 +148519,9 @@ Census Tract 22.01; New York County; New York
 </td>
 <td style="text-align:right;">
 3022
+</td>
+<td style="text-align:right;">
+45.1
 </td>
 <td style="text-align:right;">
 13.7
@@ -143029,6 +148601,9 @@ Census Tract 22.02; New York County; New York
 1032
 </td>
 <td style="text-align:right;">
+14.1
+</td>
+<td style="text-align:right;">
 10.7
 </td>
 <td style="text-align:right;">
@@ -143104,6 +148679,9 @@ Census Tract 25; New York County; New York
 </td>
 <td style="text-align:right;">
 1980
+</td>
+<td style="text-align:right;">
+52.5
 </td>
 <td style="text-align:right;">
 25.0
@@ -143183,6 +148761,9 @@ Census Tract 26.01; New York County; New York
 1969
 </td>
 <td style="text-align:right;">
+31.8
+</td>
+<td style="text-align:right;">
 15.4
 </td>
 <td style="text-align:right;">
@@ -143258,6 +148839,9 @@ Census Tract 26.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1846
+</td>
+<td style="text-align:right;">
+26.3
 </td>
 <td style="text-align:right;">
 11.0
@@ -143337,6 +148921,9 @@ Census Tract 27; New York County; New York
 616
 </td>
 <td style="text-align:right;">
+69.2
+</td>
+<td style="text-align:right;">
 33.4
 </td>
 <td style="text-align:right;">
@@ -143412,6 +148999,9 @@ Census Tract 28; New York County; New York
 </td>
 <td style="text-align:right;">
 3129
+</td>
+<td style="text-align:right;">
+42.7
 </td>
 <td style="text-align:right;">
 14.0
@@ -143491,6 +149081,9 @@ Census Tract 29.02; New York County; New York
 1844
 </td>
 <td style="text-align:right;">
+49.0
+</td>
+<td style="text-align:right;">
 11.4
 </td>
 <td style="text-align:right;">
@@ -143566,6 +149159,9 @@ Census Tract 30.01; New York County; New York
 </td>
 <td style="text-align:right;">
 2248
+</td>
+<td style="text-align:right;">
+10.9
 </td>
 <td style="text-align:right;">
 4.6
@@ -143645,6 +149241,9 @@ Census Tract 30.02; New York County; New York
 1724
 </td>
 <td style="text-align:right;">
+29.2
+</td>
+<td style="text-align:right;">
 8.7
 </td>
 <td style="text-align:right;">
@@ -143720,6 +149319,9 @@ Census Tract 32; New York County; New York
 </td>
 <td style="text-align:right;">
 4600
+</td>
+<td style="text-align:right;">
+32.4
 </td>
 <td style="text-align:right;">
 10.1
@@ -143799,6 +149401,9 @@ Census Tract 34; New York County; New York
 3748
 </td>
 <td style="text-align:right;">
+27.2
+</td>
+<td style="text-align:right;">
 3.8
 </td>
 <td style="text-align:right;">
@@ -143874,6 +149479,9 @@ Census Tract 36.01; New York County; New York
 </td>
 <td style="text-align:right;">
 1454
+</td>
+<td style="text-align:right;">
+45.0
 </td>
 <td style="text-align:right;">
 10.7
@@ -143953,6 +149561,9 @@ Census Tract 36.02; New York County; New York
 1467
 </td>
 <td style="text-align:right;">
+29.3
+</td>
+<td style="text-align:right;">
 10.2
 </td>
 <td style="text-align:right;">
@@ -144028,6 +149639,9 @@ Census Tract 38; New York County; New York
 </td>
 <td style="text-align:right;">
 4683
+</td>
+<td style="text-align:right;">
+31.9
 </td>
 <td style="text-align:right;">
 2.4
@@ -144107,6 +149721,9 @@ Census Tract 40.01; New York County; New York
 1959
 </td>
 <td style="text-align:right;">
+25.4
+</td>
+<td style="text-align:right;">
 3.4
 </td>
 <td style="text-align:right;">
@@ -144182,6 +149799,9 @@ Census Tract 40.02; New York County; New York
 </td>
 <td style="text-align:right;">
 2019
+</td>
+<td style="text-align:right;">
+17.1
 </td>
 <td style="text-align:right;">
 10.4
@@ -144261,6 +149881,9 @@ Census Tract 41; New York County; New York
 3263
 </td>
 <td style="text-align:right;">
+35.2
+</td>
+<td style="text-align:right;">
 18.2
 </td>
 <td style="text-align:right;">
@@ -144336,6 +149959,9 @@ Census Tract 42; New York County; New York
 </td>
 <td style="text-align:right;">
 1550
+</td>
+<td style="text-align:right;">
+31.0
 </td>
 <td style="text-align:right;">
 10.1
@@ -144415,6 +150041,9 @@ Census Tract 43; New York County; New York
 2292
 </td>
 <td style="text-align:right;">
+27.1
+</td>
+<td style="text-align:right;">
 2.7
 </td>
 <td style="text-align:right;">
@@ -144490,6 +150119,9 @@ Census Tract 44; New York County; New York
 </td>
 <td style="text-align:right;">
 8209
+</td>
+<td style="text-align:right;">
+38.4
 </td>
 <td style="text-align:right;">
 16.2
@@ -144569,6 +150201,9 @@ Census Tract 48; New York County; New York
 2784
 </td>
 <td style="text-align:right;">
+38.3
+</td>
+<td style="text-align:right;">
 13.8
 </td>
 <td style="text-align:right;">
@@ -144644,6 +150279,9 @@ Census Tract 49; New York County; New York
 </td>
 <td style="text-align:right;">
 2454
+</td>
+<td style="text-align:right;">
+31.1
 </td>
 <td style="text-align:right;">
 12.3
@@ -144723,6 +150361,9 @@ Census Tract 60; New York County; New York
 2408
 </td>
 <td style="text-align:right;">
+42.8
+</td>
+<td style="text-align:right;">
 32.2
 </td>
 <td style="text-align:right;">
@@ -144798,6 +150439,9 @@ Census Tract 64; New York County; New York
 </td>
 <td style="text-align:right;">
 4348
+</td>
+<td style="text-align:right;">
+31.0
 </td>
 <td style="text-align:right;">
 14.3
@@ -144877,6 +150521,9 @@ Census Tract 66; New York County; New York
 6780
 </td>
 <td style="text-align:right;">
+35.4
+</td>
+<td style="text-align:right;">
 8.8
 </td>
 <td style="text-align:right;">
@@ -144952,6 +150599,9 @@ Census Tract 70.01; New York County; New York
 </td>
 <td style="text-align:right;">
 2098
+</td>
+<td style="text-align:right;">
+28.6
 </td>
 <td style="text-align:right;">
 13.9
@@ -145031,6 +150681,9 @@ Census Tract 70.02; New York County; New York
 2227
 </td>
 <td style="text-align:right;">
+14.9
+</td>
+<td style="text-align:right;">
 5.2
 </td>
 <td style="text-align:right;">
@@ -145106,6 +150759,9 @@ Census Tract 78; New York County; New York
 </td>
 <td style="text-align:right;">
 4821
+</td>
+<td style="text-align:right;">
+20.9
 </td>
 <td style="text-align:right;">
 10.8
@@ -145185,6 +150841,9 @@ Census Tract 87; New York County; New York
 3597
 </td>
 <td style="text-align:right;">
+15.6
+</td>
+<td style="text-align:right;">
 9.4
 </td>
 <td style="text-align:right;">
@@ -145260,6 +150919,9 @@ Census Tract 88; New York County; New York
 </td>
 <td style="text-align:right;">
 4800
+</td>
+<td style="text-align:right;">
+29.6
 </td>
 <td style="text-align:right;">
 6.2
@@ -145339,6 +151001,9 @@ Census Tract 89; New York County; New York
 3201
 </td>
 <td style="text-align:right;">
+36.6
+</td>
+<td style="text-align:right;">
 14.2
 </td>
 <td style="text-align:right;">
@@ -145414,6 +151079,9 @@ Census Tract 93; New York County; New York
 </td>
 <td style="text-align:right;">
 5523
+</td>
+<td style="text-align:right;">
+38.6
 </td>
 <td style="text-align:right;">
 11.6
@@ -145493,6 +151161,9 @@ Census Tract 97; New York County; New York
 2714
 </td>
 <td style="text-align:right;">
+59.3
+</td>
+<td style="text-align:right;">
 11.8
 </td>
 <td style="text-align:right;">
@@ -145568,6 +151239,9 @@ Census Tract 103; New York County; New York
 </td>
 <td style="text-align:right;">
 1483
+</td>
+<td style="text-align:right;">
+10.7
 </td>
 <td style="text-align:right;">
 3.8
@@ -145647,6 +151321,9 @@ Census Tract 111; New York County; New York
 2824
 </td>
 <td style="text-align:right;">
+19.6
+</td>
+<td style="text-align:right;">
 7.9
 </td>
 <td style="text-align:right;">
@@ -145722,6 +151399,9 @@ Census Tract 115; New York County; New York
 </td>
 <td style="text-align:right;">
 1712
+</td>
+<td style="text-align:right;">
+15.7
 </td>
 <td style="text-align:right;">
 9.8
@@ -145801,6 +151481,9 @@ Census Tract 116; New York County; New York
 2129
 </td>
 <td style="text-align:right;">
+32.9
+</td>
+<td style="text-align:right;">
 12.7
 </td>
 <td style="text-align:right;">
@@ -145876,6 +151559,9 @@ Census Tract 121.01; New York County; New York
 </td>
 <td style="text-align:right;">
 1527
+</td>
+<td style="text-align:right;">
+32.7
 </td>
 <td style="text-align:right;">
 1.6
@@ -145955,6 +151641,9 @@ Census Tract 121.02; New York County; New York
 3419
 </td>
 <td style="text-align:right;">
+62.9
+</td>
+<td style="text-align:right;">
 7.6
 </td>
 <td style="text-align:right;">
@@ -146030,6 +151719,9 @@ Census Tract 124; New York County; New York
 </td>
 <td style="text-align:right;">
 4895
+</td>
+<td style="text-align:right;">
+24.5
 </td>
 <td style="text-align:right;">
 22.8
@@ -146109,6 +151801,9 @@ Census Tract 126.01; New York County; New York
 3742
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 31.2
 </td>
 <td style="text-align:right;">
@@ -146184,6 +151879,9 @@ Census Tract 127; New York County; New York
 </td>
 <td style="text-align:right;">
 4341
+</td>
+<td style="text-align:right;">
+21.6
 </td>
 <td style="text-align:right;">
 4.0
@@ -146263,6 +151961,9 @@ Census Tract 132.01; New York County; New York
 1114
 </td>
 <td style="text-align:right;">
+38.3
+</td>
+<td style="text-align:right;">
 7.6
 </td>
 <td style="text-align:right;">
@@ -146338,6 +152039,9 @@ Census Tract 132.02; New York County; New York
 </td>
 <td style="text-align:right;">
 2134
+</td>
+<td style="text-align:right;">
+37.8
 </td>
 <td style="text-align:right;">
 13.4
@@ -146417,6 +152121,9 @@ Census Tract 132.03; New York County; New York
 2490
 </td>
 <td style="text-align:right;">
+39.8
+</td>
+<td style="text-align:right;">
 27.6
 </td>
 <td style="text-align:right;">
@@ -146492,6 +152199,9 @@ Census Tract 133; New York County; New York
 </td>
 <td style="text-align:right;">
 3905
+</td>
+<td style="text-align:right;">
+21.9
 </td>
 <td style="text-align:right;">
 4.5
@@ -146571,6 +152281,9 @@ Census Tract 136.03; New York County; New York
 2363
 </td>
 <td style="text-align:right;">
+50.4
+</td>
+<td style="text-align:right;">
 11.8
 </td>
 <td style="text-align:right;">
@@ -146646,6 +152359,9 @@ Census Tract 139; New York County; New York
 </td>
 <td style="text-align:right;">
 6641
+</td>
+<td style="text-align:right;">
+39.6
 </td>
 <td style="text-align:right;">
 5.1
@@ -146725,6 +152441,9 @@ Census Tract 146.01; New York County; New York
 2160
 </td>
 <td style="text-align:right;">
+30.4
+</td>
+<td style="text-align:right;">
 10.1
 </td>
 <td style="text-align:right;">
@@ -146800,6 +152519,9 @@ Census Tract 146.02; New York County; New York
 </td>
 <td style="text-align:right;">
 4963
+</td>
+<td style="text-align:right;">
+45.6
 </td>
 <td style="text-align:right;">
 9.9
@@ -146879,6 +152601,9 @@ Census Tract 147; New York County; New York
 1397
 </td>
 <td style="text-align:right;">
+14.3
+</td>
+<td style="text-align:right;">
 29.3
 </td>
 <td style="text-align:right;">
@@ -146954,6 +152679,9 @@ Census Tract 151.01; New York County; New York
 </td>
 <td style="text-align:right;">
 1585
+</td>
+<td style="text-align:right;">
+57.7
 </td>
 <td style="text-align:right;">
 25.5
@@ -147033,6 +152761,9 @@ Census Tract 153.02; New York County; New York
 2939
 </td>
 <td style="text-align:right;">
+29.6
+</td>
+<td style="text-align:right;">
 21.3
 </td>
 <td style="text-align:right;">
@@ -147108,6 +152839,9 @@ Census Tract 154.01; New York County; New York
 </td>
 <td style="text-align:right;">
 3223
+</td>
+<td style="text-align:right;">
+39.9
 </td>
 <td style="text-align:right;">
 6.9
@@ -147187,6 +152921,9 @@ Census Tract 154.02; New York County; New York
 1558
 </td>
 <td style="text-align:right;">
+30.3
+</td>
+<td style="text-align:right;">
 12.6
 </td>
 <td style="text-align:right;">
@@ -147262,6 +152999,9 @@ Census Tract 154.03; New York County; New York
 </td>
 <td style="text-align:right;">
 2411
+</td>
+<td style="text-align:right;">
+49.3
 </td>
 <td style="text-align:right;">
 16.1
@@ -147341,6 +153081,9 @@ Census Tract 155.01; New York County; New York
 2965
 </td>
 <td style="text-align:right;">
+51.5
+</td>
+<td style="text-align:right;">
 11.5
 </td>
 <td style="text-align:right;">
@@ -147416,6 +153159,9 @@ Census Tract 155.02; New York County; New York
 </td>
 <td style="text-align:right;">
 2876
+</td>
+<td style="text-align:right;">
+42.5
 </td>
 <td style="text-align:right;">
 16.6
@@ -147495,6 +153241,9 @@ Census Tract 156.01; New York County; New York
 2645
 </td>
 <td style="text-align:right;">
+25.3
+</td>
+<td style="text-align:right;">
 15.6
 </td>
 <td style="text-align:right;">
@@ -147570,6 +153319,9 @@ Census Tract 156.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1210
+</td>
+<td style="text-align:right;">
+25.9
 </td>
 <td style="text-align:right;">
 20.3
@@ -147649,6 +153401,9 @@ Census Tract 164; New York County; New York
 3488
 </td>
 <td style="text-align:right;">
+40.8
+</td>
+<td style="text-align:right;">
 22.7
 </td>
 <td style="text-align:right;">
@@ -147724,6 +153479,9 @@ Census Tract 166; New York County; New York
 </td>
 <td style="text-align:right;">
 2880
+</td>
+<td style="text-align:right;">
+33.1
 </td>
 <td style="text-align:right;">
 16.5
@@ -147803,6 +153561,9 @@ Census Tract 170; New York County; New York
 3394
 </td>
 <td style="text-align:right;">
+43.4
+</td>
+<td style="text-align:right;">
 26.3
 </td>
 <td style="text-align:right;">
@@ -147878,6 +153639,9 @@ Census Tract 172; New York County; New York
 </td>
 <td style="text-align:right;">
 2283
+</td>
+<td style="text-align:right;">
+37.8
 </td>
 <td style="text-align:right;">
 16.7
@@ -147957,6 +153721,9 @@ Census Tract 174.01; New York County; New York
 2158
 </td>
 <td style="text-align:right;">
+52.0
+</td>
+<td style="text-align:right;">
 29.8
 </td>
 <td style="text-align:right;">
@@ -148032,6 +153799,9 @@ Census Tract 174.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1048
+</td>
+<td style="text-align:right;">
+30.3
 </td>
 <td style="text-align:right;">
 17.6
@@ -148111,6 +153881,9 @@ Census Tract 178; New York County; New York
 1952
 </td>
 <td style="text-align:right;">
+23.8
+</td>
+<td style="text-align:right;">
 23.4
 </td>
 <td style="text-align:right;">
@@ -148186,6 +153959,9 @@ Census Tract 180; New York County; New York
 </td>
 <td style="text-align:right;">
 3111
+</td>
+<td style="text-align:right;">
+37.3
 </td>
 <td style="text-align:right;">
 29.9
@@ -148265,6 +154041,9 @@ Census Tract 182; New York County; New York
 3007
 </td>
 <td style="text-align:right;">
+37.6
+</td>
+<td style="text-align:right;">
 26.0
 </td>
 <td style="text-align:right;">
@@ -148340,6 +154119,9 @@ Census Tract 184; New York County; New York
 </td>
 <td style="text-align:right;">
 3390
+</td>
+<td style="text-align:right;">
+30.5
 </td>
 <td style="text-align:right;">
 32.6
@@ -148419,6 +154201,9 @@ Census Tract 186; New York County; New York
 2044
 </td>
 <td style="text-align:right;">
+47.2
+</td>
+<td style="text-align:right;">
 38.1
 </td>
 <td style="text-align:right;">
@@ -148494,6 +154279,9 @@ Census Tract 188; New York County; New York
 </td>
 <td style="text-align:right;">
 2251
+</td>
+<td style="text-align:right;">
+24.2
 </td>
 <td style="text-align:right;">
 17.2
@@ -148573,6 +154361,9 @@ Census Tract 190; New York County; New York
 1617
 </td>
 <td style="text-align:right;">
+36.5
+</td>
+<td style="text-align:right;">
 23.6
 </td>
 <td style="text-align:right;">
@@ -148648,6 +154439,9 @@ Census Tract 192; New York County; New York
 </td>
 <td style="text-align:right;">
 1587
+</td>
+<td style="text-align:right;">
+35.8
 </td>
 <td style="text-align:right;">
 36.2
@@ -148727,6 +154521,9 @@ Census Tract 194; New York County; New York
 2709
 </td>
 <td style="text-align:right;">
+45.1
+</td>
+<td style="text-align:right;">
 22.7
 </td>
 <td style="text-align:right;">
@@ -148802,6 +154599,9 @@ Census Tract 196; New York County; New York
 </td>
 <td style="text-align:right;">
 1835
+</td>
+<td style="text-align:right;">
+53.0
 </td>
 <td style="text-align:right;">
 14.9
@@ -148881,6 +154681,9 @@ Census Tract 197.02; New York County; New York
 1153
 </td>
 <td style="text-align:right;">
+26.0
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -148956,6 +154759,9 @@ Census Tract 198; New York County; New York
 </td>
 <td style="text-align:right;">
 977
+</td>
+<td style="text-align:right;">
+45.3
 </td>
 <td style="text-align:right;">
 27.3
@@ -149035,6 +154841,9 @@ Census Tract 200; New York County; New York
 1560
 </td>
 <td style="text-align:right;">
+34.7
+</td>
+<td style="text-align:right;">
 18.4
 </td>
 <td style="text-align:right;">
@@ -149110,6 +154919,9 @@ Census Tract 201.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1571
+</td>
+<td style="text-align:right;">
+33.7
 </td>
 <td style="text-align:right;">
 20.8
@@ -149189,6 +155001,9 @@ Census Tract 206; New York County; New York
 1651
 </td>
 <td style="text-align:right;">
+29.7
+</td>
+<td style="text-align:right;">
 23.9
 </td>
 <td style="text-align:right;">
@@ -149264,6 +155079,9 @@ Census Tract 208; New York County; New York
 </td>
 <td style="text-align:right;">
 2251
+</td>
+<td style="text-align:right;">
+25.6
 </td>
 <td style="text-align:right;">
 18.8
@@ -149343,6 +155161,9 @@ Census Tract 209.01; New York County; New York
 1393
 </td>
 <td style="text-align:right;">
+40.8
+</td>
+<td style="text-align:right;">
 35.7
 </td>
 <td style="text-align:right;">
@@ -149418,6 +155239,9 @@ Census Tract 212; New York County; New York
 </td>
 <td style="text-align:right;">
 2427
+</td>
+<td style="text-align:right;">
+38.2
 </td>
 <td style="text-align:right;">
 14.3
@@ -149497,6 +155321,9 @@ Census Tract 213.03; New York County; New York
 2435
 </td>
 <td style="text-align:right;">
+35.8
+</td>
+<td style="text-align:right;">
 25.2
 </td>
 <td style="text-align:right;">
@@ -149572,6 +155399,9 @@ Census Tract 214; New York County; New York
 </td>
 <td style="text-align:right;">
 2109
+</td>
+<td style="text-align:right;">
+39.6
 </td>
 <td style="text-align:right;">
 6.1
@@ -149651,6 +155481,9 @@ Census Tract 215; New York County; New York
 1796
 </td>
 <td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
 27.7
 </td>
 <td style="text-align:right;">
@@ -149726,6 +155559,9 @@ Census Tract 216; New York County; New York
 </td>
 <td style="text-align:right;">
 3182
+</td>
+<td style="text-align:right;">
+22.6
 </td>
 <td style="text-align:right;">
 29.6
@@ -149805,6 +155641,9 @@ Census Tract 218; New York County; New York
 2964
 </td>
 <td style="text-align:right;">
+39.3
+</td>
+<td style="text-align:right;">
 16.7
 </td>
 <td style="text-align:right;">
@@ -149880,6 +155719,9 @@ Census Tract 219; New York County; New York
 </td>
 <td style="text-align:right;">
 2194
+</td>
+<td style="text-align:right;">
+32.0
 </td>
 <td style="text-align:right;">
 41.3
@@ -149959,6 +155801,9 @@ Census Tract 220; New York County; New York
 2881
 </td>
 <td style="text-align:right;">
+26.7
+</td>
+<td style="text-align:right;">
 17.4
 </td>
 <td style="text-align:right;">
@@ -150034,6 +155879,9 @@ Census Tract 221.02; New York County; New York
 </td>
 <td style="text-align:right;">
 1259
+</td>
+<td style="text-align:right;">
+31.9
 </td>
 <td style="text-align:right;">
 11.6
@@ -150113,6 +155961,9 @@ Census Tract 222; New York County; New York
 1501
 </td>
 <td style="text-align:right;">
+23.4
+</td>
+<td style="text-align:right;">
 23.9
 </td>
 <td style="text-align:right;">
@@ -150188,6 +156039,9 @@ Census Tract 224; New York County; New York
 </td>
 <td style="text-align:right;">
 2788
+</td>
+<td style="text-align:right;">
+34.5
 </td>
 <td style="text-align:right;">
 29.7
@@ -150267,6 +156121,9 @@ Census Tract 226; New York County; New York
 2096
 </td>
 <td style="text-align:right;">
+28.6
+</td>
+<td style="text-align:right;">
 26.1
 </td>
 <td style="text-align:right;">
@@ -150342,6 +156199,9 @@ Census Tract 228; New York County; New York
 </td>
 <td style="text-align:right;">
 2773
+</td>
+<td style="text-align:right;">
+32.0
 </td>
 <td style="text-align:right;">
 25.8
@@ -150421,6 +156281,9 @@ Census Tract 230; New York County; New York
 3938
 </td>
 <td style="text-align:right;">
+36.7
+</td>
+<td style="text-align:right;">
 21.9
 </td>
 <td style="text-align:right;">
@@ -150496,6 +156359,9 @@ Census Tract 232; New York County; New York
 </td>
 <td style="text-align:right;">
 3416
+</td>
+<td style="text-align:right;">
+29.0
 </td>
 <td style="text-align:right;">
 29.8
@@ -150575,6 +156441,9 @@ Census Tract 234; New York County; New York
 2367
 </td>
 <td style="text-align:right;">
+28.2
+</td>
+<td style="text-align:right;">
 19.1
 </td>
 <td style="text-align:right;">
@@ -150650,6 +156519,9 @@ Census Tract 235.02; New York County; New York
 </td>
 <td style="text-align:right;">
 812
+</td>
+<td style="text-align:right;">
+29.8
 </td>
 <td style="text-align:right;">
 25.2
@@ -150729,6 +156601,9 @@ Census Tract 236; New York County; New York
 3902
 </td>
 <td style="text-align:right;">
+40.7
+</td>
+<td style="text-align:right;">
 26.0
 </td>
 <td style="text-align:right;">
@@ -150804,6 +156679,9 @@ Census Tract 257; New York County; New York
 </td>
 <td style="text-align:right;">
 2080
+</td>
+<td style="text-align:right;">
+26.0
 </td>
 <td style="text-align:right;">
 21.2
@@ -150883,6 +156761,9 @@ Census Tract 259; New York County; New York
 1804
 </td>
 <td style="text-align:right;">
+23.7
+</td>
+<td style="text-align:right;">
 38.4
 </td>
 <td style="text-align:right;">
@@ -150958,6 +156839,9 @@ Census Tract 7.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1391
+</td>
+<td style="text-align:right;">
+11.7
 </td>
 <td style="text-align:right;">
 26.0
@@ -151037,6 +156921,9 @@ Census Tract 7.02; Queens County; New York
 1624
 </td>
 <td style="text-align:right;">
+26.7
+</td>
+<td style="text-align:right;">
 19.7
 </td>
 <td style="text-align:right;">
@@ -151112,6 +156999,9 @@ Census Tract 19.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2868
+</td>
+<td style="text-align:right;">
+1.4
 </td>
 <td style="text-align:right;">
 9.8
@@ -151191,6 +157081,9 @@ Census Tract 31; Queens County; New York
 664
 </td>
 <td style="text-align:right;">
+17.8
+</td>
+<td style="text-align:right;">
 5.9
 </td>
 <td style="text-align:right;">
@@ -151266,6 +157159,9 @@ Census Tract 33.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 1555
+</td>
+<td style="text-align:right;">
+1.1
 </td>
 <td style="text-align:right;">
 5.7
@@ -151345,6 +157241,9 @@ Census Tract 33.02; Queens County; New York
 423
 </td>
 <td style="text-align:right;">
+36.2
+</td>
+<td style="text-align:right;">
 20.1
 </td>
 <td style="text-align:right;">
@@ -151420,6 +157319,9 @@ Census Tract 39; Queens County; New York
 </td>
 <td style="text-align:right;">
 531
+</td>
+<td style="text-align:right;">
+19.0
 </td>
 <td style="text-align:right;">
 20.5
@@ -151499,6 +157401,9 @@ Census Tract 43; Queens County; New York
 976
 </td>
 <td style="text-align:right;">
+47.6
+</td>
+<td style="text-align:right;">
 29.6
 </td>
 <td style="text-align:right;">
@@ -151574,6 +157479,9 @@ Census Tract 47; Queens County; New York
 </td>
 <td style="text-align:right;">
 1831
+</td>
+<td style="text-align:right;">
+42.3
 </td>
 <td style="text-align:right;">
 22.1
@@ -151653,6 +157561,9 @@ Census Tract 51; Queens County; New York
 777
 </td>
 <td style="text-align:right;">
+35.3
+</td>
+<td style="text-align:right;">
 27.5
 </td>
 <td style="text-align:right;">
@@ -151728,6 +157639,9 @@ Census Tract 53; Queens County; New York
 </td>
 <td style="text-align:right;">
 2422
+</td>
+<td style="text-align:right;">
+21.0
 </td>
 <td style="text-align:right;">
 14.7
@@ -151807,6 +157721,9 @@ Census Tract 55; Queens County; New York
 478
 </td>
 <td style="text-align:right;">
+21.1
+</td>
+<td style="text-align:right;">
 32.0
 </td>
 <td style="text-align:right;">
@@ -151882,6 +157799,9 @@ Census Tract 57; Queens County; New York
 </td>
 <td style="text-align:right;">
 1792
+</td>
+<td style="text-align:right;">
+16.4
 </td>
 <td style="text-align:right;">
 15.1
@@ -151961,6 +157881,9 @@ Census Tract 59; Queens County; New York
 1667
 </td>
 <td style="text-align:right;">
+27.4
+</td>
+<td style="text-align:right;">
 18.9
 </td>
 <td style="text-align:right;">
@@ -152036,6 +157959,9 @@ Census Tract 81; Queens County; New York
 </td>
 <td style="text-align:right;">
 538
+</td>
+<td style="text-align:right;">
+21.7
 </td>
 <td style="text-align:right;">
 11.9
@@ -152115,6 +158041,9 @@ Census Tract 85; Queens County; New York
 401
 </td>
 <td style="text-align:right;">
+13.0
+</td>
+<td style="text-align:right;">
 34.4
 </td>
 <td style="text-align:right;">
@@ -152190,6 +158119,9 @@ Census Tract 87; Queens County; New York
 </td>
 <td style="text-align:right;">
 1360
+</td>
+<td style="text-align:right;">
+56.6
 </td>
 <td style="text-align:right;">
 26.6
@@ -152269,6 +158201,9 @@ Census Tract 157; Queens County; New York
 727
 </td>
 <td style="text-align:right;">
+20.2
+</td>
+<td style="text-align:right;">
 13.3
 </td>
 <td style="text-align:right;">
@@ -152344,6 +158279,9 @@ Census Tract 159; Queens County; New York
 </td>
 <td style="text-align:right;">
 1597
+</td>
+<td style="text-align:right;">
+24.3
 </td>
 <td style="text-align:right;">
 16.0
@@ -152423,6 +158361,9 @@ Census Tract 161; Queens County; New York
 801
 </td>
 <td style="text-align:right;">
+31.0
+</td>
+<td style="text-align:right;">
 30.5
 </td>
 <td style="text-align:right;">
@@ -152498,6 +158439,9 @@ Census Tract 196; Queens County; New York
 </td>
 <td style="text-align:right;">
 808
+</td>
+<td style="text-align:right;">
+45.8
 </td>
 <td style="text-align:right;">
 45.0
@@ -152577,6 +158521,9 @@ Census Tract 198; Queens County; New York
 974
 </td>
 <td style="text-align:right;">
+32.1
+</td>
+<td style="text-align:right;">
 35.3
 </td>
 <td style="text-align:right;">
@@ -152652,6 +158599,9 @@ Census Tract 202; Queens County; New York
 </td>
 <td style="text-align:right;">
 367
+</td>
+<td style="text-align:right;">
+64.6
 </td>
 <td style="text-align:right;">
 49.6
@@ -152731,6 +158681,9 @@ Census Tract 204; Queens County; New York
 740
 </td>
 <td style="text-align:right;">
+59.7
+</td>
+<td style="text-align:right;">
 29.6
 </td>
 <td style="text-align:right;">
@@ -152806,6 +158759,9 @@ Census Tract 206; Queens County; New York
 </td>
 <td style="text-align:right;">
 399
+</td>
+<td style="text-align:right;">
+42.1
 </td>
 <td style="text-align:right;">
 40.4
@@ -152885,6 +158841,9 @@ Census Tract 208; Queens County; New York
 982
 </td>
 <td style="text-align:right;">
+26.5
+</td>
+<td style="text-align:right;">
 46.5
 </td>
 <td style="text-align:right;">
@@ -152960,6 +158919,9 @@ Census Tract 254.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 858
+</td>
+<td style="text-align:right;">
+56.4
 </td>
 <td style="text-align:right;">
 42.0
@@ -153039,6 +159001,9 @@ Census Tract 254.02; Queens County; New York
 2122
 </td>
 <td style="text-align:right;">
+45.5
+</td>
+<td style="text-align:right;">
 43.2
 </td>
 <td style="text-align:right;">
@@ -153114,6 +159079,9 @@ Census Tract 258; Queens County; New York
 </td>
 <td style="text-align:right;">
 558
+</td>
+<td style="text-align:right;">
+55.0
 </td>
 <td style="text-align:right;">
 41.0
@@ -153193,6 +159161,9 @@ Census Tract 260; Queens County; New York
 673
 </td>
 <td style="text-align:right;">
+41.9
+</td>
+<td style="text-align:right;">
 56.0
 </td>
 <td style="text-align:right;">
@@ -153268,6 +159239,9 @@ Census Tract 262; Queens County; New York
 </td>
 <td style="text-align:right;">
 444
+</td>
+<td style="text-align:right;">
+52.5
 </td>
 <td style="text-align:right;">
 55.0
@@ -153347,6 +159321,9 @@ Census Tract 306; Queens County; New York
 1405
 </td>
 <td style="text-align:right;">
+48.3
+</td>
+<td style="text-align:right;">
 41.4
 </td>
 <td style="text-align:right;">
@@ -153422,6 +159399,9 @@ Census Tract 320; Queens County; New York
 </td>
 <td style="text-align:right;">
 1294
+</td>
+<td style="text-align:right;">
+40.6
 </td>
 <td style="text-align:right;">
 34.5
@@ -153501,6 +159481,9 @@ Census Tract 363; Queens County; New York
 611
 </td>
 <td style="text-align:right;">
+28.6
+</td>
+<td style="text-align:right;">
 30.6
 </td>
 <td style="text-align:right;">
@@ -153576,6 +159559,9 @@ Census Tract 375.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 678
+</td>
+<td style="text-align:right;">
+37.3
 </td>
 <td style="text-align:right;">
 40.0
@@ -153655,6 +159641,9 @@ Census Tract 377; Queens County; New York
 809
 </td>
 <td style="text-align:right;">
+24.0
+</td>
+<td style="text-align:right;">
 59.2
 </td>
 <td style="text-align:right;">
@@ -153730,6 +159719,9 @@ Census Tract 379; Queens County; New York
 </td>
 <td style="text-align:right;">
 1542
+</td>
+<td style="text-align:right;">
+31.8
 </td>
 <td style="text-align:right;">
 60.8
@@ -153809,6 +159801,9 @@ Census Tract 381; Queens County; New York
 1756
 </td>
 <td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
 44.4
 </td>
 <td style="text-align:right;">
@@ -153884,6 +159879,9 @@ Census Tract 399.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 519
+</td>
+<td style="text-align:right;">
+32.2
 </td>
 <td style="text-align:right;">
 57.6
@@ -153963,6 +159961,9 @@ Census Tract 399.02; Queens County; New York
 435
 </td>
 <td style="text-align:right;">
+23.0
+</td>
+<td style="text-align:right;">
 46.2
 </td>
 <td style="text-align:right;">
@@ -154038,6 +160039,9 @@ Census Tract 401.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 766
+</td>
+<td style="text-align:right;">
+40.9
 </td>
 <td style="text-align:right;">
 28.2
@@ -154117,6 +160121,9 @@ Census Tract 401.02; Queens County; New York
 1201
 </td>
 <td style="text-align:right;">
+26.0
+</td>
+<td style="text-align:right;">
 46.5
 </td>
 <td style="text-align:right;">
@@ -154192,6 +160199,9 @@ Census Tract 403.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 930
+</td>
+<td style="text-align:right;">
+23.2
 </td>
 <td style="text-align:right;">
 53.2
@@ -154271,6 +160281,9 @@ Census Tract 403.02; Queens County; New York
 1062
 </td>
 <td style="text-align:right;">
+26.1
+</td>
+<td style="text-align:right;">
 46.1
 </td>
 <td style="text-align:right;">
@@ -154346,6 +160359,9 @@ Census Tract 405.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 189
+</td>
+<td style="text-align:right;">
+17.5
 </td>
 <td style="text-align:right;">
 51.9
@@ -154425,6 +160441,9 @@ Census Tract 405.02; Queens County; New York
 537
 </td>
 <td style="text-align:right;">
+33.7
+</td>
+<td style="text-align:right;">
 38.4
 </td>
 <td style="text-align:right;">
@@ -154500,6 +160519,9 @@ Census Tract 407.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 867
+</td>
+<td style="text-align:right;">
+28.8
 </td>
 <td style="text-align:right;">
 63.0
@@ -154579,6 +160601,9 @@ Census Tract 407.02; Queens County; New York
 996
 </td>
 <td style="text-align:right;">
+35.5
+</td>
+<td style="text-align:right;">
 33.6
 </td>
 <td style="text-align:right;">
@@ -154654,6 +160679,9 @@ Census Tract 409.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 421
+</td>
+<td style="text-align:right;">
+23.0
 </td>
 <td style="text-align:right;">
 45.4
@@ -154733,6 +160761,9 @@ Census Tract 409.02; Queens County; New York
 870
 </td>
 <td style="text-align:right;">
+23.9
+</td>
+<td style="text-align:right;">
 41.4
 </td>
 <td style="text-align:right;">
@@ -154808,6 +160839,9 @@ Census Tract 411; Queens County; New York
 </td>
 <td style="text-align:right;">
 1163
+</td>
+<td style="text-align:right;">
+34.7
 </td>
 <td style="text-align:right;">
 40.8
@@ -154887,6 +160921,9 @@ Census Tract 413; Queens County; New York
 1029
 </td>
 <td style="text-align:right;">
+33.1
+</td>
+<td style="text-align:right;">
 39.7
 </td>
 <td style="text-align:right;">
@@ -154962,6 +160999,9 @@ Census Tract 414; Queens County; New York
 </td>
 <td style="text-align:right;">
 1491
+</td>
+<td style="text-align:right;">
+44.0
 </td>
 <td style="text-align:right;">
 49.9
@@ -155041,6 +161081,9 @@ Census Tract 415; Queens County; New York
 1357
 </td>
 <td style="text-align:right;">
+29.3
+</td>
+<td style="text-align:right;">
 30.4
 </td>
 <td style="text-align:right;">
@@ -155116,6 +161159,9 @@ Census Tract 427; Queens County; New York
 </td>
 <td style="text-align:right;">
 1518
+</td>
+<td style="text-align:right;">
+37.4
 </td>
 <td style="text-align:right;">
 42.6
@@ -155195,6 +161241,9 @@ Census Tract 434; Queens County; New York
 561
 </td>
 <td style="text-align:right;">
+54.5
+</td>
+<td style="text-align:right;">
 30.7
 </td>
 <td style="text-align:right;">
@@ -155270,6 +161319,9 @@ Census Tract 437.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 2175
+</td>
+<td style="text-align:right;">
+50.8
 </td>
 <td style="text-align:right;">
 37.2
@@ -155349,6 +161401,9 @@ Census Tract 439; Queens County; New York
 1012
 </td>
 <td style="text-align:right;">
+40.2
+</td>
+<td style="text-align:right;">
 35.4
 </td>
 <td style="text-align:right;">
@@ -155424,6 +161479,9 @@ Census Tract 440; Queens County; New York
 </td>
 <td style="text-align:right;">
 1093
+</td>
+<td style="text-align:right;">
+42.5
 </td>
 <td style="text-align:right;">
 44.4
@@ -155503,6 +161561,9 @@ Census Tract 443.01; Queens County; New York
 1389
 </td>
 <td style="text-align:right;">
+58.6
+</td>
+<td style="text-align:right;">
 28.1
 </td>
 <td style="text-align:right;">
@@ -155578,6 +161639,9 @@ Census Tract 443.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1388
+</td>
+<td style="text-align:right;">
+44.9
 </td>
 <td style="text-align:right;">
 38.0
@@ -155657,6 +161721,9 @@ Census Tract 690; Queens County; New York
 1111
 </td>
 <td style="text-align:right;">
+55.9
+</td>
+<td style="text-align:right;">
 41.1
 </td>
 <td style="text-align:right;">
@@ -155732,6 +161799,9 @@ Census Tract 694; Queens County; New York
 </td>
 <td style="text-align:right;">
 1125
+</td>
+<td style="text-align:right;">
+45.7
 </td>
 <td style="text-align:right;">
 39.6
@@ -155811,6 +161881,9 @@ Census Tract 849.01; Queens County; New York
 1025
 </td>
 <td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
 23.4
 </td>
 <td style="text-align:right;">
@@ -155886,6 +161959,9 @@ Census Tract 849.02; Queens County; New York
 </td>
 <td style="text-align:right;">
 1289
+</td>
+<td style="text-align:right;">
+55.8
 </td>
 <td style="text-align:right;">
 21.8
@@ -155965,6 +162041,9 @@ Census Tract 871; Queens County; New York
 2005
 </td>
 <td style="text-align:right;">
+49.1
+</td>
+<td style="text-align:right;">
 15.3
 </td>
 <td style="text-align:right;">
@@ -156040,6 +162119,9 @@ Census Tract 1072.01; Queens County; New York
 </td>
 <td style="text-align:right;">
 898
+</td>
+<td style="text-align:right;">
+51.2
 </td>
 <td style="text-align:right;">
 21.3
@@ -156119,6 +162201,9 @@ Census Tract 21; Richmond County; New York
 2025
 </td>
 <td style="text-align:right;">
+23.8
+</td>
+<td style="text-align:right;">
 23.0
 </td>
 <td style="text-align:right;">
@@ -156194,6 +162279,9 @@ Census Tract 27; Richmond County; New York
 </td>
 <td style="text-align:right;">
 306
+</td>
+<td style="text-align:right;">
+43.1
 </td>
 <td style="text-align:right;">
 55.2
@@ -156273,6 +162361,9 @@ Census Tract 29; Richmond County; New York
 1861
 </td>
 <td style="text-align:right;">
+42.8
+</td>
+<td style="text-align:right;">
 38.3
 </td>
 <td style="text-align:right;">
@@ -156348,6 +162439,9 @@ Census Tract 40.01; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1122
+</td>
+<td style="text-align:right;">
+51.8
 </td>
 <td style="text-align:right;">
 20.5
@@ -156427,6 +162521,9 @@ Census Tract 40.02; Richmond County; New York
 869
 </td>
 <td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
 33.4
 </td>
 <td style="text-align:right;">
@@ -156502,6 +162599,9 @@ Census Tract 40.03; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1484
+</td>
+<td style="text-align:right;">
+29.0
 </td>
 <td style="text-align:right;">
 39.9
@@ -156581,6 +162681,9 @@ Census Tract 189.02; Richmond County; New York
 1684
 </td>
 <td style="text-align:right;">
+55.0
+</td>
+<td style="text-align:right;">
 34.6
 </td>
 <td style="text-align:right;">
@@ -156656,6 +162759,9 @@ Census Tract 208.05; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2283
+</td>
+<td style="text-align:right;">
+56.3
 </td>
 <td style="text-align:right;">
 31.6
@@ -156735,6 +162841,9 @@ Census Tract 223; Richmond County; New York
 996
 </td>
 <td style="text-align:right;">
+63.0
+</td>
+<td style="text-align:right;">
 26.4
 </td>
 <td style="text-align:right;">
@@ -156810,6 +162919,9 @@ Census Tract 231; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1463
+</td>
+<td style="text-align:right;">
+52.4
 </td>
 <td style="text-align:right;">
 37.6
@@ -156889,6 +163001,9 @@ Census Tract 239; Richmond County; New York
 1081
 </td>
 <td style="text-align:right;">
+43.1
+</td>
+<td style="text-align:right;">
 40.2
 </td>
 <td style="text-align:right;">
@@ -156964,6 +163079,9 @@ Census Tract 273.02; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1271
+</td>
+<td style="text-align:right;">
+44.8
 </td>
 <td style="text-align:right;">
 44.1
@@ -157043,6 +163161,9 @@ Census Tract 303.01; Richmond County; New York
 2028
 </td>
 <td style="text-align:right;">
+42.9
+</td>
+<td style="text-align:right;">
 27.5
 </td>
 <td style="text-align:right;">
@@ -157118,6 +163239,9 @@ Census Tract 303.02; Richmond County; New York
 </td>
 <td style="text-align:right;">
 2075
+</td>
+<td style="text-align:right;">
+49.8
 </td>
 <td style="text-align:right;">
 32.1
@@ -157197,6 +163321,9 @@ Census Tract 319.01; Richmond County; New York
 1188
 </td>
 <td style="text-align:right;">
+34.0
+</td>
+<td style="text-align:right;">
 36.6
 </td>
 <td style="text-align:right;">
@@ -157272,6 +163399,9 @@ Census Tract 319.02; Richmond County; New York
 </td>
 <td style="text-align:right;">
 1585
+</td>
+<td style="text-align:right;">
+38.4
 </td>
 <td style="text-align:right;">
 42.6
@@ -157557,7 +163687,7 @@ redlining_snap|>
   left_join(health_store_count,by="geoid")
 ```
 
-    ## # A tibble: 1,321 × 26
+    ## # A tibble: 1,321 × 27
     ##    geoid       metro_name     hrs2020 interval2020 fip   red_grade name  ph_snap
     ##    <chr>       <chr>            <dbl> <chr>        <chr> <chr>     <chr>   <dbl>
     ##  1 36061008603 New York-Newa…       1 1            36061 A         Cens…     0  
@@ -157571,12 +163701,12 @@ redlining_snap|>
     ##  9 36061013000 New York-Newa…       1 1            36061 A         Cens…     1.1
     ## 10 36061014200 New York-Newa…       1 1            36061 A         Cens…     0  
     ## # ℹ 1,311 more rows
-    ## # ℹ 18 more variables: total_ct_households <dbl>, ph_with_children <dbl>,
-    ## #   ph_no_children <dbl>, ph_below_poverty <dbl>, ph_above_poverty <dbl>,
-    ## #   ph_disability <dbl>, ph_no_disability <dbl>, ph_white <dbl>,
-    ## #   ph_black <dbl>, s2201_c02_027e <dbl>, ph_asian <dbl>, ph_hispanic <dbl>,
-    ## #   ph_no_work <dbl>, ph_1_work <dbl>, ph_2_work <dbl>, ph_other_race <dbl>,
-    ## #   ph_non_hispanic <dbl>, count_healthy_stores <int>
+    ## # ℹ 19 more variables: total_ct_households <dbl>, ph_elderly <dbl>,
+    ## #   ph_with_children <dbl>, ph_no_children <dbl>, ph_below_poverty <dbl>,
+    ## #   ph_above_poverty <dbl>, ph_disability <dbl>, ph_no_disability <dbl>,
+    ## #   ph_white <dbl>, ph_black <dbl>, s2201_c02_027e <dbl>, ph_asian <dbl>,
+    ## #   ph_hispanic <dbl>, ph_no_work <dbl>, ph_1_work <dbl>, ph_2_work <dbl>,
+    ## #   ph_other_race <dbl>, ph_non_hispanic <dbl>, count_healthy_stores <int>
 
 ## PLACE data
 
