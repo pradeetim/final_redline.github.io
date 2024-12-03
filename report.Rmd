@@ -311,28 +311,13 @@ redlining_snap |>
         showlegend = FALSE)
 ```
 
-#### Obesity vs Redlining Score:
+The Bronx and Brooklyn exhibit more consistency with redlining scores around 3, while Manhattan shows a more varied distribution, and Queens stands out with a broader spread and numerous high-value outliers. Staten Island appears to have a more uniform distribution with fewer extreme values.
+
+#### Obesity vs Redlining Score
 
 ```{r, eval=FALSE}
-health_data =
-  health_data |>
-  filter(!is.na(obesity) & !is.na(hrs2020))
-
 health_data |>
-  plot_ly(x = ~hrs2020,y = ~obesity, type = 'scatter', mode = 'markers', 
-             color = ~borough,
-             hoverinfo = 'text', 
-             text = ~paste('Borough:', borough, '<br>Obesity Rate:', obesity, '%', '<br>Redlining Score:', hrs2020)) |>
-  layout(
-    title = "Obesity Rate vs Redlining Score",
-    xaxis = list(title = "Redlining Score (HRS 2020)"),
-    yaxis = list(title = "Obesity Rate (%)"),
-    showlegend = FALSE
-  ) |>
-  facet_wrap(~borough)
-
-#This is another version
-health_data |>
+  filter(!is.na(obesity) & !is.na(hrs2020)) |>
   ggplot(aes(y = obesity, x = hrs2020, color = borough)) +
   geom_point() +
   geom_smooth(color = "black") +
@@ -342,10 +327,49 @@ health_data |>
     x = "Obesity Rate (%)",
     y = "Redlining Score (HRS 2020)"
   ) +
-  theme_minimal()
+  theme(legend.position = "none")
 ```
 
 The exploratory analysis of obesity rates against redlining scores reveals a consistent positive trend across most of New York City's boroughs, with areas of historical redlining showing higher obesity rates. While Manhattan presents a weaker relationship, other boroughs like the Bronx, Brooklyn, Queens, and Staten Island demonstrate stronger associations, suggesting that the legacy of redlining may contribute to health disparities. 
+
+#### Diabetes vs Redlining Score
+```{r}
+health_data |>
+  filter(!is.na(diabetes) & !is.na(hrs2020)) |>
+  ggplot(aes(y = diabetes, x = hrs2020, color = borough)) +
+  geom_point() +
+  geom_smooth(color = "black") +
+  facet_wrap(~ borough, scales = "free") +
+  labs(
+    title = "Diabetes Rate vs Redlining Score",
+    x = "Obesity Rate (%)",
+    y = "Redlining Score (HRS 2020)"
+  ) +
+  theme(legend.position = "none")
+```
+
+The smooth curves in the plots show that, in most boroughs, diabetes rates tend to increase as redlining scores rise. This suggests a legacy effect where areas historically marked by redlining are still facing higher diabetes rates, possibly due to factors like poor access to healthcare, lower socioeconomic status, and other environmental factors.
+The variability between boroughs also indicates that local contexts play an important role in shaping health outcomes, with Manhattan and Staten Island showing weaker relationships compared to the Bronx or Brooklyn.
+
+#### High Cholesterol vs Redlining Score
+```{r}
+health_data |>
+  filter(!is.na(highchol) & !is.na(hrs2020)) |>
+  ggplot(aes(y = highchol, x = hrs2020, color = borough)) +
+  geom_point() +
+  geom_smooth(color = "black") +
+  facet_wrap(~ borough, scales = "free") +
+  labs(
+    title = "High Cholesterol Rate vs Redlining Score",
+    x = "Obesity Rate (%)",
+    y = "Redlining Score (HRS 2020)"
+  ) +
+  theme(legend.position = "none")
+```
+
+In all boroughs, the general trend appears to be a negative relationship between redlining scores and high cholesterol rates, meaning that areas with higher historical redlining scores tend to have lower high cholesterol rates. However, the strength and clarity of this relationship vary across boroughs.
+The variation in trends across the boroughs suggests that local socio-economic factors, healthcare access, and lifestyle choices likely play significant roles in determining cholesterol rates.
+The confidence intervals around the smooth lines indicate that, while there is a clear pattern, the relationship is not entirely uniform across all areas, and there is a fair amount of variability in how redlining scores influence health outcomes.
 
 ## Regression Analysis
 
