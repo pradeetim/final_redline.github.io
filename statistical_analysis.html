@@ -1097,8 +1097,7 @@ red_snap_m2|&gt;
 <pre class="r"><code>## multivariate model 3
 red_snap_m3 =
   final_analysis|&gt;
-  filter(ph_snap != 0)|&gt;
-  lm(log(ph_snap)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
+  lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
 
 tidy_model = broom::tidy(red_snap_m3)
 ci = confint(red_snap_m3)
@@ -1136,67 +1135,67 @@ Confidence Intervals</caption>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.744</td>
+<td align="right">0.963</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">2.105</td>
-<td align="right">1.579</td>
-<td align="right">2.807</td>
+<td align="right">2.619</td>
+<td align="right">2.045</td>
+<td align="right">3.354</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeB</td>
-<td align="right">0.625</td>
+<td align="right">0.574</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">1.868</td>
-<td align="right">1.428</td>
-<td align="right">2.443</td>
+<td align="right">1.776</td>
+<td align="right">1.414</td>
+<td align="right">2.231</td>
 </tr>
 <tr class="odd">
 <td align="left">red_gradeC</td>
-<td align="right">0.606</td>
+<td align="right">0.560</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">1.833</td>
-<td align="right">1.409</td>
-<td align="right">2.385</td>
+<td align="right">1.750</td>
+<td align="right">1.400</td>
+<td align="right">2.188</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeD</td>
-<td align="right">0.642</td>
+<td align="right">0.601</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">1.901</td>
-<td align="right">1.454</td>
-<td align="right">2.486</td>
+<td align="right">1.824</td>
+<td align="right">1.452</td>
+<td align="right">2.292</td>
 </tr>
 <tr class="odd">
 <td align="left">minority</td>
-<td align="right">0.013</td>
+<td align="right">0.012</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">1.013</td>
 <td align="right">1.012</td>
-<td align="right">1.014</td>
+<td align="right">1.011</td>
+<td align="right">1.013</td>
 </tr>
 <tr class="even">
 <td align="left">ph_elderly</td>
 <td align="right">-0.014</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">0.986</td>
-<td align="right">0.983</td>
+<td align="right">0.987</td>
+<td align="right">0.984</td>
 <td align="right">0.989</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_disability</td>
-<td align="right">0.039</td>
+<td align="right">0.037</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">1.040</td>
-<td align="right">1.036</td>
-<td align="right">1.044</td>
+<td align="right">1.038</td>
+<td align="right">1.035</td>
+<td align="right">1.041</td>
 </tr>
 <tr class="even">
 <td align="left">ph_no_work</td>
-<td align="right">0.011</td>
+<td align="right">0.009</td>
 <td align="left">&lt;0.0001</td>
-<td align="right">1.011</td>
-<td align="right">1.007</td>
-<td align="right">1.015</td>
+<td align="right">1.009</td>
+<td align="right">1.005</td>
+<td align="right">1.013</td>
 </tr>
 </tbody>
 </table>

@@ -290,8 +290,7 @@ red_snap_m2|>
 ## multivariate model 3
 red_snap_m3 =
   final_analysis|>
-  filter(ph_snap != 0)|>
-  lm(log(ph_snap)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
+  lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
 
 tidy_model = broom::tidy(red_snap_m3)
 ci = confint(red_snap_m3)
