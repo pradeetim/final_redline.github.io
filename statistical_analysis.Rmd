@@ -11,12 +11,14 @@ import the datasets and packages
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readxl)
+library(ggplot2)
 
 SNAP = 
   read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
   janitor::clean_names()|>
   select(
     geo_id:s2201_c01_001e,
+    s2201_c02_002e,
     s2201_c02_009e,
     s2201_c02_015e,
     s2201_c02_021e:s2201_c02_028e,
@@ -28,6 +30,7 @@ SNAP =
   mutate(geoid = str_remove(geo_id, ".*US"))|>
   rename(
      total_ct_households = s2201_c01_001e,
+     ph_elderly = s2201_c02_002e,
      ph_with_children = s2201_c02_009e,
      ph_no_children = s2201_c02_015e,
      ph_below_poverty = s2201_c02_021e,
@@ -100,12 +103,24 @@ final_analysis =
 ### Desciptive Characteristics based on redlining grades
 
 ```{r}
+final_analysis |>
+  group_by(red_grade)|>
+  summarise(count = n())|>
+   knitr::kable()
+```
+
+
+```{r}
 redlining_quartile=
 final_analysis |>
   group_by(red_grade) |>
   summarise(
     avg_snap = mean(ph_snap, na.rm = TRUE),
     sd_snap = sd(ph_snap, na.rm = TRUE),
+    avg_elderly = mean(ph_elderly,na.rm=TRUE),
+    sd_elderly = sd(ph_elderly, na.rm = TRUE),
+    avg_child = mean(ph_with_children, na.rm = TRUE),
+    sd_child = sd(ph_with_children, na.rm = TRUE),
     avg_poverty = mean(ph_below_poverty, na.rm = TRUE),
     sd_poverty = sd(ph_below_poverty, na.rm = TRUE),
     avg_disability = mean(ph_disability, na.rm = TRUE),
@@ -143,50 +158,11 @@ final_analysis |>
     names_glue = "{red_grade}_{stat}"
   )
 
-redlining_quartile|>
-  knitr::kable(digits = 2)
-
-final_analysis |>
-  group_by(red_grade)|>
-  summarise(count = n())|>
-   knitr::kable()
-```
-
-### Comparing census tracts with HRS in the first and fourth quartile
-
-```{r}
-q1_vs_q4 = 
-final_analysis|>
-  filter(red_grade %in%c("A","D"))
-
-q1q4_desc = 
-q1_vs_q4|>
-  group_by(red_grade)|>
-  summarise(
-    ph_snap = mean(ph_snap),
-    ph_below_poverty = mean(ph_below_poverty),
-    ph_disability = mean(ph_disability),
-    minority = mean(minority),
-    obesity = mean(obesity),
-    highchol = mean(highchol),
-    diabetes = mean(diabetes)
-  )|>
- pivot_longer(cols = -red_grade, names_to = "variable", values_to = "value")|>
- pivot_wider(names_from = red_grade, names_prefix = "grade_", values_from = value)|>
- mutate(
-    mean_diff = grade_D - grade_A,
-  )|>
-  rename(outcome = variable)
-
-```
-
-
-```{r warning=FALSE, message=FALSE}
-uni_reg = function(dataset, outcomes, predictor) {
+anova = function(dataset, outcomes, predictor) {
   results = list() 
   for (outcome in outcomes) {
-    formula = as.formula(paste(outcome, "~", predictor))
-    model= lm(
+    formula = as.formula(paste(outcome, "~", factor(predictor)))
+    model= aov(
       formula,
       data = dataset
     )
@@ -197,11 +173,94 @@ uni_reg = function(dataset, outcomes, predictor) {
   return(combined_results)
 }
 
-outcomes = c("ph_snap","ph_below_poverty", "ph_disability", "minority", "obesity", "highchol", "diabetes")
+outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_disability", "ph_white", "ph_black", "ph_asian", "ph_other_race", "ph_hispanic", "ph_no_work","ph_1_work", "ph_2_work", "obesity", "highchol", "diabetes")
+
+baseline_char = 
+anova(final_analysis, outcomes, "red_grade")|>
+  filter(term == "red_grade")|>
+  rename(variable = outcome)|>
+  mutate(variable = case_when(
+    variable == "ph_snap" ~ "snap",
+    variable == "ph_with_children" ~ "child",
+    variable == "ph_elderly" ~ "elderly",
+    variable == "ph_below_poverty" ~ "poverty",
+    variable == "ph_no_work" ~ "nowork",
+    variable == "ph_1_work" ~ "1work",
+    variable == "ph_2_work" ~ "2work",
+    variable == "ph_white" ~ "white",
+    variable == "ph_black" ~ "black",
+    variable == "ph_asian" ~ "asian",
+    variable == "ph_other_race" ~ "otherrace",
+    variable == "ph_disability" ~ "disability",
+    variable == "ph_hispanic" ~ "hispanic",
+    TRUE ~ variable
+  ))|>
+  inner_join(redlining_quartile, by="variable")|>
+  select(variable, A_avg:D_sd,  p.value)
+
+
+baseline_char|>
+  filter(!variable %in% c("obesity","diabetes","highchol"))|>
+  knitr::kable(digits = 3)
+
+
+baseline_char|>
+  filter(variable %in% c("obesity","diabetes","highchol"))|>
+  knitr::kable(digits = 3)
+```
+
+### Comparing census tracts with HRS in the first and fourth quartile
+
+```{r warning=FALSE, message=FALSE}
+q1_vs_q4 = 
+final_analysis|>
+  filter(red_grade %in%c("A","D"))|>
+  mutate()
+
+q1q4_desc = 
+q1_vs_q4|>
+  group_by(red_grade)|>
+  summarise(
+    ph_snap = mean(ph_snap),
+    ph_with_children = mean(ph_with_children),
+    ph_elderly = mean(ph_elderly),
+    ph_below_poverty = mean(ph_below_poverty),
+    ph_disability = mean(ph_disability),
+    minority = mean(minority),
+    ph_no_work = mean(ph_no_work),
+    obesity = mean(obesity),
+    highchol = mean(highchol),
+    diabetes = mean(diabetes)
+  )|>
+ pivot_longer(cols = -red_grade, names_to = "variable", values_to = "value")|>
+ pivot_wider(names_from = red_grade, names_prefix = "grade_", values_from = value)|>
+ mutate(
+    mean_diff = grade_D - grade_A,
+  )|>
+  rename(outcome = variable)
+```
+
+
+```{r }
+uni_reg = function(dataset, outcomes, predictor) {
+  results = list() 
+  for (outcome in outcomes) {
+    formula = as.formula(paste(outcome, "~", predictor))
+    model= t.test(
+      formula,
+      data = dataset
+    )
+    results[[outcome]] = broom::tidy(model)
+  }
+  
+  combined_results = bind_rows(results, .id = "outcome")
+  return(combined_results)
+}
+
+outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_disability", "minority", "ph_no_work", "obesity", "highchol", "diabetes")
 
 
 uni_reg(q1_vs_q4, outcomes, "red_grade")|>
-  filter(term != "(Intercept)")|>
   right_join(q1q4_desc, by="outcome")|>
   select(outcome, grade_A, grade_D, mean_diff, p.value)|>
   knitr::kable(digits = 3)
@@ -213,18 +272,88 @@ uni_reg(q1_vs_q4, outcomes, "red_grade")|>
 ```{r}
 # univariate analysis
 lm(ph_snap~red_grade,final_analysis)|>
-  broom::tidy()
+  broom::tidy()|>
+  knitr::kable(digits= 3)
 
 ## multivariate model 1
-lm(ph_snap~red_grade+minority+ph_disability,final_analysis)|>
+red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
+red_snap_m1|>
   broom::tidy()|>
   knitr::kable(digits = 3)
-
 
 ##multivariate model 2
-lm(ph_snap~red_grade+ph_disability+ph_white+ph_black+ph_asian+ph_1_work+ph_2_work,final_analysis)|>
+red_snap_m2 = lm(ph_snap~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+red_snap_m2|>
   broom::tidy()|>
   knitr::kable(digits = 3)
+
+## multivariate model 3
+red_snap_m3 =
+  final_analysis|>
+  filter(ph_snap != 0)|>
+  lm(log(ph_snap)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
+
+tidy_model = broom::tidy(red_snap_m3)
+ci = confint(red_snap_m3)
+
+tidy_model|>
+  mutate(
+    Back_Transformed_Estimate = exp(estimate),
+    CI_Lower = exp(ci[, 1]),
+    CI_Upper = exp(ci[, 2]),
+    p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
+  )|>
+  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
+  knitr::kable(digits = 3, caption = "Model Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
+```
+
+```{r}
+m1_residual = data.frame(
+    fitted = fitted(red_snap_m1),
+    residuals = residuals(red_snap_m1)
+  ) 
+m1_residual |>
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Residuals vs Fitted Values of Multivariate Model 1",
+    x = "Fitted Values",
+    y = "Residuals"
+  )
+
+
+m2_residual = data.frame(
+    fitted = fitted(red_snap_m2),
+    residuals = residuals(red_snap_m2)
+  ) 
+m2_residual |>
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Residuals vs Fitted Values of Multivariate Model 2",
+    x = "Fitted Values",
+    y = "Residuals"
+  )
+
+
+m3_residual = data.frame(
+    fitted = fitted(red_snap_m3),
+    residuals = residuals(red_snap_m3)
+  ) 
+m3_residual |>
+  ggplot(aes(x = fitted, y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Residuals vs Fitted Values of Multivariate Model 3",
+    x = "Fitted Values",
+    y = "Residuals"
+  )
 ```
 
 
@@ -288,8 +417,6 @@ glm(high_diabetes ~ red_grade + minority, data = final_analysis, family = binomi
 ### residual plots
 
 ```{r}
-library(ggplot2)
-
 ob_residual = data.frame(
     fitted = fitted(int_ob),
     residuals = residuals(int_ob)

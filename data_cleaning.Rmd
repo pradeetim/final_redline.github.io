@@ -17,6 +17,7 @@ We selected the variables that were relevant to our analysis to build the final 
   
   - ` r geoid`: the geographic id for identification of census tract 
   - `total_ct_households`: estimate total count for number of households 
+  - `ph_elderly`: estimate percentage of households with one or more people in the household to be 60 or over
   - `ph_with_children`: estimate percentage of households with children under 18 years
   - `ph_no_children`: estimate percentage of households without children under 18 years 
   - `ph_below_poverty`:estimate percentage of households below poverty level in the past 12 months
@@ -40,6 +41,7 @@ SNAP =
   janitor::clean_names()|>
   select(
     geo_id:s2201_c01_001e,
+    s2201_c02_002e,
     s2201_c02_009e,
     s2201_c02_015e,
     s2201_c02_021e:s2201_c02_028e,
@@ -51,6 +53,7 @@ SNAP =
   mutate(geoid = str_remove(geo_id, ".*US"))|>
   rename(
      total_ct_households = s2201_c01_001e,
+     ph_elderly = s2201_c02_002e,
      ph_with_children = s2201_c02_009e,
      ph_no_children = s2201_c02_015e,
      ph_below_poverty = s2201_c02_021e,
