@@ -61,9 +61,13 @@ The historic redlining score(HRS) (`hrs2020`) was obtained from the calculation 
 
 We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined as "Best", B (hrs: 1.5~2.5) defined as "Still Desirable", C (hrs: 2.5~3.5) defined as "Definitely Declining” and D(hrs > 3.5) defined as "Hazardous”.
 
-### Recognized Healthy Store in NYC 
+## Recognized Healthy Store in NYC 
 
-We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
+We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(`name`,`store identifier`), geographic location(`address`, `census tract`, `zip code`, `borough`, `longitude` and `latitude`), year awarded and the program wave. 
+
+## PLACE data 
+
+We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC census tracts from CDC to obtain the prevalence of a variety of health indicators that are likely associated with food insecurity: `diabetes`, `obesity` and `high cholesterol`. 
 
 ## Data Cleaning
 
@@ -207,9 +211,9 @@ redlining_snap|>
   left_join(health_store_count,by="geoid")
 ```
 
-## PLACE data 
+### PLACE data 
 
-We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC census tracts from CDC to obtain the prevalence of a variety of health indicators that are likely associated with food insecurity. For the purpose of matching with other data sets, we pivoted the original data set into wide format to obtain the health measures as columns and rows as each census tracts. 
+For the purpose of matching with other data sets, we pivoted the original data set into wide format to obtain the health measures as columns and rows as each census tracts. 
 
 ```{r}
 place_crude =
@@ -235,6 +239,7 @@ head(place_cleaned)|>
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
   kableExtra::scroll_box(width = "100%", height = "300px")
 ```
+
 The description regarding the health indicators we have used for the analysis were indicated in the table below. 
 
 ```{r}

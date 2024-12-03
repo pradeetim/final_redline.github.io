@@ -512,17 +512,27 @@ as “Best”, B (hrs: 1.5~2.5) defined as “Still Desirable”, C (hrs:
 2.5~3.5) defined as “Definitely Declining” and D(hrs &gt; 3.5) defined
 as “Hazardous”.</p>
 </div>
-<div id="recognized-healthy-store-in-nyc" class="section level3">
-<h3>Recognized Healthy Store in NYC</h3>
+</div>
+<div id="recognized-healthy-store-in-nyc" class="section level2">
+<h2>Recognized Healthy Store in NYC</h2>
 <p>We obtained a data regarding recognized healthy store from the NYC
 Department of Health and Mental Hygiene. This dataset contained 675
 bodegas &amp; grocery stores receiving recognition from Borough
 President’s Office regarding providing healthy food choices to its
 customers. The original dataset contained variables describing basic
-information of the stores(name, store identifier), geographic
-location(address, census tract, zip code, borough, longitude and
-latitude), year awarded and the program wave.</p>
+information of the
+stores(<code>name</code>,<code>store identifier</code>), geographic
+location(<code>address</code>, <code>census tract</code>,
+<code>zip code</code>, <code>borough</code>, <code>longitude</code> and
+<code>latitude</code>), year awarded and the program wave.</p>
 </div>
+<div id="place-data" class="section level2">
+<h2>PLACE data</h2>
+<p>We also extracted the PLACES: Local Data for Better Health, 2024
+release for NYC census tracts from CDC to obtain the prevalence of a
+variety of health indicators that are likely associated with food
+insecurity: <code>diabetes</code>, <code>obesity</code> and
+<code>high cholesterol</code>.</p>
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
@@ -157819,7 +157829,7 @@ Census Tract 319.02; Richmond County; New York
 ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
 ## dbl (10): Zip 
 ## Code, Year Awarded, Program 
-## Wave, Latitude, Longitude, Com...
+## Wave, Latitude, Longitude, Commu...
 ## lgl  (1): Address
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
@@ -158019,14 +158029,10 @@ redlining_snap|&gt;
 ## #   ph_no_work &lt;dbl&gt;, ph_1_work &lt;dbl&gt;, ph_2_work &lt;dbl&gt;, ph_other_race &lt;dbl&gt;,
 ## #   ph_non_hispanic &lt;dbl&gt;, count_healthy_stores &lt;int&gt;</code></pre>
 </div>
-</div>
-<div id="place-data" class="section level2">
-<h2>PLACE data</h2>
-<p>We also extracted the PLACES: Local Data for Better Health, 2024
-release for NYC census tracts from CDC to obtain the prevalence of a
-variety of health indicators that are likely associated with food
-insecurity. For the purpose of matching with other data sets, we pivoted
-the original data set into wide format to obtain the health measures as
+<div id="place-data-1" class="section level3">
+<h3>PLACE data</h3>
+<p>For the purpose of matching with other data sets, we pivoted the
+original data set into wide format to obtain the health measures as
 columns and rows as each census tracts.</p>
 <pre class="r"><code>place_crude =
   read_csv(&quot;./Datasets/PLACES.csv&quot;)|&gt;
@@ -158202,6 +158208,7 @@ screened</td>
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 <div id="optional-section" class="section level1">
