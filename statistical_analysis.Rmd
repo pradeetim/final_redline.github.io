@@ -313,7 +313,7 @@ m1_residual = data.frame(
   ) 
 m1_residual |>
   ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
+  geom_point(alpha = 0.5, color = "deepskyblue") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
   theme_minimal() +
   labs(
@@ -329,7 +329,7 @@ m2_residual = data.frame(
   ) 
 m2_residual |>
   ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
+  geom_point(alpha = 0.5, color = "deepskyblue") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
   theme_minimal() +
   labs(
@@ -345,7 +345,7 @@ m3_residual = data.frame(
   ) 
 m3_residual |>
   ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
+  geom_point(alpha = 0.5, color = "deepskyblue") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
   theme_minimal() +
   labs(

@@ -1205,7 +1205,7 @@ Confidence Intervals</caption>
   ) 
 m1_residual |&gt;
   ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
+  geom_point(alpha = 0.5, color = &quot;deepskyblue&quot;) +
   geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
   theme_minimal() +
   labs(
@@ -1220,7 +1220,7 @@ m1_residual |&gt;
   ) 
 m2_residual |&gt;
   ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
+  geom_point(alpha = 0.5, color = &quot;deepskyblue&quot;) +
   geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
   theme_minimal() +
   labs(
@@ -1235,7 +1235,7 @@ m2_residual |&gt;
   ) 
 m3_residual |&gt;
   ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
+  geom_point(alpha = 0.5, color = &quot;deepskyblue&quot;) +
   geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
   theme_minimal() +
   labs(
