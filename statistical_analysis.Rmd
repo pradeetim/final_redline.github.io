@@ -6,12 +6,11 @@ output:
     toc_float: true
 ---
 
-import the datasets and packages 
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readxl)
 library(ggplot2)
+library(modelr)
 
 SNAP = 
   read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
@@ -100,7 +99,10 @@ final_analysis =
   )
 ```
 
-### Desciptive Characteristics based on redlining grades
+
+## Desciptive Characteristics Based on Redlining Grades
+
+### Total count of census tract for each HOLC grade 
 
 ```{r}
 final_analysis |>
@@ -109,9 +111,10 @@ final_analysis |>
    knitr::kable()
 ```
 
+### Comparison of HOLC grades 
 
 ```{r}
-redlining_quartile=
+redlining_grades=
 final_analysis |>
   group_by(red_grade) |>
   summarise(
@@ -195,7 +198,7 @@ anova(final_analysis, outcomes, "red_grade")|>
     variable == "ph_hispanic" ~ "hispanic",
     TRUE ~ variable
   ))|>
-  inner_join(redlining_quartile, by="variable")|>
+  inner_join(redlining_grades, by="variable")|>
   select(variable, A_avg:D_sd,  p.value)
 
 
@@ -209,7 +212,7 @@ baseline_char|>
   knitr::kable(digits = 3)
 ```
 
-### Comparing census tracts with HRS in the first and fourth quartile
+### Comparing census tracts with HRS for Grade A with Grade D
 
 ```{r warning=FALSE, message=FALSE}
 q1_vs_q4 = 
@@ -266,8 +269,7 @@ uni_reg(q1_vs_q4, outcomes, "red_grade")|>
   knitr::kable(digits = 3)
 ```
 
-
-### regression analysis for hrs and the relevant variables 
+## Regression Analysis for Redlining and Food Insecurity
 
 ```{r}
 # univariate analysis
@@ -277,20 +279,38 @@ lm(ph_snap~red_grade,final_analysis)|>
 
 ## multivariate model 1
 red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
-red_snap_m1|>
-  broom::tidy()|>
-  knitr::kable(digits = 3)
+tidy_model = broom::tidy(red_snap_m1)
+ci = confint(red_snap_m1)
 
-##multivariate model 2
-red_snap_m2 = lm(ph_snap~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-red_snap_m2|>
-  broom::tidy()|>
-  knitr::kable(digits = 3)
+tidy_model|>
+  mutate(
+    CI_Lower = ci[, 1],
+    CI_Upper = ci[, 2],
+    p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
+  )|>
+  select(term, estimate, p.value, CI_Lower, CI_Upper)|>
+  knitr::kable(digits = 3, caption = "Model 1 Estimates with 95% Confidence Intervals")
 
-## multivariate model 3
-red_snap_m3 =
+## multivariate model 2
+red_snap_m2 =
   final_analysis|>
   lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
+
+tidy_model = broom::tidy(red_snap_m2)
+ci = confint(red_snap_m2)
+
+tidy_model|>
+  mutate(
+    Back_Transformed_Estimate = exp(estimate),
+    CI_Lower = exp(ci[, 1]),
+    CI_Upper = exp(ci[, 2]),
+    p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
+  )|>
+  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
+  knitr::kable(digits = 3, caption = "Model 2 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
+
+##multivariate model 3
+red_snap_m3 = lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 
 tidy_model = broom::tidy(red_snap_m3)
 ci = confint(red_snap_m3)
@@ -303,8 +323,10 @@ tidy_model|>
     p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
   )|>
   select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
-  knitr::kable(digits = 3, caption = "Model Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
+  knitr::kable(digits = 3, caption = "Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
 ```
+
+### Residual Plots
 
 ```{r}
 m1_residual = data.frame(
@@ -354,6 +376,63 @@ m3_residual |>
     y = "Residuals"
   )
 ```
+
+### Cross Validation and Model Selection
+
+```{r}
+cv_df =
+  crossv_mc(final_analysis, 100)
+```
+
+
+```{r}
+cv_df =
+cv_df|>
+  mutate(model_1 = map(train, \(df)  
+                       lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,
+                          data=df)),
+         model_2 = map(train, \(df) 
+                       lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability
+                          +ph_no_work,data=df)),
+         model_3 = map(train, \(df) 
+                       lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly
+                          +ph_disability+ph_no_work, data=df))
+           )|>
+  mutate(
+    rmse_m1 = map2_dbl(model_1, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_m2 = map2_dbl(model_2, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_m3 = map2_dbl(model_3, test, \(mod, df) rmse(model = mod, data = df))
+  )
+```
+
+```{r}
+cv_df |> 
+  select(starts_with("rmse")) |> 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") |> 
+  mutate(model = fct_inorder(model)) |> 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()+
+  labs(title = "Model 1 vs. Model 2 & 3")+
+  theme_minimal()
+
+cv_df |> 
+  select(starts_with("rmse")) |> 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") |> 
+  mutate(model = fct_inorder(model)) |> 
+  filter(model == "m2" | model== "m3")|>
+  ggplot(aes(x = model, y = rmse)) + geom_violin()+
+  labs(title = "Model 2 vs. Model 3")+
+  theme_minimal()
+```
+
+Based on the rootmean square models, model 1 and 2 perform signficantly better than model 1, while model 3 performs slightly better than model 3. 
 
 
 ## Statistical Analysis of Obesity 

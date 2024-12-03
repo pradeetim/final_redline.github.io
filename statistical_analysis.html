@@ -366,10 +366,12 @@ div.tocify {
 </div>
 
 
-<p>import the datasets and packages</p>
 <div id="desciptive-characteristics-based-on-redlining-grades"
+class="section level2">
+<h2>Desciptive Characteristics Based on Redlining Grades</h2>
+<div id="total-count-of-census-tract-for-each-holc-grade"
 class="section level3">
-<h3>Desciptive Characteristics based on redlining grades</h3>
+<h3>Total count of census tract for each HOLC grade</h3>
 <pre class="r"><code>final_analysis |&gt;
   group_by(red_grade)|&gt;
   summarise(count = n())|&gt;
@@ -400,7 +402,10 @@ class="section level3">
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>redlining_quartile=
+</div>
+<div id="comparison-of-holc-grades" class="section level3">
+<h3>Comparison of HOLC grades</h3>
+<pre class="r"><code>redlining_grades=
 final_analysis |&gt;
   group_by(red_grade) |&gt;
   summarise(
@@ -484,7 +489,7 @@ anova(final_analysis, outcomes, &quot;red_grade&quot;)|&gt;
     variable == &quot;ph_hispanic&quot; ~ &quot;hispanic&quot;,
     TRUE ~ variable
   ))|&gt;
-  inner_join(redlining_quartile, by=&quot;variable&quot;)|&gt;
+  inner_join(redlining_grades, by=&quot;variable&quot;)|&gt;
   select(variable, A_avg:D_sd,  p.value)
 
 
@@ -747,11 +752,9 @@ baseline_char|&gt;
 </tbody>
 </table>
 </div>
-<div
-id="comparing-census-tracts-with-hrs-in-the-first-and-fourth-quartile"
+<div id="comparing-census-tracts-with-hrs-for-grade-a-with-grade-d"
 class="section level3">
-<h3>Comparing census tracts with HRS in the first and fourth
-quartile</h3>
+<h3>Comparing census tracts with HRS for Grade A with Grade D</h3>
 <pre class="r"><code>q1_vs_q4 = 
 final_analysis|&gt;
   filter(red_grade %in%c(&quot;A&quot;,&quot;D&quot;))|&gt;
@@ -884,9 +887,10 @@ uni_reg(q1_vs_q4, outcomes, &quot;red_grade&quot;)|&gt;
 </tbody>
 </table>
 </div>
-<div id="regression-analysis-for-hrs-and-the-relevant-variables"
-class="section level3">
-<h3>regression analysis for hrs and the relevant variables</h3>
+</div>
+<div id="regression-analysis-for-redlining-and-food-insecurity"
+class="section level2">
+<h2>Regression Analysis for Redlining and Food Insecurity</h2>
 <pre class="r"><code># univariate analysis
 lm(ph_snap~red_grade,final_analysis)|&gt;
   broom::tidy()|&gt;
@@ -934,173 +938,94 @@ lm(ph_snap~red_grade,final_analysis)|&gt;
 </table>
 <pre class="r"><code>## multivariate model 1
 red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
-red_snap_m1|&gt;
-  broom::tidy()|&gt;
-  knitr::kable(digits = 3)</code></pre>
+tidy_model = broom::tidy(red_snap_m1)
+ci = confint(red_snap_m1)
+
+tidy_model|&gt;
+  mutate(
+    CI_Lower = ci[, 1],
+    CI_Upper = ci[, 2],
+    p.value = ifelse(p.value&lt;0.0001, &quot;&lt;0.0001&quot;, p.value)
+  )|&gt;
+  select(term, estimate, p.value, CI_Lower, CI_Upper)|&gt;
+  knitr::kable(digits = 3, caption = &quot;Model 1 Estimates with 95% Confidence Intervals&quot;)</code></pre>
 <table>
+<caption>Model 1 Estimates with 95% Confidence Intervals</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
 <th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
+<th align="left">p.value</th>
+<th align="right">CI_Lower</th>
+<th align="right">CI_Upper</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
 <td align="right">-1.061</td>
-<td align="right">2.097</td>
-<td align="right">-0.506</td>
-<td align="right">0.613</td>
+<td align="left">0.61301611338962</td>
+<td align="right">-5.174</td>
+<td align="right">3.052</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeB</td>
 <td align="right">3.315</td>
-<td align="right">1.933</td>
-<td align="right">1.715</td>
-<td align="right">0.087</td>
+<td align="left">0.08654070613613</td>
+<td align="right">-0.476</td>
+<td align="right">7.106</td>
 </tr>
 <tr class="odd">
 <td align="left">red_gradeC</td>
 <td align="right">2.034</td>
-<td align="right">1.892</td>
-<td align="right">1.075</td>
-<td align="right">0.283</td>
+<td align="left">0.282542142776926</td>
+<td align="right">-1.677</td>
+<td align="right">5.745</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeD</td>
 <td align="right">4.044</td>
-<td align="right">1.935</td>
-<td align="right">2.090</td>
-<td align="right">0.037</td>
+<td align="left">0.0367591974090974</td>
+<td align="right">0.249</td>
+<td align="right">7.839</td>
 </tr>
 <tr class="odd">
 <td align="left">minority</td>
 <td align="right">0.162</td>
-<td align="right">0.009</td>
-<td align="right">17.514</td>
-<td align="right">0.000</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.144</td>
+<td align="right">0.180</td>
 </tr>
 <tr class="even">
 <td align="left">ph_elderly</td>
 <td align="right">-0.334</td>
-<td align="right">0.022</td>
-<td align="right">-15.525</td>
-<td align="right">0.000</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">-0.376</td>
+<td align="right">-0.292</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_disability</td>
 <td align="right">0.749</td>
-<td align="right">0.028</td>
-<td align="right">26.568</td>
-<td align="right">0.000</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.693</td>
+<td align="right">0.804</td>
 </tr>
 <tr class="even">
 <td align="left">ph_no_work</td>
 <td align="right">0.320</td>
-<td align="right">0.032</td>
-<td align="right">10.157</td>
-<td align="right">0.000</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.259</td>
+<td align="right">0.382</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>##multivariate model 2
-red_snap_m2 = lm(ph_snap~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-red_snap_m2|&gt;
-  broom::tidy()|&gt;
-  knitr::kable(digits = 3)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">25.975</td>
-<td align="right">2.413</td>
-<td align="right">10.766</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB</td>
-<td align="right">4.300</td>
-<td align="right">1.879</td>
-<td align="right">2.288</td>
-<td align="right">0.022</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC</td>
-<td align="right">2.941</td>
-<td align="right">1.844</td>
-<td align="right">1.595</td>
-<td align="right">0.111</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD</td>
-<td align="right">5.512</td>
-<td align="right">1.883</td>
-<td align="right">2.927</td>
-<td align="right">0.003</td>
-</tr>
-<tr class="odd">
-<td align="left">ph_white</td>
-<td align="right">-0.302</td>
-<td align="right">0.016</td>
-<td align="right">-19.133</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">ph_black</td>
-<td align="right">-0.181</td>
-<td align="right">0.017</td>
-<td align="right">-10.533</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">ph_asian</td>
-<td align="right">-0.227</td>
-<td align="right">0.022</td>
-<td align="right">-10.323</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">ph_elderly</td>
-<td align="right">-0.237</td>
-<td align="right">0.023</td>
-<td align="right">-10.473</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">ph_disability</td>
-<td align="right">0.626</td>
-<td align="right">0.030</td>
-<td align="right">21.085</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">ph_no_work</td>
-<td align="right">0.318</td>
-<td align="right">0.031</td>
-<td align="right">10.375</td>
-<td align="right">0.000</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>## multivariate model 3
-red_snap_m3 =
+<pre class="r"><code>## multivariate model 2
+red_snap_m2 =
   final_analysis|&gt;
   lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
 
-tidy_model = broom::tidy(red_snap_m3)
-ci = confint(red_snap_m3)
+tidy_model = broom::tidy(red_snap_m2)
+ci = confint(red_snap_m2)
 
 tidy_model|&gt;
   mutate(
@@ -1110,9 +1035,9 @@ tidy_model|&gt;
     p.value = ifelse(p.value&lt;0.0001, &quot;&lt;0.0001&quot;, p.value)
   )|&gt;
   select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|&gt;
-  knitr::kable(digits = 3, caption = &quot;Model Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
+  knitr::kable(digits = 3, caption = &quot;Model 2 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
 <table>
-<caption>Model Coefficients with Back-Transformed Estimates and 95%
+<caption>Model 2 Coefficients with Back-Transformed Estimates and 95%
 Confidence Intervals</caption>
 <colgroup>
 <col width="18%" />
@@ -1199,6 +1124,127 @@ Confidence Intervals</caption>
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>##multivariate model 3
+red_snap_m3 = lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+
+tidy_model = broom::tidy(red_snap_m3)
+ci = confint(red_snap_m3)
+
+tidy_model|&gt;
+  mutate(
+    Back_Transformed_Estimate = exp(estimate),
+    CI_Lower = exp(ci[, 1]),
+    CI_Upper = exp(ci[, 2]),
+    p.value = ifelse(p.value&lt;0.0001, &quot;&lt;0.0001&quot;, p.value)
+  )|&gt;
+  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|&gt;
+  knitr::kable(digits = 3, caption = &quot;Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
+<table>
+<caption>Model 3 Coefficients with Back-Transformed Estimates and 95%
+Confidence Intervals</caption>
+<colgroup>
+<col width="18%" />
+<col width="12%" />
+<col width="10%" />
+<col width="34%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="left">p.value</th>
+<th align="right">Back_Transformed_Estimate</th>
+<th align="right">CI_Lower</th>
+<th align="right">CI_Upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.720</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">15.182</td>
+<td align="right">11.386</td>
+<td align="right">20.242</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">0.615</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">1.849</td>
+<td align="right">1.478</td>
+<td align="right">2.314</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">0.586</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">1.798</td>
+<td align="right">1.443</td>
+<td align="right">2.240</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">0.665</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">1.944</td>
+<td align="right">1.553</td>
+<td align="right">2.434</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_white</td>
+<td align="right">-0.019</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.981</td>
+<td align="right">0.979</td>
+<td align="right">0.983</td>
+</tr>
+<tr class="even">
+<td align="left">ph_black</td>
+<td align="right">-0.009</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.991</td>
+<td align="right">0.989</td>
+<td align="right">0.993</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_asian</td>
+<td align="right">-0.010</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.990</td>
+<td align="right">0.988</td>
+<td align="right">0.993</td>
+</tr>
+<tr class="even">
+<td align="left">ph_elderly</td>
+<td align="right">-0.009</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">0.991</td>
+<td align="right">0.988</td>
+<td align="right">0.994</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_disability</td>
+<td align="right">0.032</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">1.032</td>
+<td align="right">1.029</td>
+<td align="right">1.036</td>
+</tr>
+<tr class="even">
+<td align="left">ph_no_work</td>
+<td align="right">0.009</td>
+<td align="left">&lt;0.0001</td>
+<td align="right">1.009</td>
+<td align="right">1.005</td>
+<td align="right">1.013</td>
+</tr>
+</tbody>
+</table>
+<div id="residual-plots" class="section level3">
+<h3>Residual Plots</h3>
 <pre class="r"><code>m1_residual = data.frame(
     fitted = fitted(red_snap_m1),
     residuals = residuals(red_snap_m1)
@@ -1244,6 +1290,57 @@ m3_residual |&gt;
     y = &quot;Residuals&quot;
   )</code></pre>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+</div>
+<div id="cross-validation-and-model-selection" class="section level3">
+<h3>Cross Validation and Model Selection</h3>
+<pre class="r"><code>cv_df =
+  crossv_mc(final_analysis, 100)</code></pre>
+<pre class="r"><code>cv_df =
+cv_df|&gt;
+  mutate(model_1 = map(train, \(df)  
+                       lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,
+                          data=df)),
+         model_2 = map(train, \(df) 
+                       lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability
+                          +ph_no_work,data=df)),
+         model_3 = map(train, \(df) 
+                       lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly
+                          +ph_disability+ph_no_work, data=df))
+           )|&gt;
+  mutate(
+    rmse_m1 = map2_dbl(model_1, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_m2 = map2_dbl(model_2, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_m3 = map2_dbl(model_3, test, \(mod, df) rmse(model = mod, data = df))
+  )</code></pre>
+<pre class="r"><code>cv_df |&gt; 
+  select(starts_with(&quot;rmse&quot;)) |&gt; 
+  pivot_longer(
+    everything(),
+    names_to = &quot;model&quot;, 
+    values_to = &quot;rmse&quot;,
+    names_prefix = &quot;rmse_&quot;) |&gt; 
+  mutate(model = fct_inorder(model)) |&gt; 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()+
+  labs(title = &quot;Model 1 vs. Model 2 &amp; 3&quot;)+
+  theme_minimal()</code></pre>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>cv_df |&gt; 
+  select(starts_with(&quot;rmse&quot;)) |&gt; 
+  pivot_longer(
+    everything(),
+    names_to = &quot;model&quot;, 
+    values_to = &quot;rmse&quot;,
+    names_prefix = &quot;rmse_&quot;) |&gt; 
+  mutate(model = fct_inorder(model)) |&gt; 
+  filter(model == &quot;m2&quot; | model== &quot;m3&quot;)|&gt;
+  ggplot(aes(x = model, y = rmse)) + geom_violin()+
+  labs(title = &quot;Model 2 vs. Model 3&quot;)+
+  theme_minimal()</code></pre>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p>Based on the rootmean square models, model 1 and 2 perform
+signficantly better than model 1, while model 3 performs slightly better
+than model 3.</p>
+</div>
 </div>
 <div id="statistical-analysis-of-obesity" class="section level2">
 <h2>Statistical Analysis of Obesity</h2>
@@ -1727,7 +1824,7 @@ glm(high_obesity ~ red_grade + minority, data = final_analysis, family = binomia
 </tbody>
 </table>
 </div>
-<div id="residual-plots" class="section level3">
+<div id="residual-plots-1" class="section level3">
 <h3>residual plots</h3>
 <pre class="r"><code>ob_residual = data.frame(
     fitted = fitted(int_ob),
@@ -1743,7 +1840,7 @@ ob_residual |&gt;
     x = &quot;Fitted Values&quot;,
     y = &quot;Residuals&quot;
   )</code></pre>
-<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code>dia_residual = data.frame(
     fitted = fitted(int_dia),
     residuals = residuals(int_dia)
@@ -1758,7 +1855,7 @@ dia_residual |&gt;
     x = &quot;Fitted Values&quot;,
     y = &quot;Residuals&quot;
   )</code></pre>
-<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
 </div>
 </div>
 
