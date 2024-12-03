@@ -286,7 +286,6 @@ tidy_model|>
   mutate(
     CI_Lower = ci[, 1],
     CI_Upper = ci[, 2],
-    p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
   )|>
   select(term, estimate, p.value, CI_Lower, CI_Upper)|>
   knitr::kable(digits = 3, caption = "Model 1 Estimates with 95% Confidence Intervals")
@@ -304,7 +303,7 @@ tidy_model|>
     Back_Transformed_Estimate = exp(estimate),
     CI_Lower = exp(ci[, 1]),
     CI_Upper = exp(ci[, 2]),
-    p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
+    p.value = ifelse(p.value<0.001, "<0.001", p.value)
   )|>
   select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
   knitr::kable(digits = 3, caption = "Model 2 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
@@ -320,7 +319,7 @@ tidy_model|>
     Back_Transformed_Estimate = exp(estimate),
     CI_Lower = exp(ci[, 1]),
     CI_Upper = exp(ci[, 2]),
-    p.value = ifelse(p.value<0.0001, "<0.0001", p.value)
+    p.value = ifelse(p.value<0.001, "<0.001", p.value)
   )|>
   select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
   knitr::kable(digits = 3, caption = "Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")

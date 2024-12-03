@@ -945,7 +945,6 @@ tidy_model|&gt;
   mutate(
     CI_Lower = ci[, 1],
     CI_Upper = ci[, 2],
-    p.value = ifelse(p.value&lt;0.0001, &quot;&lt;0.0001&quot;, p.value)
   )|&gt;
   select(term, estimate, p.value, CI_Lower, CI_Upper)|&gt;
   knitr::kable(digits = 3, caption = &quot;Model 1 Estimates with 95% Confidence Intervals&quot;)</code></pre>
@@ -955,7 +954,7 @@ tidy_model|&gt;
 <tr class="header">
 <th align="left">term</th>
 <th align="right">estimate</th>
-<th align="left">p.value</th>
+<th align="right">p.value</th>
 <th align="right">CI_Lower</th>
 <th align="right">CI_Upper</th>
 </tr>
@@ -964,56 +963,56 @@ tidy_model|&gt;
 <tr class="odd">
 <td align="left">(Intercept)</td>
 <td align="right">-1.061</td>
-<td align="left">0.61301611338962</td>
+<td align="right">0.613</td>
 <td align="right">-5.174</td>
 <td align="right">3.052</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeB</td>
 <td align="right">3.315</td>
-<td align="left">0.08654070613613</td>
+<td align="right">0.087</td>
 <td align="right">-0.476</td>
 <td align="right">7.106</td>
 </tr>
 <tr class="odd">
 <td align="left">red_gradeC</td>
 <td align="right">2.034</td>
-<td align="left">0.282542142776926</td>
+<td align="right">0.283</td>
 <td align="right">-1.677</td>
 <td align="right">5.745</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeD</td>
 <td align="right">4.044</td>
-<td align="left">0.0367591974090974</td>
+<td align="right">0.037</td>
 <td align="right">0.249</td>
 <td align="right">7.839</td>
 </tr>
 <tr class="odd">
 <td align="left">minority</td>
 <td align="right">0.162</td>
-<td align="left">&lt;0.0001</td>
+<td align="right">0.000</td>
 <td align="right">0.144</td>
 <td align="right">0.180</td>
 </tr>
 <tr class="even">
 <td align="left">ph_elderly</td>
 <td align="right">-0.334</td>
-<td align="left">&lt;0.0001</td>
+<td align="right">0.000</td>
 <td align="right">-0.376</td>
 <td align="right">-0.292</td>
 </tr>
 <tr class="odd">
 <td align="left">ph_disability</td>
 <td align="right">0.749</td>
-<td align="left">&lt;0.0001</td>
+<td align="right">0.000</td>
 <td align="right">0.693</td>
 <td align="right">0.804</td>
 </tr>
 <tr class="even">
 <td align="left">ph_no_work</td>
 <td align="right">0.320</td>
-<td align="left">&lt;0.0001</td>
+<td align="right">0.000</td>
 <td align="right">0.259</td>
 <td align="right">0.382</td>
 </tr>
@@ -1032,7 +1031,7 @@ tidy_model|&gt;
     Back_Transformed_Estimate = exp(estimate),
     CI_Lower = exp(ci[, 1]),
     CI_Upper = exp(ci[, 2]),
-    p.value = ifelse(p.value&lt;0.0001, &quot;&lt;0.0001&quot;, p.value)
+    p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)
   )|&gt;
   select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|&gt;
   knitr::kable(digits = 3, caption = &quot;Model 2 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
@@ -1061,7 +1060,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">(Intercept)</td>
 <td align="right">0.963</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">2.619</td>
 <td align="right">2.045</td>
 <td align="right">3.354</td>
@@ -1069,7 +1068,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">red_gradeB</td>
 <td align="right">0.574</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.776</td>
 <td align="right">1.414</td>
 <td align="right">2.231</td>
@@ -1077,7 +1076,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">red_gradeC</td>
 <td align="right">0.560</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.750</td>
 <td align="right">1.400</td>
 <td align="right">2.188</td>
@@ -1085,7 +1084,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">red_gradeD</td>
 <td align="right">0.601</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.824</td>
 <td align="right">1.452</td>
 <td align="right">2.292</td>
@@ -1093,7 +1092,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">minority</td>
 <td align="right">0.012</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.012</td>
 <td align="right">1.011</td>
 <td align="right">1.013</td>
@@ -1101,7 +1100,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">ph_elderly</td>
 <td align="right">-0.014</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">0.987</td>
 <td align="right">0.984</td>
 <td align="right">0.989</td>
@@ -1109,7 +1108,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">ph_disability</td>
 <td align="right">0.037</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.038</td>
 <td align="right">1.035</td>
 <td align="right">1.041</td>
@@ -1117,7 +1116,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">ph_no_work</td>
 <td align="right">0.009</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.009</td>
 <td align="right">1.005</td>
 <td align="right">1.013</td>
@@ -1135,7 +1134,7 @@ tidy_model|&gt;
     Back_Transformed_Estimate = exp(estimate),
     CI_Lower = exp(ci[, 1]),
     CI_Upper = exp(ci[, 2]),
-    p.value = ifelse(p.value&lt;0.0001, &quot;&lt;0.0001&quot;, p.value)
+    p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)
   )|&gt;
   select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|&gt;
   knitr::kable(digits = 3, caption = &quot;Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
@@ -1164,7 +1163,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">(Intercept)</td>
 <td align="right">2.720</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">15.182</td>
 <td align="right">11.386</td>
 <td align="right">20.242</td>
@@ -1172,7 +1171,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">red_gradeB</td>
 <td align="right">0.615</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.849</td>
 <td align="right">1.478</td>
 <td align="right">2.314</td>
@@ -1180,7 +1179,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">red_gradeC</td>
 <td align="right">0.586</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.798</td>
 <td align="right">1.443</td>
 <td align="right">2.240</td>
@@ -1188,7 +1187,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">red_gradeD</td>
 <td align="right">0.665</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.944</td>
 <td align="right">1.553</td>
 <td align="right">2.434</td>
@@ -1196,7 +1195,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">ph_white</td>
 <td align="right">-0.019</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">0.981</td>
 <td align="right">0.979</td>
 <td align="right">0.983</td>
@@ -1204,7 +1203,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">ph_black</td>
 <td align="right">-0.009</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">0.991</td>
 <td align="right">0.989</td>
 <td align="right">0.993</td>
@@ -1212,7 +1211,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">ph_asian</td>
 <td align="right">-0.010</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">0.990</td>
 <td align="right">0.988</td>
 <td align="right">0.993</td>
@@ -1220,7 +1219,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">ph_elderly</td>
 <td align="right">-0.009</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">0.991</td>
 <td align="right">0.988</td>
 <td align="right">0.994</td>
@@ -1228,7 +1227,7 @@ Confidence Intervals</caption>
 <tr class="odd">
 <td align="left">ph_disability</td>
 <td align="right">0.032</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.032</td>
 <td align="right">1.029</td>
 <td align="right">1.036</td>
@@ -1236,7 +1235,7 @@ Confidence Intervals</caption>
 <tr class="even">
 <td align="left">ph_no_work</td>
 <td align="right">0.009</td>
-<td align="left">&lt;0.0001</td>
+<td align="left">&lt;0.001</td>
 <td align="right">1.009</td>
 <td align="right">1.005</td>
 <td align="right">1.013</td>

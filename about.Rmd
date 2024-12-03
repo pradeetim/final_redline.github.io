@@ -39,4 +39,8 @@ We filtered based on the geoid to only keep the data for the census tracts withi
 
 ## Recognized Healthy Store in NYC 
 
-We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
+We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(`name`,`store identifier`), geographic location(`address`, `census tract`, `zip code`, `borough`, `longitude` and `latitude`), year awarded and the program wave. 
+
+## PLACE data 
+
+We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC census tracts from CDC to obtain the prevalence of a variety of health indicators that are likely associated with food insecurity: `diabetes`, `obesity` and `high cholesterol`. 
