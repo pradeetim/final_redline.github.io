@@ -426,11 +426,10 @@ challenges accessing SNAP benefits?</li>
 <li><strong>Analysis:</strong>
 <ul>
 <li>How does redlining classification (e.g., grade A, B, C, D) predict
-the density of healthy grocery stores in a neighborhood? What is the
-relationship between redlining and SNAP enrollment rates across
-neighborhoods in NYC?</li>
-<li>Are there other factors (e.g., income levels) that mediate the
-relationship between redlining and food access?</li>
+the proportion of households enrolled in SNAP at the census tract
+level?</li>
+<li>Is redlining associated with food insecurity related health
+outcomes(diabetes, obesity and high cholesterol level)?</li>
 </ul></li>
 </ul>
 </div>
@@ -158210,157 +158209,10 @@ screened</td>
 </table>
 </div>
 </div>
-</div>
-<div id="optional-section" class="section level1">
-<h1>optional section</h1>
-<p><strong>Comments: I think we may or may not need the following data
-in analysis, but if someone want to use that, we will include them in
-the data cleaning, or I will just delete them</strong></p>
-<div id="poverty-level-optional-for-use" class="section level2">
-<h2>poverty level [optional for use ]</h2>
-<pre class="r"><code>poverty = 
-  read_csv(file = &quot;./Datasets/ACS-poverty-level.csv&quot;, skip=1)|&gt;
-  janitor::clean_names()|&gt;
-  mutate(geoid = str_remove(geography, &quot;.*US&quot;))</code></pre>
-<pre><code>## New names:
-## Rows: 2327 Columns: 375
-## ── Column specification
-## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
-## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED INDIV... dbl
-## (228): Estimate!!Total!!Population for whom poverty status is determined... lgl
-## (1): ...375
-## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-## • `` -&gt; `...375`</code></pre>
-</div>
-<div id="nyc-census-demographic-optional-for-use"
-class="section level2">
-<h2>NYC census demographic [optional for use]</h2>
-<p><strong>For this data we have more detailed demographic by age
-division, and slightly different way of measuring race and ethnicty
-(Hispanic White non-Hispanic,Black non-Hispanic, Asian non-Hispanic,
-Some other race non-Hispanic, Non-Hispanic of two or more races). In
-case this will be interesting for EDA or analysis </strong></p>
-<pre class="r"><code>demo = 
-  read_excel(&quot;./Datasets/NYC_census_core_data.xlsx&quot;)|&gt;
-  janitor::clean_names()|&gt;
-  filter(geo_type == &quot;CT2020&quot;)|&gt;
-  rename(geoid = geo_id)</code></pre>
-</div>
 <div id="exploratory-analysis" class="section level2">
 <h2>Exploratory Analysis</h2>
 <div id="visualizations" class="section level3">
-<h3>Visualizations:</h3>
-<pre class="r"><code>library(ggplot2)
-library(dplyr)
-library(plotly)
-library(stringr)</code></pre>
-<pre class="r"><code>redlining_snap =
-  redlining_snap |&gt;
-  mutate(borough = case_when(
-    str_detect(name, &quot;Bronx&quot;) ~ &quot;Bronx&quot;,
-    str_detect(name, &quot;Kings&quot;) ~ &quot;Brooklyn&quot;,
-    str_detect(name, &quot;New York County&quot;) ~ &quot;Manhattan&quot;,
-    str_detect(name, &quot;Queens&quot;) ~ &quot;Queens&quot;,
-    str_detect(name, &quot;Richmond&quot;) ~ &quot;Staten Island&quot;,
-    TRUE ~ &quot;Other&quot;
-  ))
-
-health_data =
-  place_cleaned |&gt;
-  mutate(geoid = as.character(geoid)) |&gt;
-  left_join(redlining_snap, by = &quot;geoid&quot;) |&gt;
-  janitor::clean_names()</code></pre>
-<div id="distribution-of-redlining-scores" class="section level4">
-<h4>Distribution of Redlining Scores:</h4>
-<pre class="r"><code>redlining_snap |&gt;
-  plot_ly(y = ~hrs2020, color = ~borough, type = &quot;box&quot;, colors = &quot;viridis&quot;) |&gt;
-  layout(title = &quot;Distribution of Redlining Scores in Each Borough&quot;,
-         xaxis = list(title = &#39;Borough&#39;),
-         yaxis = list(title = &#39;Redlining Score&#39;),
-        showlegend = FALSE)</code></pre>
-<p>The Bronx and Brooklyn exhibit more consistency with redlining scores
-around 3, while Manhattan shows a more varied distribution, and Queens
-stands out with a broader spread and numerous high-value outliers.
-Staten Island appears to have a more uniform distribution with fewer
-extreme values.</p>
-</div>
-<div id="obesity-vs-redlining-score" class="section level4">
-<h4>Obesity vs Redlining Score</h4>
-<pre class="r"><code>health_data |&gt;
-  filter(!is.na(obesity) &amp; !is.na(hrs2020)) |&gt;
-  ggplot(aes(y = obesity, x = hrs2020, color = borough)) +
-  geom_point() +
-  geom_smooth(color = &quot;black&quot;) +
-  facet_wrap(~ borough, scales = &quot;free&quot;) +
-  labs(
-    title = &quot;Obesity Rate vs Redlining Score&quot;,
-    x = &quot;Obesity Rate (%)&quot;,
-    y = &quot;Redlining Score (HRS 2020)&quot;
-  ) +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<p>The exploratory analysis of obesity rates against redlining scores
-reveals a consistent positive trend across most of New York City’s
-boroughs, with areas of historical redlining showing higher obesity
-rates. While Manhattan presents a weaker relationship, other boroughs
-like the Bronx, Brooklyn, Queens, and Staten Island demonstrate stronger
-associations, suggesting that the legacy of redlining may contribute to
-health disparities.</p>
-</div>
-<div id="diabetes-vs-redlining-score" class="section level4">
-<h4>Diabetes vs Redlining Score</h4>
-<pre class="r"><code>health_data |&gt;
-  filter(!is.na(diabetes) &amp; !is.na(hrs2020)) |&gt;
-  ggplot(aes(y = diabetes, x = hrs2020, color = borough)) +
-  geom_point() +
-  geom_smooth(color = &quot;black&quot;) +
-  facet_wrap(~ borough, scales = &quot;free&quot;) +
-  labs(
-    title = &quot;Diabetes Rate vs Redlining Score&quot;,
-    x = &quot;Obesity Rate (%)&quot;,
-    y = &quot;Redlining Score (HRS 2020)&quot;
-  ) +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>The smooth curves in the plots show that, in most boroughs, diabetes
-rates tend to increase as redlining scores rise. This suggests a legacy
-effect where areas historically marked by redlining are still facing
-higher diabetes rates, possibly due to factors like poor access to
-healthcare, lower socioeconomic status, and other environmental factors.
-The variability between boroughs also indicates that local contexts play
-an important role in shaping health outcomes, with Manhattan and Staten
-Island showing weaker relationships compared to the Bronx or
-Brooklyn.</p>
-</div>
-<div id="high-cholesterol-vs-redlining-score" class="section level4">
-<h4>High Cholesterol vs Redlining Score</h4>
-<pre class="r"><code>health_data |&gt;
-  filter(!is.na(highchol) &amp; !is.na(hrs2020)) |&gt;
-  ggplot(aes(y = highchol, x = hrs2020, color = borough)) +
-  geom_point() +
-  geom_smooth(color = &quot;black&quot;) +
-  facet_wrap(~ borough, scales = &quot;free&quot;) +
-  labs(
-    title = &quot;High Cholesterol Rate vs Redlining Score&quot;,
-    x = &quot;Obesity Rate (%)&quot;,
-    y = &quot;Redlining Score (HRS 2020)&quot;
-  ) +
-  theme(legend.position = &quot;none&quot;)</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>In all boroughs, the general trend appears to be a negative
-relationship between redlining scores and high cholesterol rates,
-meaning that areas with higher historical redlining scores tend to have
-lower high cholesterol rates. However, the strength and clarity of this
-relationship vary across boroughs. The variation in trends across the
-boroughs suggests that local socio-economic factors, healthcare access,
-and lifestyle choices likely play significant roles in determining
-cholesterol rates. The confidence intervals around the smooth lines
-indicate that, while there is a clear pattern, the relationship is not
-entirely uniform across all areas, and there is a fair amount of
-variability in how redlining scores influence health outcomes.</p>
-</div>
+<h3>Visualizations</h3>
 </div>
 </div>
 <div id="regression-analysis" class="section level2">
@@ -158368,6 +158220,51 @@ variability in how redlining scores influence health outcomes.</p>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
+<p>Our analysis found that redlining is significantly associated with
+food insecurity in New York City at the census tract level. This finding
+indicates that historic housing policies affected households’ food
+security and relevant health outcomes in New York City. Households
+residing in neighborhoods that were graded as declining or hazardous
+were more likely to have limited access to adequate food compared to
+households residing in neighborhoods that were graded as desirable by
+HOLC.</p>
+<p>Discriminatory housing policies like redlining have created
+structural inequalities that have had a significant influence on
+people’s health, and racial minorities and people with low
+socio-economic status were disproportionately affected. Redlined
+neighborhoods also had a higher proportion of racial minorities,
+households with people with disabilities, and households living under
+the poverty line. Redlined neighborhoods had a higher prevalence of
+obesity compared to neighborhoods that were classified as desirable.
+However, diabetes was not found to be associated with historical
+redlining. Redlined neighborhoods were also found to have a
+significantly lower prevalence of high cholesterol levels compared to
+neighborhoods that were classified as desirable. Future research should
+focus on understanding the complex relationships between historical
+policies, food access, and relevant health outcomes. These findings
+imply that policy interventions need to target redlined neighborhoods
+with increased resources and support to address food insecurity and
+related health disparities, such as higher rates of obesity.</p>
+<p>The strength of our project was that we utilized data from multiple
+sources to explore the association between redlining and food
+insecurity. We explored the issue from both a socio-economic and health
+perspective using visualization and statistical analysis. One of the
+limitations of our analysis would be that the percentage of households
+enrolled in SNAP is highly right-skewed and thus may affect the
+homoscedasticity of the model. We were able to address that by
+performing a log transformation to increase the robustness of our
+model.</p>
+<p>The significant association between historical redlining and food
+insecurity in New York City suggests that discriminatory housing
+policies continue to have lasting effects on health outcomes. The higher
+prevalence of racial minorities, households with people with
+disabilities, and low-income families in redlined areas highlights the
+compounded impact of systemic inequities. Efforts to improve food access
+and reduce health disparities should therefore include targeted
+strategies aimed at these vulnerable populations. Public health
+initiatives might also need to involve urban planners, community
+organizations, and local governments to dismantle the structural
+barriers formed by redlining.</p>
 </div>
 </div>
 
