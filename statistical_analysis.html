@@ -13,7 +13,7 @@
 
 <title>Statistical Analysis</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
@@ -495,19 +495,19 @@ anova(final_analysis, outcomes, &quot;red_grade&quot;)|&gt;
 
 baseline_char|&gt;
   filter(!variable %in% c(&quot;obesity&quot;,&quot;diabetes&quot;,&quot;highchol&quot;))|&gt;
-  knitr::kable(digits = 2)</code></pre>
-<table>
+  knitr::kable(digits = 3)</code></pre>
+<table style="width:100%;">
 <colgroup>
-<col width="16%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="8%" />
-<col width="11%" />
+<col width="14%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="10%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -526,135 +526,135 @@ baseline_char|&gt;
 <tbody>
 <tr class="odd">
 <td align="left">snap</td>
-<td align="right">5.72</td>
-<td align="right">6.95</td>
-<td align="right">17.25</td>
-<td align="right">13.61</td>
-<td align="right">18.63</td>
-<td align="right">13.40</td>
-<td align="right">23.69</td>
-<td align="right">17.85</td>
-<td align="right">0.00</td>
+<td align="right">5.722</td>
+<td align="right">6.947</td>
+<td align="right">17.249</td>
+<td align="right">13.613</td>
+<td align="right">18.625</td>
+<td align="right">13.397</td>
+<td align="right">23.695</td>
+<td align="right">17.848</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">child</td>
-<td align="right">20.57</td>
-<td align="right">7.43</td>
-<td align="right">28.06</td>
-<td align="right">9.47</td>
-<td align="right">31.66</td>
-<td align="right">10.69</td>
-<td align="right">28.92</td>
-<td align="right">13.28</td>
-<td align="right">0.00</td>
+<td align="right">20.572</td>
+<td align="right">7.435</td>
+<td align="right">28.063</td>
+<td align="right">9.465</td>
+<td align="right">31.655</td>
+<td align="right">10.694</td>
+<td align="right">28.920</td>
+<td align="right">13.282</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">elderly</td>
-<td align="right">52.58</td>
-<td align="right">12.82</td>
-<td align="right">44.95</td>
-<td align="right">11.38</td>
-<td align="right">44.01</td>
-<td align="right">11.82</td>
-<td align="right">35.45</td>
-<td align="right">13.57</td>
-<td align="right">0.00</td>
+<td align="right">52.581</td>
+<td align="right">12.823</td>
+<td align="right">44.947</td>
+<td align="right">11.384</td>
+<td align="right">44.007</td>
+<td align="right">11.823</td>
+<td align="right">35.448</td>
+<td align="right">13.569</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">poverty</td>
-<td align="right">7.58</td>
-<td align="right">6.03</td>
-<td align="right">14.18</td>
-<td align="right">8.67</td>
-<td align="right">15.56</td>
-<td align="right">10.41</td>
-<td align="right">20.56</td>
-<td align="right">13.11</td>
-<td align="right">0.00</td>
+<td align="right">7.581</td>
+<td align="right">6.033</td>
+<td align="right">14.181</td>
+<td align="right">8.666</td>
+<td align="right">15.557</td>
+<td align="right">10.408</td>
+<td align="right">20.559</td>
+<td align="right">13.115</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">disability</td>
-<td align="right">19.56</td>
-<td align="right">8.20</td>
-<td align="right">23.13</td>
-<td align="right">8.85</td>
-<td align="right">24.37</td>
-<td align="right">9.72</td>
-<td align="right">23.86</td>
-<td align="right">11.45</td>
-<td align="right">0.01</td>
+<td align="right">19.556</td>
+<td align="right">8.196</td>
+<td align="right">23.135</td>
+<td align="right">8.850</td>
+<td align="right">24.373</td>
+<td align="right">9.719</td>
+<td align="right">23.863</td>
+<td align="right">11.446</td>
+<td align="right">0.013</td>
 </tr>
 <tr class="even">
 <td align="left">white</td>
-<td align="right">74.51</td>
-<td align="right">23.05</td>
-<td align="right">46.19</td>
-<td align="right">28.67</td>
-<td align="right">36.94</td>
-<td align="right">27.73</td>
-<td align="right">36.87</td>
-<td align="right">28.20</td>
-<td align="right">0.00</td>
+<td align="right">74.506</td>
+<td align="right">23.050</td>
+<td align="right">46.186</td>
+<td align="right">28.672</td>
+<td align="right">36.943</td>
+<td align="right">27.730</td>
+<td align="right">36.874</td>
+<td align="right">28.197</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">black</td>
-<td align="right">6.48</td>
-<td align="right">14.06</td>
-<td align="right">23.18</td>
-<td align="right">28.43</td>
-<td align="right">22.46</td>
-<td align="right">27.85</td>
-<td align="right">29.81</td>
-<td align="right">27.75</td>
-<td align="right">0.00</td>
+<td align="right">6.483</td>
+<td align="right">14.056</td>
+<td align="right">23.182</td>
+<td align="right">28.434</td>
+<td align="right">22.462</td>
+<td align="right">27.847</td>
+<td align="right">29.809</td>
+<td align="right">27.748</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">asian</td>
-<td align="right">8.45</td>
-<td align="right">7.09</td>
-<td align="right">11.82</td>
-<td align="right">13.31</td>
-<td align="right">16.68</td>
-<td align="right">18.27</td>
-<td align="right">9.95</td>
-<td align="right">13.31</td>
-<td align="right">0.00</td>
+<td align="right">8.447</td>
+<td align="right">7.092</td>
+<td align="right">11.822</td>
+<td align="right">13.307</td>
+<td align="right">16.679</td>
+<td align="right">18.267</td>
+<td align="right">9.954</td>
+<td align="right">13.308</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">otherrace</td>
-<td align="right">10.56</td>
-<td align="right">9.86</td>
-<td align="right">18.81</td>
-<td align="right">17.89</td>
-<td align="right">23.92</td>
-<td align="right">16.65</td>
-<td align="right">23.36</td>
-<td align="right">17.18</td>
-<td align="right">0.00</td>
+<td align="right">10.564</td>
+<td align="right">9.858</td>
+<td align="right">18.810</td>
+<td align="right">17.893</td>
+<td align="right">23.915</td>
+<td align="right">16.646</td>
+<td align="right">23.364</td>
+<td align="right">17.182</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">hispanic</td>
-<td align="right">12.72</td>
-<td align="right">12.03</td>
-<td align="right">21.39</td>
-<td align="right">22.91</td>
-<td align="right">27.21</td>
-<td align="right">21.05</td>
-<td align="right">28.42</td>
-<td align="right">23.08</td>
-<td align="right">0.00</td>
+<td align="right">12.722</td>
+<td align="right">12.028</td>
+<td align="right">21.387</td>
+<td align="right">22.911</td>
+<td align="right">27.207</td>
+<td align="right">21.051</td>
+<td align="right">28.420</td>
+<td align="right">23.075</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">nowork</td>
-<td align="right">17.45</td>
-<td align="right">7.60</td>
-<td align="right">12.46</td>
-<td align="right">7.18</td>
-<td align="right">12.22</td>
-<td align="right">7.23</td>
-<td align="right">14.00</td>
-<td align="right">10.12</td>
-<td align="right">0.00</td>
+<td align="right">17.447</td>
+<td align="right">7.599</td>
+<td align="right">12.464</td>
+<td align="right">7.185</td>
+<td align="right">12.221</td>
+<td align="right">7.232</td>
+<td align="right">13.998</td>
+<td align="right">10.118</td>
+<td align="right">0.000</td>
 </tr>
 </tbody>
 </table>
@@ -721,7 +721,7 @@ outcomes = c(&quot;ph_snap&quot;,&quot;ph_with_children&quot;, &quot;ph_elderly&
 
 
 uni_reg(q1_vs_q4, outcomes, &quot;red_grade&quot;)|&gt;
-  right_join(q1q4_desc, by=&quot;outcome&quot;)|&gt;
+  inner_join(q1q4_desc, by=&quot;outcome&quot;)|&gt;
   select(outcome, grade_A, grade_D, mean_diff, p.value)|&gt;
   knitr::kable(digits = 3)</code></pre>
 <table>
@@ -797,13 +797,6 @@ uni_reg(q1_vs_q4, outcomes, &quot;red_grade&quot;)|&gt;
 <td align="right">11.584</td>
 <td align="right">2.337</td>
 <td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">minority</td>
-<td align="right">25.494</td>
-<td align="right">63.126</td>
-<td align="right">37.632</td>
-<td align="right">NA</td>
 </tr>
 </tbody>
 </table>
@@ -1244,7 +1237,7 @@ cv_df|&gt;
   labs(title = &quot;Model 2 vs. Model 3&quot;)+
   theme_minimal()</code></pre>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
-<p>Based on the rootmean square models, model 1 and 2 perform
+<p>Based on the rootmean square models, model 2 and 3 perform
 signficantly better than model 1, while model 3 performs slightly better
 than model 3.</p>
 </div>
@@ -1256,6 +1249,7 @@ class="section level2">
 <h3>Preview the Health Outcomes Data</h3>
 <pre class="r"><code>baseline_char|&gt;
   filter(variable %in% c(&quot;obesity&quot;,&quot;diabetes&quot;,&quot;highchol&quot;))|&gt;
+  mutate(p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)) |&gt; 
   knitr::kable(digits = 3)</code></pre>
 <table style="width:100%;">
 <colgroup>
@@ -1281,7 +1275,7 @@ class="section level2">
 <th align="right">C_sd</th>
 <th align="right">D_avg</th>
 <th align="right">D_sd</th>
-<th align="right">p.value</th>
+<th align="left">p.value</th>
 </tr>
 </thead>
 <tbody>
@@ -1295,7 +1289,7 @@ class="section level2">
 <td align="right">6.374</td>
 <td align="right">28.710</td>
 <td align="right">7.607</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="even">
 <td align="left">highchol</td>
@@ -1307,7 +1301,7 @@ class="section level2">
 <td align="right">3.052</td>
 <td align="right">32.286</td>
 <td align="right">4.195</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="odd">
 <td align="left">diabetes</td>
@@ -1319,7 +1313,7 @@ class="section level2">
 <td align="right">2.923</td>
 <td align="right">11.584</td>
 <td align="right">4.417</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 </tbody>
 </table>
@@ -1340,7 +1334,10 @@ class="section level2">
 class="section level3">
 <h3>Linear Models of Obesity, Diabetes and High Cholesterol</h3>
 <pre class="r"><code>obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
-obesity_model|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+obesity_model|&gt; 
+  broom::tidy()|&gt; 
+  mutate(p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)) |&gt; 
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1348,7 +1345,7 @@ obesity_model|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <th align="right">estimate</th>
 <th align="right">std.error</th>
 <th align="right">statistic</th>
-<th align="right">p.value</th>
+<th align="left">p.value</th>
 </tr>
 </thead>
 <tbody>
@@ -1357,33 +1354,35 @@ obesity_model|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <td align="right">20.736</td>
 <td align="right">1.124</td>
 <td align="right">18.444</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeB</td>
 <td align="right">5.187</td>
 <td align="right">1.180</td>
 <td align="right">4.394</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="odd">
 <td align="left">red_gradeC</td>
 <td align="right">6.770</td>
 <td align="right">1.144</td>
 <td align="right">5.917</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeD</td>
 <td align="right">7.974</td>
 <td align="right">1.155</td>
 <td align="right">6.901</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
-diabetes_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+diabetes_model |&gt; 
+  broom::tidy()|&gt; 
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1426,7 +1425,10 @@ diabetes_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 </tbody>
 </table>
 <pre class="r"><code>chol_model = lm(highchol ~ red_grade, data = final_analysis) 
-chol_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+chol_model |&gt; 
+  broom::tidy()|&gt; 
+  mutate(p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)) |&gt; 
+  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1434,7 +1436,7 @@ chol_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <th align="right">estimate</th>
 <th align="right">std.error</th>
 <th align="right">statistic</th>
-<th align="right">p.value</th>
+<th align="left">p.value</th>
 </tr>
 </thead>
 <tbody>
@@ -1443,28 +1445,28 @@ chol_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <td align="right">37.275</td>
 <td align="right">0.583</td>
 <td align="right">63.977</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeB</td>
 <td align="right">-2.775</td>
 <td align="right">0.612</td>
 <td align="right">-4.536</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="odd">
 <td align="left">red_gradeC</td>
 <td align="right">-3.133</td>
 <td align="right">0.593</td>
 <td align="right">-5.284</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeD</td>
 <td align="right">-4.989</td>
 <td align="right">0.599</td>
 <td align="right">-8.332</td>
-<td align="right">0</td>
+<td align="left">&lt;0.001</td>
 </tr>
 </tbody>
 </table>
