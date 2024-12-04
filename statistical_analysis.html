@@ -1470,6 +1470,267 @@ chol_model |&gt;
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+diabetes_adj_model |&gt; 
+  broom::tidy()|&gt; 
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.337</td>
+<td align="right">0.044</td>
+<td align="right">53.210</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">0.022</td>
+<td align="right">0.034</td>
+<td align="right">0.643</td>
+<td align="right">0.520</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">0.057</td>
+<td align="right">0.034</td>
+<td align="right">1.685</td>
+<td align="right">0.092</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">-0.008</td>
+<td align="right">0.034</td>
+<td align="right">-0.222</td>
+<td align="right">0.825</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_white</td>
+<td align="right">-0.009</td>
+<td align="right">0.000</td>
+<td align="right">-30.444</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_black</td>
+<td align="right">-0.003</td>
+<td align="right">0.000</td>
+<td align="right">-8.403</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_asian</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">-3.363</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">ph_elderly</td>
+<td align="right">0.006</td>
+<td align="right">0.000</td>
+<td align="right">14.032</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_disability</td>
+<td align="right">0.007</td>
+<td align="right">0.001</td>
+<td align="right">13.164</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_no_work</td>
+<td align="right">0.005</td>
+<td align="right">0.001</td>
+<td align="right">9.545</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |&gt; 
+  broom::tidy()|&gt; 
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">3.432</td>
+<td align="right">0.029</td>
+<td align="right">117.632</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">0.101</td>
+<td align="right">0.023</td>
+<td align="right">4.454</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">0.151</td>
+<td align="right">0.022</td>
+<td align="right">6.750</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">0.118</td>
+<td align="right">0.023</td>
+<td align="right">5.174</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_white</td>
+<td align="right">-0.005</td>
+<td align="right">0.000</td>
+<td align="right">-28.594</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_black</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">-4.992</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_asian</td>
+<td align="right">-0.010</td>
+<td align="right">0.000</td>
+<td align="right">-36.179</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_elderly</td>
+<td align="right">-0.001</td>
+<td align="right">0.000</td>
+<td align="right">-3.599</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_disability</td>
+<td align="right">0.005</td>
+<td align="right">0.000</td>
+<td align="right">13.919</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_no_work</td>
+<td align="right">0.001</td>
+<td align="right">0.000</td>
+<td align="right">2.552</td>
+<td align="right">0.011</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>obesity_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |&gt; 
+  broom::tidy()|&gt; 
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">3.298</td>
+<td align="right">0.018</td>
+<td align="right">183.255</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeB</td>
+<td align="right">-0.034</td>
+<td align="right">0.014</td>
+<td align="right">-2.439</td>
+<td align="right">0.015</td>
+</tr>
+<tr class="odd">
+<td align="left">red_gradeC</td>
+<td align="right">-0.047</td>
+<td align="right">0.014</td>
+<td align="right">-3.437</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">red_gradeD</td>
+<td align="right">-0.059</td>
+<td align="right">0.014</td>
+<td align="right">-4.210</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_white</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+<td align="right">2.849</td>
+<td align="right">0.004</td>
+</tr>
+<tr class="even">
+<td align="left">ph_black</td>
+<td align="right">0.000</td>
+<td align="right">0.000</td>
+<td align="right">-1.025</td>
+<td align="right">0.306</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_asian</td>
+<td align="right">0.002</td>
+<td align="right">0.000</td>
+<td align="right">12.700</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_elderly</td>
+<td align="right">0.004</td>
+<td align="right">0.000</td>
+<td align="right">25.323</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ph_disability</td>
+<td align="right">0.001</td>
+<td align="right">0.000</td>
+<td align="right">3.498</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ph_no_work</td>
+<td align="right">0.002</td>
+<td align="right">0.000</td>
+<td align="right">8.707</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
