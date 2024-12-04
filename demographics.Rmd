@@ -66,7 +66,7 @@ redlining_sf =
 ## Redlining Exploration:
 Here is the map detailing the redlining grades given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
-```{r, echo=FALSE, warning=FALSE}
+```{r redlining, echo=FALSE, warning=FALSE}
 
 pal <- colorFactor(
   palette = c("#208e56",  
@@ -225,7 +225,7 @@ SNAP |>
 
 ### Race VS Redlinging Grade:
 This is a stacked bar chart showing the race distribution of households by historical redlining grades (A, B, C, D, NA) in New York City.
-```{r, echo=FALSE,warning=FALSE}
+```{r Race, echo=FALSE,warning=FALSE}
 redlining_long <- redlining_sf |>
   select(red_grade, ph_white, ph_black, ph_asian, ph_other_race) |>
   pivot_longer(
@@ -267,7 +267,7 @@ ggplot(redlining_long, aes(x = red_grade, y = percent_household, fill = race_gro
 
 ### Redlinging Grade VS. Grocery Stores(Manhattan,Brooklyn,and Bronx):
 This map overlays the distribution of healthy grocery stores on top of the historical redlining grades across NYC.
-```{r echo=FALSE}
+```{r store1, echo=FALSE}
 redlining_sf <- redlining_sf |>
   mutate(
     borough = case_when(
@@ -342,7 +342,7 @@ leaflet(redlining_sf) |>
 ### Redlinging Grade VS.Grocery Stores in Bronx Only:
 This map zooms in on the Bronx area to focus on the distribution of healthy grocery stores within the context of historical redlining grades.
 
-```{r}
+```{r bronx, echo=FALSE}
 redlining_sf <- redlining_sf |>
   mutate(
     borough = case_when(
@@ -476,7 +476,7 @@ snap_pal <- colorNumeric(
 )
 
 leaflet(bronx_) |>
-  addTiles() |>
+  addProviderTiles(providers$CartoDB.Positron) |> 
   addPolygons(
     fillColor = ~snap_pal(ph_snap),
     weight = 1,
@@ -496,8 +496,8 @@ leaflet(bronx_) |>
     data = bronx_stores,
     lng = ~longitude,
     lat = ~latitude,
-    radius = 2.5,
-    color = "#0f6921",
+    radius = 5,  
+    color = "#0f6921", 
     stroke = FALSE,
     fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
@@ -518,8 +518,9 @@ leaflet(bronx_) |>
   addLegend(
     position = "bottomleft",
     colors = "#0f6921",
-    labels = "Grocery Store",
-    title = "Healthy Grocery Stores in Bronx"
+    labels = "Healthy Grocery Store",
+    title = "Healthy Grocery Stores in Bronx",
+    opacity = 0.7
   )
 
 ```
