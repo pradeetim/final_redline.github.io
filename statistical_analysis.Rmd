@@ -204,7 +204,7 @@ anova(final_analysis, outcomes, "red_grade")|>
 
 baseline_char|>
   filter(!variable %in% c("obesity","diabetes","highchol"))|>
-  knitr::kable(digits = 2)
+  knitr::kable(digits = 3)
 ```
 
 We computed the average and standard deviation of the different socio-demographic factors across the redlining grade groups. ANOVA was utilized to compare the mean across different census tract grades (A, B, C and D). The percentage of household enrolled in snap/ food stamp program at the census tract level was significantly different among groups with different redlining grades at 5% significance level. A-grade census tracts had the lowest average percentage of SNAP enrollment (5.72%, sd: 6.95%) and the average percentage of SNAP enrollment is the highest in D-grade census tracts (23.70, sd: 17.85). In addition, the groups with different redlining grades reported significant different for the average percentage regarding households with children smaller than 18 years, households with elderly grater than 60 years, households below the poverty line, households with people with disability, race and ethnicity, and employment status. 
@@ -262,7 +262,7 @@ outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_
 
 
 uni_reg(q1_vs_q4, outcomes, "red_grade")|>
-  right_join(q1q4_desc, by="outcome")|>
+  inner_join(q1q4_desc, by="outcome")|>
   select(outcome, grade_A, grade_D, mean_diff, p.value)|>
   knitr::kable(digits = 3)
 ```
@@ -409,7 +409,7 @@ cv_df |>
   theme_minimal()
 ```
 
-Based on the rootmean square models, model 1 and 2 perform signficantly better than model 1, while model 3 performs slightly better than model 3. 
+Based on the rootmean square models, model 2 and 3 perform signficantly better than model 1, while model 3 performs slightly better than model 3. 
 
 
 ## Association of Health Outcomes and Redlining
@@ -418,6 +418,7 @@ Based on the rootmean square models, model 1 and 2 perform signficantly better t
 ```{r}
 baseline_char|>
   filter(variable %in% c("obesity","diabetes","highchol"))|>
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
   knitr::kable(digits = 3)
 
 final_analysis |>
@@ -433,16 +434,42 @@ final_analysis |>
        y = "Outcome Value")
 ```
 
+
 ### Linear Models of Obesity, Diabetes and High Cholesterol
 
 ```{r}
 obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
-obesity_model|> broom::tidy() |> knitr::kable(digits = 3)
+obesity_model|> 
+  broom::tidy()|> 
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3)
 
 diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
-diabetes_model |> broom::tidy() |> knitr::kable(digits = 3)
+diabetes_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
 
 chol_model = lm(highchol ~ red_grade, data = final_analysis) 
-chol_model |> broom::tidy() |> knitr::kable(digits = 3)
+chol_model |> 
+  broom::tidy()|> 
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3)
+```
+```{r}
+diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+diabetes_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
+
+
+obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
+
+obesity_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
 ```
 

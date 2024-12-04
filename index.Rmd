@@ -20,26 +20,22 @@ Redlining, a discriminatory practice that denied resources and opportunities to 
 
 This project delves into the relationship between historical redlining and present-day disparities in access to healthy grocery stores and Supplemental Nutrition Assistance Program (SNAP) enrollment. By examining these connections, we aim to shed light on how systemic inequities continue to affect New Yorkers and inspire conversations about solutions for a more equitable future.
 
-Explore our findings, interactive maps, and stories to better understand the ties between policy, place, and public health.
-
-
 ### Website Overview:
 
 Our website will cover the following:
 
-- Meet the Team
-- Project Report (full description of project)
+- [Meet the Team](team.html)
+- [Project Report](report.html) (full description of project)
 - Data:
-  - Data sources/data cleaning
+  - [Data sources](about.html)/data cleaning
   - Variable descriptions
-- Descriptive Analysis:
+- [Descriptive Analysis](demographics.html):
   - Visualizations, such as:
     - Redlining in the Boroughs
     - SNAP total enrollment and demographics
     - Healthy Grocery Stores in NYC
     - Distributions including all three variables
-- Statistical Analysis:
-  - Regression on ___
+- [Statistical Analysis](statistical_analysis.html)
 
 
 ### Project Overview: Screencast
