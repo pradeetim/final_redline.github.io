@@ -433,6 +433,69 @@ final_analysis |>
        y = "Outcome Value")
 ```
 
+### Health outcome map
+```{r}
+health_data =
+  place_cleaned |>
+  left_join(redlining_snap, by = "geoid") |>
+  janitor::clean_names()
+
+health_data_long <- health_data %>%
+  drop_na(red_grade, obesity, diabetes, highchol) %>%
+  pivot_longer(cols = c(obesity, diabetes, highchol), 
+               names_to = "condition", values_to = "rate")
+
+census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")  # API key for Census API
+nyc_tracts <- get_acs(
+  geography = "tract",
+  variables = "B19013_001",  # Median household income as an example (this is just to pull the geometry)
+  state = "NY",
+  county = c("Bronx", "Kings", "New York", "Queens", "Richmond"),
+  geometry = TRUE,
+  year = 2020
+) %>%
+  st_transform(crs = 4326)  # Transform to WGS84 for compatibility with Leaflet
+
+nyc_tracts <- nyc_tracts %>%
+  mutate(borough = case_when(
+    str_detect(NAME, "Bronx County") ~ "Bronx",
+    str_detect(NAME, "Kings County") ~ "Brooklyn",
+    str_detect(NAME, "New York County") ~ "Manhattan",
+    str_detect(NAME, "Queens County") ~ "Queens",
+    str_detect(NAME, "Richmond County") ~ "Staten Island",
+    TRUE ~ "Unknown"
+  )) |>
+  janitor::clean_names()
+
+health_spatial_data <- nyc_tracts %>%
+  left_join(health_data_long, by = "geoid")  # Make sure the 'geoid' column matches in both datasets
+
+leaflet(health_spatial_data) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%  
+  addPolygons(
+    fillColor = ~colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate)(rate),  # Color based on 'rate'
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    # Modify the label to show 'condition' and 'rate'
+    label = ~paste0("Condition: ", condition,
+                    "<br>Rate: ", round(rate, 2))
+  ) %>%
+  addLegend(
+    pal = colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate),  # Legend for color scale
+    values = ~rate,
+    title = "Health Condition Rate",
+    position = "bottomright"
+  )
+```
+
 ### Linear Models of Obesity, Diabetes and High Cholesterol
 
 ```{r}
