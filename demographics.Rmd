@@ -311,13 +311,10 @@ leaflet(redlining_sf) |>
     data = nyc_healthy_store,
     lng = ~longitude,
     lat = ~latitude,
-<<<<<<< HEAD
     radius = 5,
     color = "green",
-=======
     radius = 2.5,  
     color = "blue",
->>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     stroke = FALSE,
     fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
@@ -329,12 +326,10 @@ leaflet(redlining_sf) |>
     )
   ) |>
   addLegend(
-<<<<<<< HEAD
     position = "bottomright",
     colors = "green",
     labels = "Grocery Store",
-    title = "Healthy Grocery Stores"
-=======
+    title = "Healthy Grocery Stores",
     pal = pal,
     values = ~red_grade,
     opacity = 0.7,
@@ -346,7 +341,6 @@ leaflet(redlining_sf) |>
     colors = "blue",
     labels = "Healthy Grocery Store",
     title = "Healthy Grocery Stores in NYC"
->>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
   )
 
 ```
@@ -390,13 +384,10 @@ leaflet(bronx_redlining) |>
     data = bronx_stores,
     lng = ~longitude,
     lat = ~latitude,
-<<<<<<< HEAD
     radius = 5,
     color = "green",
-=======
     radius = 2.5,  
     color = "blue", 
->>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     stroke = FALSE,
     fillOpacity = 0.8,
     label = ~paste0("Store Name: ", store_name,
@@ -408,11 +399,9 @@ leaflet(bronx_redlining) |>
     )
   ) |>
   addLegend(
-<<<<<<< HEAD
     position = "bottomright",
     colors = "green",
     labels = "Grocery Store",
-=======
     pal = pal,
     values = ~red_grade,
     opacity = 0.7,
@@ -423,7 +412,6 @@ leaflet(bronx_redlining) |>
     position = "bottomleft",
     colors = "blue",
     labels = "Healthy Grocery Store",
->>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     title = "Healthy Grocery Stores in Bronx"
   )
 
@@ -471,147 +459,8 @@ The graph compares the relationship between redlining and health outcomes (diabe
 
 
 ### SNAP Enrollment and Grocery Stores in Bronx(USE IN SHINY APP IF NEEDED).
-
-<<<<<<< HEAD
-### Redlining Scores and Demographics:
-
-```{r, echo=FALSE, fig.align='center'}
-pal <- colorFactor(
-  palette = c("green", "blue", "yellow", "red"),
-  domain = redlining_sf$red_grade
-)
-
-leaflet(redlining_sf) |>
-  addTiles() |>
-  addPolygons(
-    fillColor = ~pal(red_grade),
-    weight = 1,
-    opacity = 1,
-    color = "black",
-    fillOpacity = 0.7,
-    highlightOptions = highlightOptions(
-      weight = 2,
-      color = "#666",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    ),
-    label = ~paste0("Census Tract: ", geoid, "<br>Redlining Interval: ", interval2020, "<br>Redlining Score (2020): ", hrs2020)
-  ) |>
-  addLegend(
-    pal = pal,
-    values = ~red_grade,
-    opacity = 0.7,
-    title = "Redlining Category",
-    position = "bottomright"
-  )
-```
-
-### Redlining Scores and SNAP Enrollment.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
-borough_snap_map |>
-  ggplot(aes(x = hrs2020, y = ph_snap, color = borough)) +
-  geom_jitter(alpha = 0.6, size = 2, width = 0.1, height = 1) + 
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "black") +
-  facet_wrap(~ borough, scales = "free") +
-  labs(
-    title = "Correlation Between Redlining Scores and SNAP Enrollment Rates by Borough",
-    subtitle = "Analysis of SNAP enrollment rates relative to redlining scores (HRS 2020)",
-    x = "Redlining Score (HRS 2020)",
-    y = "SNAP Enrollment (%)",
-    color = "Borough"
-  ) +
-  theme_minimal() +
-  theme(
-    strip.text = element_text(size = 12, face = "bold"),
-    legend.position = "bottom"
-  )
-
-```
-
-### Redlining and Grocery Stores in Bronx
-
-```{r, echo=FALSE, fig.align='center'}
-redlining_sf <- redlining_sf |>
-  mutate(
-    borough = case_when(
-      str_detect(NAME, "Bronx County") ~ "Bronx",
-      str_detect(NAME, "Kings County") ~ "Brooklyn",
-      str_detect(NAME, "New York County") ~ "Manhattan",
-      str_detect(NAME, "Queens County") ~ "Queens",
-      str_detect(NAME, "Richmond County") ~ "Staten Island",
-      TRUE ~ "Unknown"
-    )
-  )
-
-bronx_redlining <- redlining_sf |>
-  filter(borough == "Bronx")
-
-bronx_stores <- nyc_healthy_store |>
-  filter(borough == "Bronx")
-
-pal <- colorFactor(
-  palette = c("green", "blue", "yellow", "red"),
-  domain = bronx_redlining$red_grade
-)
-
-leaflet(bronx_redlining) |>
-  addTiles() |>
-  addPolygons(
-    fillColor = ~pal(red_grade),
-    weight = 1,
-    opacity = 1,
-    color = "black",
-    fillOpacity = 0.7,
-    highlightOptions = highlightOptions(
-      weight = 2,
-      color = "#666",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    ),
-    label = ~paste0("Census Tract: ", geoid, 
-                    "<br>Redlining Grade: ", red_grade)
-  ) |>
-  addCircleMarkers(
-    data = bronx_stores,
-    lng = ~longitude,
-    lat = ~latitude,
-    radius = 5,
-    color = "green",
-    stroke = FALSE,
-    fillOpacity = 0.7,
-    label = ~paste0("Store Name: ", store_name,
-                    "<br>Borough: ", borough,
-                    "<br>ZIP Code: ", zip_code),
-    labelOptions = labelOptions(
-      noHide = FALSE,
-      direction = "auto"
-    )
-  ) |>
-  addLegend(
-    pal = pal,
-    values = ~red_grade,
-    opacity = 0.7,
-    title = "Redlining Grade",
-    position = "bottomright"
-  ) |>
-  addLegend(
-    position = "bottomleft",
-    colors = "green",
-    labels = "Grocery Store",
-    title = "Healthy Grocery Stores in Bronx"
-  )
-
-```
-
-### SNAP Enrollment and Grocery Stores in Bronx.
-
-```{r, echo=FALSE, fig.align='center'}
-bronx_ <- borough_snap_map |>
-=======
 ```{r, echo=FALSE}
 bronx_ <- redlining_sf |>
->>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
   filter(borough == "Bronx")
 
 bronx_stores <- nyc_healthy_store |>
@@ -644,15 +493,10 @@ leaflet(bronx_) |>
     data = bronx_stores,
     lng = ~longitude,
     lat = ~latitude,
-<<<<<<< HEAD
-    radius = 5,
-    color = "green",
-=======
     radius = 2.5,
     color = "blue",
->>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     stroke = FALSE,
-    fillOpacity = 0.7,
+    fillOpacity = 0.8,
     label = ~paste0("Store Name: ", store_name,
                     "<br>Borough: ", borough,
                     "<br>ZIP Code: ", zip_code),
@@ -670,7 +514,7 @@ leaflet(bronx_) |>
   ) |>
   addLegend(
     position = "bottomleft",
-    colors = "green",
+    colors = "blue",
     labels = "Grocery Store",
     title = "Healthy Grocery Stores in Bronx"
   )
