@@ -209,31 +209,3 @@ place_crude|>
   filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
   knitr::kable()
 ```
-
-# optional section 
-
-**Comments: I think we may or may not need the following data in analysis, but if someone want to use that, we will include them in the data cleaning, or I will just delete them**
-
-
-## poverty level [optional for use ]
-
-```{r}
-poverty = 
-  read_csv(file = "./Datasets/ACS-poverty-level.csv", skip=1)|>
-  janitor::clean_names()|>
-  mutate(geoid = str_remove(geography, ".*US"))
-```
-
-## NYC census demographic [optional for use]
-
-**For this data we have more detailed demographic by age division, and slightly different way of measuring race and ethnicty (Hispanic
-White non-Hispanic,Black non-Hispanic, Asian non-Hispanic, Some other race non-Hispanic, Non-Hispanic of two or more races). In case this will be interesting for EDA or analysis **
-
-```{r}
-demo = 
-  read_excel("./Datasets/NYC_census_core_data.xlsx")|>
-  janitor::clean_names()|>
-  filter(geo_type == "CT2020")|>
-  rename(geoid = geo_id)
-```
-
