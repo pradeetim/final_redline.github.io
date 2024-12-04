@@ -423,6 +423,9 @@ health_data |>
 
 ```
 
+The graph compares the impact of redlining on health outcomes (diabetes, obesity, and high cholesterol) in different areas.
+The higher redlining scores (A, B) tend to have slightly higher obesity and high cholesterol rates, potentially indicating the complex intersection of socioeconomic status, healthcare access, and environmental factors related to historical redlining.
+
 
 ## Exploration of Redlining, SNAP, and Healthy Grocery Stores
 
