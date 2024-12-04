@@ -224,7 +224,7 @@ SNAP |>
 ```
 
 ### Race VS Redlinging Grade:
-```{r, echo=FALSE}
+```{r, echo=FALSE,warning=FALSE}
 redlining_long <- redlining_sf |>
   select(red_grade, ph_white, ph_black, ph_asian, ph_other_race) |>
   pivot_longer(
