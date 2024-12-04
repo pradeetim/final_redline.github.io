@@ -71,7 +71,8 @@ We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC
 
 ## Data Cleaning
 
-```{r overall_setup}
+```{r overall_setup, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 library(tidyverse)
 library(readxl)
 library(ggplot2)

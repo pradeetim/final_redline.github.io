@@ -14,8 +14,6 @@ Meet the team below:
 
 #### Yan Li 
 
-<img src = "images/authors/YanL Pic.png" style = "width:20%">
-
 #### Pradeeti Mainali
 
 <img src = "images/authors/pradeeti.jpg" style = "width:20%">
@@ -23,8 +21,6 @@ Meet the team below:
 Pradeeti is a second year MPH Epidemiology student. She currently works as a research assistant at NJMS DOMC Infectious Disease. She enjoys watching shows/movies and paining.
 
 #### Polly Wu
-
-<img src = "images/authors/headshot_pw.jpg" style = "width:20%">
 
 Polly is a second year MPH student in the Epidemiology Department. She works as a fellow for the CEESP program and a research assistant for the School of Nursing at Columbia University. She loves crochet and cooking outside of her professional life. 
 

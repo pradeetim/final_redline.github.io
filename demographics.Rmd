@@ -102,12 +102,9 @@ leaflet(redlining_sf) |>
 
 ```
 
+### Distribution of Redlining Scores in Boroughs:
 
-### Average Redlining Score in Each Borough（-delete):
-
-Lets look at the average redlining score in each borough: 
-
-```{r, echo=FALSE, warning=FALSE, fig.align='center'}
+```{r, echo=FALSE, fig.align='center'}
 redlining = redlining |>
   mutate(
     borough = case_when(
@@ -118,46 +115,21 @@ redlining = redlining |>
       fip == 36085 ~ "Staten Island",
       TRUE ~ "Unknown"))
 
-redlining |>
-  group_by(borough) |>
-  summarize(avg_redline_score =
-              mean(hrs2020, na.rm = TRUE)) |>
-  mutate(borough = fct_reorder(borough, avg_redline_score)) |>
-  ggplot(aes(x = borough, y = avg_redline_score, fill = borough)) +
-  geom_point() +
-  labs(
-    title = "Average Redlining Score by Borough",
-    x = "Borough",
-    y = "Average Redlining Score"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-```
-
-This graph shows the average redlining scores in each borough. Although it looks fairly different, the range is fairly low, between ~3.06 and ~3.24. This does not give us too much information. Lets look at the distribution: 
-
-### Distribution of Redlining Scores in Boroughs(-add average):
-
-```{r, echo=FALSE, fig.align='center'}
-redlining |>
-  mutate(
-    borough = case_when(
-      fip == 36061 ~ "Manhattan",
-      fip == 36047 ~ "Brooklyn",
-      fip == 36081 ~ "Queens",
-      fip == 36005 ~ "Bronx",
-      fip == 36085 ~ "Staten Island",
-      TRUE ~ "Unknown")) |>
-  ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
+  ggplot(redlining, aes(x = borough, y = hrs2020, fill = borough)) +
   geom_violin(trim = FALSE, alpha = 0.7) +
+  coord_flip() +
+   stat_summary(
+     fun = mean, geom = "point", color = "blue", size = 3, shape = 18) +
+  stat_summary(
+    fun = median, geom = "point", color = "purple", size = 3, shape = 16) +
   labs(
     title = "Distribution of Redlining Scores by NYC Borough",
     x = "Borough",
-    y = "Redlining Score"
-  ) +
+    y = "Redlining Score",
+    caption = "Mean (Blue Diamond), Median (Purple Circle)") +
   scale_fill_brewer(palette = "Set2") +
-  theme_minimal()
+  theme_minimal() 
+
 ```
 
 This graph shows more detail. The distribution of the scores are fairly different for the boroughs, which Manhattan having the most distribution and Queens having the smallest.
@@ -180,17 +152,16 @@ redlining |>
     xaxis = list(title = "Borough"),
     yaxis = list(title = "Count") 
   )
-
 ```
 
 We can see here that Staten Island, Queens, and Bronx have the most C grade in their neighborhood. Manhattan and Brooklyn have the grade D as the most frequent. This is similar to what we saw in the violin plot previously. 
 
 ## SNAP Exploration and Demographics:
 
-### SNAP Total Household Count in Boroughs(-change to %):
+### SNAP Total % of Households within Redline Grade:
 
 ```{r, echo=FALSE, fig.align='center'}
-SNAP = SNAP |>
+redlining_snap |>
   separate(
     name,
     into = c("census_tract", "county", "state"),
@@ -207,31 +178,32 @@ SNAP = SNAP |>
       county == "Richmond County" ~ "Staten Island",
       TRUE ~ "Unknown"
     )
-  )
-
-SNAP |>
-  group_by(borough) |>
-  summarize(
-    total_household_count = sum(total_ct_households, na.rm = TRUE)
   ) |>
-  filter(borough != "Unknown") |>
+  group_by(red_grade) |>
+  summarize(
+    avg_ph_snap = mean(ph_snap, na.rm = TRUE)
+  ) |>
+  ungroup() |>
   plot_ly(
-    x = ~borough, 
-    y = ~total_household_count, 
-    color = ~borough, 
-    type = "bar", 
+    x = ~red_grade,
+    y = ~avg_ph_snap,
+    type = "bar",
+    color = ~red_grade,
     colors = "viridis"
   ) |>
   layout(
-    title = "Total SNAP-Enrolled Households by Borough in 2022",
-    xaxis = list(title = "Borough"),
-    yaxis = list(title = "Total Household Count"),
+    title = "Average SNAP Percentage of Households by Redline Grade in 2022",
+    xaxis = list(title = "Redline Grade"),
+    yaxis = list(title = "Average SNAP Percentage"),
     showlegend = FALSE
   )
+  
 ```
 
 ### Race VS Redlinging Grade:
+
 This is a stacked bar chart showing the race distribution of households by historical redlining grades (A, B, C, D, NA) in New York City.
+
 ```{r Race, echo=FALSE,warning=FALSE}
 redlining_long <- redlining_sf |>
   select(red_grade, ph_white, ph_black, ph_asian, ph_other_race) |>
@@ -267,13 +239,16 @@ ggplot(redlining_long, aes(x = red_grade, y = percent_household, fill = race_gro
     legend.position = "right"
   )
 ```
+
 * Grade D ("Hazardous") areas have a higher concentration of Black and minority households compared to Grade A or B areas, which show a higher proportion of White households.
 * Grade C and D areas reflect the legacy of racial segregation, where redlined zones were predominantly occupied by communities of color.
 
 ## Healthy Grocery Store Exploration:
 
 ### Redlinging Grade VS. Grocery Stores(Manhattan,Brooklyn,and Bronx):
+
 This map overlays the distribution of healthy grocery stores on top of the historical redlining grades across NYC.
+
 ```{r store1, echo=FALSE}
 redlining_sf <- redlining_sf |>
   mutate(
@@ -347,6 +322,7 @@ leaflet(redlining_sf) |>
 
 
 ### Redlinging Grade VS.Grocery Stores in Bronx Only:
+
 This map zooms in on the Bronx area to focus on the distribution of healthy grocery stores within the context of historical redlining grades.
 
 ```{r bronx, echo=FALSE}
@@ -426,6 +402,7 @@ leaflet(bronx_) |>
     opacity = 0.7
   )
 ```
+
 * Redlined areas (D) in the Bronx show fewer healthy grocery stores compared to blue (C) and yellow (B) areas.
 
 ## Health Outcome vs Redlining Scores
@@ -469,7 +446,8 @@ The graph compares the relationship between redlining and health outcomes (diabe
 
 
 ### SNAP Enrollment and Grocery Stores in Bronx(USE IN SHINY APP IF NEEDED).
-```{r, echo=FALSE}
+
+```{r, echo=FALSE, warning=FALSE}
 bronx_ <- redlining_sf |>
   filter(borough == "Bronx")
 
@@ -532,3 +510,65 @@ leaflet(bronx_) |>
 
 ```
 
+### Health outcome map (shiny)
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+health_data =
+  place_cleaned |>
+  left_join(redlining_snap, by = "geoid") |>
+  janitor::clean_names()
+
+health_data_long <- health_data %>%
+  drop_na(red_grade, obesity, diabetes, highchol) %>%
+  pivot_longer(cols = c(obesity, diabetes, highchol), 
+               names_to = "condition", values_to = "rate")
+
+census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")  # API key for Census API
+nyc_tracts <- get_acs(
+  geography = "tract",
+  variables = "B19013_001",  # Median household income as an example (this is just to pull the geometry)
+  state = "NY",
+  county = c("Bronx", "Kings", "New York", "Queens", "Richmond"),
+  geometry = TRUE,
+  year = 2020
+) %>%
+  st_transform(crs = 4326)  # Transform to WGS84 for compatibility with Leaflet
+
+nyc_tracts <- nyc_tracts %>%
+  mutate(borough = case_when(
+    str_detect(NAME, "Bronx County") ~ "Bronx",
+    str_detect(NAME, "Kings County") ~ "Brooklyn",
+    str_detect(NAME, "New York County") ~ "Manhattan",
+    str_detect(NAME, "Queens County") ~ "Queens",
+    str_detect(NAME, "Richmond County") ~ "Staten Island",
+    TRUE ~ "Unknown"
+  )) |>
+  janitor::clean_names()
+
+health_spatial_data <- nyc_tracts %>%
+  left_join(health_data_long, by = "geoid")  # Make sure the 'geoid' column matches in both datasets
+
+leaflet(health_spatial_data) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%  
+  addPolygons(
+    fillColor = ~colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate)(rate),  # Color based on 'rate'
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    # Modify the label to show 'condition' and 'rate'
+    label = ~paste0("Condition: ", condition,
+                    "<br>Rate: ", round(rate, 2))
+  ) %>%
+  addLegend(
+    pal = colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate),  # Legend for color scale
+    values = ~rate,
+    title = "Health Condition Rate",
+    position = "bottomright"
+  )
+```

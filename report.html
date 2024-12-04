@@ -13,7 +13,7 @@
 
 <title>Final Report</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
@@ -350,6 +350,9 @@ div.tocify {
   <a href="statistical_analysis.html">Statistical Analysis</a>
 </li>
 <li>
+  <a href="shiny_dashboard_template.html">Shiny Dashboard</a>
+</li>
+<li>
   <a href="report.html">Project Report</a>
 </li>
 <li>
@@ -535,36 +538,17 @@ insecurity: <code>diabetes</code>, <code>obesity</code> and
 </div>
 <div id="data-cleaning" class="section level2">
 <h2>Data Cleaning</h2>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-## ✔ purrr     1.0.2     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(readxl)
+<<<<<<< HEAD
+<pre class="r"><code>library(tidyverse)
+=======
+<pre class="r"><code>knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+library(tidyverse)
+>>>>>>> 6cb347ed1f1fa62c4f8adf9e2ac6a551f25ab78c
+library(readxl)
 library(ggplot2)
 library(dplyr)
-library(plotly)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;plotly&#39;
-## 
-## The following object is masked from &#39;package:ggplot2&#39;:
-## 
-##     last_plot
-## 
-## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter
-## 
-## The following object is masked from &#39;package:graphics&#39;:
-## 
-##     layout</code></pre>
-<pre class="r"><code>library(stringr)</code></pre>
+library(plotly)
+library(stringr)</code></pre>
 <div id="cleaning-snap-data-set" class="section level3">
 <h3>Cleaning SNAP data set:</h3>
 <pre class="r"><code>SNAP = 
@@ -603,8 +587,9 @@ library(plotly)</code></pre>
          ph_non_hispanic = 100-ph_hispanic)|&gt;
   select(geoid,name,ph_snap,everything())|&gt;
   select(-geo_id)</code></pre>
+<<<<<<< HEAD
 <pre><code>## Rows: 2330 Columns: 458
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (458): ﻿&quot;GEO_ID&quot;, NAME, S2201_C01_001E, S2201_C01_001M, S2201_C01_002E, ...
 ## 
@@ -615,7 +600,10 @@ library(plotly)</code></pre>
 ## ℹ In argument: `across(total_ct_households:ph_snap, as.numeric)`.
 ## Caused by warning:
 ## ! NAs introduced by coercion
-## ℹ Run `dplyr::last_dplyr_warnings()` to see the 15 remaining warnings.</code></pre>
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 15 remaining
+##   warnings.</code></pre>
+=======
+>>>>>>> 6cb347ed1f1fa62c4f8adf9e2ac6a551f25ab78c
 <p>The window below is a preview of the SNAP data set.</p>
 <pre class="r"><code>head(SNAP)|&gt;
   knitr::kable()|&gt;
@@ -157821,9 +157809,10 @@ Census Tract 319.02; Richmond County; New York
   select(store_name,borough,zip_code,latitude,longitude,fipcode, ct_label)|&gt;
   filter(!is.na(ct_label))|&gt;
   mutate(geoid = paste(fipcode, ct_label, sep = &quot;&quot;))|&gt;
+<<<<<<< HEAD
   select(-fipcode, -ct_label)</code></pre>
 <pre><code>## Rows: 675 Columns: 15
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
 ## dbl (10): Zip 
@@ -157834,6 +157823,11 @@ Census Tract 319.02; Richmond County; New York
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>head(nyc_healthy_store)|&gt;
+=======
+  select(-fipcode, -ct_label)
+
+head(nyc_healthy_store)|&gt;
+>>>>>>> 6cb347ed1f1fa62c4f8adf9e2ac6a551f25ab78c
   knitr::kable()|&gt;
   kableExtra::kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;), font_size = 12) %&gt;% 
   kableExtra::scroll_box(width = &quot;100%&quot;, height = &quot;300px&quot;)</code></pre>
@@ -158037,9 +158031,10 @@ columns and rows as each census tracts.</p>
   read_csv(&quot;./Datasets/PLACES.csv&quot;)|&gt;
   janitor::clean_names()|&gt;
   rename(geoid = location_id)|&gt;
+<<<<<<< HEAD
   select(geoid, measure:data_value, measure_id)</code></pre>
 <pre><code>## Rows: 73621 Columns: 25
-## ── Column specification ────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
 ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
@@ -158048,6 +158043,12 @@ columns and rows as each census tracts.</p>
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>place_cleaned=
+=======
+  select(geoid, measure:data_value, measure_id)
+
+
+place_cleaned=
+>>>>>>> 6cb347ed1f1fa62c4f8adf9e2ac6a551f25ab78c
   place_crude|&gt;
   filter(measure_id %in% c(&quot;DIABETES&quot;, &quot;HIGHCHOL&quot;, &quot;OBESITY&quot;))|&gt;
   pivot_wider(
@@ -158209,6 +158210,51 @@ screened</td>
 </table>
 </div>
 </div>
+<<<<<<< HEAD
+=======
+</div>
+<div id="optional-section" class="section level1">
+<h1>optional section</h1>
+<p><strong>Comments: I think we may or may not need the following data
+in analysis, but if someone want to use that, we will include them in
+the data cleaning, or I will just delete them</strong></p>
+<div id="poverty-level-optional-for-use" class="section level2">
+<h2>poverty level [optional for use ]</h2>
+<pre class="r"><code>poverty = 
+  read_csv(file = &quot;./Datasets/ACS-poverty-level.csv&quot;, skip=1)|&gt;
+  janitor::clean_names()|&gt;
+  mutate(geoid = str_remove(geography, &quot;.*US&quot;))</code></pre>
+<<<<<<< HEAD
+<pre><code>## New names:
+## Rows: 2327 Columns: 375
+## ── Column specification
+## ────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic Area Name,
+## Estimate!!Total!!UNRELATED INDIV... dbl (228):
+## Estimate!!Total!!Population for whom poverty status is
+## determined... lgl (1): ...375
+## ℹ Use `spec()` to retrieve the full column specification for this
+## data. ℹ Specify the column types or set `show_col_types = FALSE`
+## to quiet this message.
+## • `` -&gt; `...375`</code></pre>
+=======
+>>>>>>> 6cb347ed1f1fa62c4f8adf9e2ac6a551f25ab78c
+</div>
+<div id="nyc-census-demographic-optional-for-use"
+class="section level2">
+<h2>NYC census demographic [optional for use]</h2>
+<p><strong>For this data we have more detailed demographic by age
+division, and slightly different way of measuring race and ethnicty
+(Hispanic White non-Hispanic,Black non-Hispanic, Asian non-Hispanic,
+Some other race non-Hispanic, Non-Hispanic of two or more races). In
+case this will be interesting for EDA or analysis </strong></p>
+<pre class="r"><code>demo = 
+  read_excel(&quot;./Datasets/NYC_census_core_data.xlsx&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  filter(geo_type == &quot;CT2020&quot;)|&gt;
+  rename(geoid = geo_id)</code></pre>
+</div>
+>>>>>>> f7c3c8fe1666c59e8822b460bcbe736edb3032f4
 <div id="exploratory-analysis" class="section level2">
 <h2>Exploratory Analysis</h2>
 <div id="visualizations" class="section level3">
