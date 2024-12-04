@@ -266,7 +266,7 @@ ggplot(redlining_long, aes(x = red_grade, y = percent_household, fill = race_gro
 ## Healthy Grocery Store Exploration:
 
 ### Redlinging Grade VS. Grocery Stores(Manhattan,Brooklyn,and Bronx):
-
+This map overlays the distribution of healthy grocery stores on top of the historical redlining grades across NYC.
 ```{r echo=FALSE}
 redlining_sf <- redlining_sf |>
   mutate(
@@ -340,7 +340,7 @@ leaflet(redlining_sf) |>
 
 
 ### Redlinging Grade VS.Grocery Stores in Bronx Only:
-
+This map zooms in on the Bronx area to focus on the distribution of healthy grocery stores within the context of historical redlining grades.
 
 ```{r}
 redlining_sf <- redlining_sf |>
@@ -419,7 +419,7 @@ leaflet(bronx_) |>
     opacity = 0.7
   )
 ```
-
+* Redlined areas (D) in the Bronx show fewer healthy grocery stores compared to blue (C) and yellow (B) areas.
 
 ## Health Outcome vs Redlining Scores
 
