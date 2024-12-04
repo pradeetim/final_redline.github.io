@@ -333,9 +333,9 @@ leaflet() |>
     lng = ~longitude,
     lat = ~latitude,
     radius = 5,
-    color = "blue",
+    color = "green",
     stroke = FALSE,
-    fillOpacity = 0.8,
+    fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
                     "<br>Borough: ", borough,
                     "<br>ZIP Code: ", zip_code),
@@ -346,7 +346,7 @@ leaflet() |>
   ) |>
   addLegend(
     position = "bottomright",
-    colors = "blue",
+    colors = "green",
     labels = "Grocery Store",
     title = "Healthy Grocery Stores"
   )
@@ -366,7 +366,7 @@ leaflet() |>
     lng = ~longitude,
     lat = ~latitude,
     radius = 5,
-    color = "blue",
+    color = "green",
     stroke = FALSE,
     fillOpacity = 0.8,
     label = ~paste0("Store Name: ", store_name,
@@ -379,7 +379,7 @@ leaflet() |>
   ) |>
   addLegend(
     position = "bottomright",
-    colors = "blue",
+    colors = "green",
     labels = "Grocery Store",
     title = "Healthy Grocery Stores in Bronx"
   )
@@ -533,9 +533,9 @@ leaflet(bronx_redlining) |>
     lng = ~longitude,
     lat = ~latitude,
     radius = 5,
-    color = "blue",
+    color = "green",
     stroke = FALSE,
-    fillOpacity = 0.8,
+    fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
                     "<br>Borough: ", borough,
                     "<br>ZIP Code: ", zip_code),
@@ -553,7 +553,7 @@ leaflet(bronx_redlining) |>
   ) |>
   addLegend(
     position = "bottomleft",
-    colors = "blue",
+    colors = "green",
     labels = "Grocery Store",
     title = "Healthy Grocery Stores in Bronx"
   )
@@ -597,9 +597,9 @@ leaflet(bronx_) |>
     lng = ~longitude,
     lat = ~latitude,
     radius = 5,
-    color = "blue",
+    color = "green",
     stroke = FALSE,
-    fillOpacity = 0.8,
+    fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
                     "<br>Borough: ", borough,
                     "<br>ZIP Code: ", zip_code),
@@ -617,7 +617,7 @@ leaflet(bronx_) |>
   ) |>
   addLegend(
     position = "bottomleft",
-    colors = "blue",
+    colors = "green",
     labels = "Grocery Store",
     title = "Healthy Grocery Stores in Bronx"
   )
