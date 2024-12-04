@@ -65,26 +65,24 @@ redlining_sf =
 
 ## Redlining Exploration:
 
-### Redlining Throughout Boroughs:
 
-Here is the map detailing the redlining scores (ranging from 1-4) given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
+## Redlining Exploration:
+Here is the map detailing the redlining grades given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
-```{r, echo=FALSE, warning=FALSE, fig.align='center'}
+```{r, echo=FALSE, warning=FALSE}
 
-borough_boundaries <- nyc_tracts |>
-  group_by(borough) |>
-  summarize(geometry = st_union(geometry), .groups = 'drop')
-
-pal <- colorNumeric(
-  palette = "YlOrRd",  
-  domain = redlining_sf$hrs2020, 
-  na.color = "grey"  
+pal <- colorFactor(
+  palette = c("#00FF00",  
+              "#FFFF00", 
+              "#800080", 
+              "#FF0000"),
+  domain = redlining_sf$red_grade
 )
 
 leaflet(redlining_sf) |>
-  addTiles() |>
+  addProviderTiles(providers$CartoDB.Positron) |> 
   addPolygons(
-    fillColor = ~pal(hrs2020),
+    fillColor = ~pal(red_grade),
     weight = 1,
     opacity = 1,
     color = "black",
@@ -95,43 +93,18 @@ leaflet(redlining_sf) |>
       fillOpacity = 0.9,
       bringToFront = TRUE
     ),
-    label = ~paste0("Census Tract: ", geoid, 
-                    "<br>Borough: ", borough, 
-                    "<br>Redlining Score (2020): ", hrs2020)
-  ) |>
-  addPolygons(
-    data = borough_boundaries,
-    weight = 3,
-    color = "black",
-    fill = FALSE,
-    opacity = 1,
-    highlightOptions = highlightOptions(
-      weight = 5,
-      color = "#000000",
-      bringToFront = TRUE
-    )
-  ) |>
-  addLabelOnlyMarkers(
-    data = st_centroid(borough_boundaries),
-    lng = ~st_coordinates(geometry)[,1],
-    lat = ~st_coordinates(geometry)[,2],
-    label = ~borough,
-    labelOptions = labelOptions(
-      noHide = TRUE,
-      direction = 'center',
-      textOnly = TRUE,
-      style = list("color" = "black", "font-size" = "16px", "font-weight" = "bold")
-    )
+    label = ~paste0("Census Tract: ", geoid, "<br>Redlining Interval: ", interval2020, "<br>Redlining Score (2020): ", hrs2020)
   ) |>
   addLegend(
     pal = pal,
-    values = ~hrs2020,
+    values = ~red_grade,
     opacity = 0.7,
-    title = "Redlining Score (2020)",
+    title = "Redlining Category",
     position = "bottomright"
   )
 
 ```
+
 
 ### Average Redlining Score in Each Borough:
 
