@@ -1,5 +1,5 @@
 ---
-title: "Shiny Dashboard"
+title: "Redlining in NYC"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -88,7 +88,7 @@ health_spatial_data <- nyc_tracts %>%
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-```{r}
+```{r, echo=FALSE}
 health_indicator = 
 	health_data_long |> 
 	distinct(condition) |> 
@@ -103,7 +103,7 @@ selectInput(
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 checkboxInput(
   inputId = "store_check",
   label = h3("Retail Store"),
@@ -112,7 +112,7 @@ checkboxInput(
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 borough_choices = 
 	redlining_sf |> 
 	distinct(borough) |> 
@@ -134,17 +134,12 @@ Column {data-width=650}
 
 ### Redlining Map
 
-```{r}
-leafletOutput("redlining_map", height = 600)
-```
-
-```{r, context="server"}
-output$redlining_map <- renderLeaflet({
-  # Filter data based on the input from the sidebar
+```{r, echo=FALSE}
+renderLeaflet({
   filtered_data <- redlining_sf %>% filter(borough == input$borough_choice)
 
   # Create leaflet map with the filtered data
-  leaflet(filtered_data) |>
+leaflet(filtered_data) |>
     addProviderTiles(providers$CartoDB.Positron) |> 
     addPolygons(
       fillColor = ~colorFactor(palette = c("#208e56", "#e4e44c", "#1595b4", "#ef647b"), domain = redlining_sf$red_grade)(red_grade),
@@ -175,12 +170,8 @@ Column {data-width=350}
 
 ### Health Indicator Map
 
-```{r}
-leafletOutput("health_map", height = 600)
-```
-
-```{r, context="server"}
-output$health_map <- renderLeaflet({
+```{r, echo=FALSE}
+renderLeaflet({
   leaflet(health_spatial_data %>% filter(condition == input$health_indicator & borough == input$borough_choice)) %>%
     addProviderTiles(providers$CartoDB.Positron) %>%  
     addPolygons(
@@ -209,12 +200,8 @@ output$health_map <- renderLeaflet({
 
 ### Healthy Grocery Stores and Redlining
 
-```{r}
-leafletOutput("store_map", height = 600)
-```
-
-```{r, context="server"}
-output$store_map <- renderLeaflet({
+```{r, echo=FALSE}
+renderLeaflet({
   filtered_redlining <- redlining_sf %>% filter(borough == input$borough_choice)
   
   map <- leaflet(filtered_redlining) |>
