@@ -434,6 +434,7 @@ final_analysis |>
        y = "Outcome Value")
 ```
 
+
 ### Linear Models of Obesity, Diabetes and High Cholesterol
 
 ```{r}
@@ -452,6 +453,23 @@ chol_model = lm(highchol ~ red_grade, data = final_analysis)
 chol_model |> 
   broom::tidy()|> 
   mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3)
+```
+```{r}
+diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+diabetes_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
+
+
+obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
+
+obesity_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |> 
+  broom::tidy()|> 
   knitr::kable(digits = 3)
 ```
 
