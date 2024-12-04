@@ -393,11 +393,36 @@ health_data =
   place_cleaned |>
   mutate(geoid = as.character(geoid)) |>
   left_join(redlining_snap, by = "geoid") |>
-  janitor::clean_names() 
+  janitor::clean_names()
+
+health_data |>
+  drop_na(red_grade, obesity, diabetes, highchol) |>
+  select(red_grade, obesity, diabetes, highchol) |>
+  group_by(red_grade) |>
+  mutate(
+    obesity_rate = mean(obesity, na.rm = FALSE),
+    diabetes_rate = mean(diabetes, na.rm = FALSE),
+    highchol_rate = mean(highchol, na.rm = FALSE)
+  ) |>
+  select(red_grade, obesity_rate, diabetes_rate, highchol_rate) |>
+  pivot_longer(cols = c(obesity_rate, diabetes_rate, highchol_rate), 
+               names_to = "condition", values_to = "rate") |>
+  ggplot(aes(x = condition, y = rate, fill = condition)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  facet_wrap(~red_grade) + 
+  labs(
+    title = "Diabetes, Obesity, and High Cholesterol Rates by Redlining Grade",
+    x = "Condition",
+    y = "Rate"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("diabetes_rate" = "#1f77b4",
+                              "obesity_rate" = "#ff7f0e",  
+                              "highchol_rate" = "#2ca02c")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
 
 ```
 
-The exploratory analysis of obesity rates against redlining scores reveals a consistent positive trend across most of New York City's boroughs, with areas of historical redlining showing higher obesity rates. While Manhattan presents a weaker relationship, other boroughs like the Bronx, Brooklyn, Queens, and Staten Island demonstrate stronger associations, suggesting that the legacy of redlining may contribute to health disparities. 
 
 ## Exploration of Redlining, SNAP, and Healthy Grocery Stores
 
