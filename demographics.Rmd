@@ -116,8 +116,7 @@ redlining = redlining |>
       fip == 36081 ~ "Queens",
       fip == 36005 ~ "Bronx",
       fip == 36085 ~ "Staten Island",
-      TRUE ~ "Unknown")
-  )
+      TRUE ~ "Unknown"))
 
 redlining |>
   group_by(borough) |>
@@ -142,6 +141,14 @@ This graph shows the average redlining scores in each borough. Although it looks
 
 ```{r, echo=FALSE, fig.align='center'}
 redlining |>
+  mutate(
+    borough = case_when(
+      fip == 36061 ~ "Manhattan",
+      fip == 36047 ~ "Brooklyn",
+      fip == 36081 ~ "Queens",
+      fip == 36005 ~ "Bronx",
+      fip == 36085 ~ "Staten Island",
+      TRUE ~ "Unknown")) |>
   ggplot(aes(x = borough, y = hrs2020, fill = borough)) +
   geom_violin(trim = FALSE, alpha = 0.7) +
   labs(
