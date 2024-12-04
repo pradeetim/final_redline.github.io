@@ -94,11 +94,11 @@ health_indicator =
 	distinct(condition) |> 
 	pull(condition)
 
-selectInput(
+radioButtons(
 	inputId = "health_indicator", 
 	label = h3("Health Indicator"), 
 	choices = health_indicator,
-	selected = "Diabetes"
+	selected = "diabetes"
 )
 ```
 
@@ -172,7 +172,11 @@ Column {data-width=350}
 
 ```{r, echo=FALSE}
 renderLeaflet({
-  leaflet(health_spatial_data %>% filter(condition == input$health_indicator & borough == input$borough_choice)) %>%
+  req(input$health_indicator, input$borough_choice)
+  filtered_data <- health_spatial_data %>%
+    filter(condition == input$health_indicator & borough == input$borough_choice)
+
+  leaflet(filtered_data) %>%
     addProviderTiles(providers$CartoDB.Positron) %>%  
     addPolygons(
       fillColor = ~colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate)(rate),  
