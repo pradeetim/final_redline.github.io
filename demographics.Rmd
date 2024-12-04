@@ -260,7 +260,8 @@ ggplot(redlining_long, aes(x = red_grade, y = percent_household, fill = race_gro
     legend.position = "right"
   )
 ```
-
+* Grade D ("Hazardous") areas have a higher concentration of Black and minority households compared to Grade A or B areas, which show a higher proportion of White households.
+* Grade C and D areas reflect the legacy of racial segregation, where redlined zones were predominantly occupied by communities of color.
 
 ## Healthy Grocery Store Exploration:
 
