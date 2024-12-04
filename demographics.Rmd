@@ -393,38 +393,7 @@ health_data =
   place_cleaned |>
   mutate(geoid = as.character(geoid)) |>
   left_join(redlining_snap, by = "geoid") |>
-  janitor::clean_names() |>
-  mutate(
-    borough = case_when(
-      fip == 36061 ~ "Manhattan",
-      fip == 36047 ~ "Brooklyn",
-      fip == 36081 ~ "Queens",
-      fip == 36005 ~ "Bronx",
-      fip == 36085 ~ "Staten Island",
-      TRUE ~ "Unknown")
-  )
-
-health_data %>%
-  select(red_grade, obesity, diabetes, highchol) |>
-  group_by(red_grade) %>%
-  mutate(
-    obesity_avg = mean(obesity, na.rm = FALSE),
-    diabetes_avg = mean(diabetes, na.rm = FALSE),
-    highchol_avg = mean(highchol, na.rm = FALSE)
-  ) %>%
-  pivot_longer(cols = c(diabetes_avg, obesity_avg, highchol_avg), 
-               names_to = "condition", values_to = "rate") %>%
-  ggplot(aes(x = rate, fill = condition)) +
-  geom_histogram(binwidth = 10, color = "black", alpha = 0.7, , position = "dodge"
-                 ) +
-  facet_wrap(~red_grade) +  # Create facets by red_grade
-  labs(
-    title = "Diabetes, Obesity, and High Cholesterol Rates by Redlining Grade",
-    x = "Rate",
-    y = "Frequency"
-  ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("diabetes_avg" = "blue", "obesity_avg" = "red", "highchol_avg" = "green"))
+  janitor::clean_names() 
 
 ```
 
