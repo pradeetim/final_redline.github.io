@@ -447,7 +447,7 @@ The graph compares the relationship between redlining and health outcomes (diabe
 
 ### SNAP Enrollment and Grocery Stores in Bronx(USE IN SHINY APP IF NEEDED).
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 bronx_ <- redlining_sf |>
   filter(borough == "Bronx")
 
@@ -511,7 +511,7 @@ leaflet(bronx_) |>
 ```
 
 ### Health outcome map (shiny)
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 health_data =
   place_cleaned |>
   left_join(redlining_snap, by = "geoid") |>
