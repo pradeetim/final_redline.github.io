@@ -64,9 +64,6 @@ redlining_sf =
 ```
 
 ## Redlining Exploration:
-
-
-## Redlining Exploration:
 Here is the map detailing the redlining grades given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
 ```{r, echo=FALSE, warning=FALSE}
