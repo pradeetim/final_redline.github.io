@@ -164156,6 +164156,45 @@ screened</td>
 </tbody>
 </table>
 </div>
+<<<<<<< HEAD
+=======
+<div id="optional-section" class="section level1">
+<h1>optional section</h1>
+<p><strong>Comments: I think we may or may not need the following data
+in analysis, but if someone want to use that, we will include them in
+the data cleaning, or I will just delete them</strong></p>
+<div id="poverty-level-optional-for-use" class="section level2">
+<h2>poverty level [optional for use ]</h2>
+<pre class="r"><code>poverty = 
+  read_csv(file = &quot;./Datasets/ACS-poverty-level.csv&quot;, skip=1)|&gt;
+  janitor::clean_names()|&gt;
+  mutate(geoid = str_remove(geography, &quot;.*US&quot;))</code></pre>
+<pre><code>## New names:
+## Rows: 2327 Columns: 375
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (146): Geography, Geographic Area Name, Estimate!!Total!!UNRELATED INDIV... dbl
+## (228): Estimate!!Total!!Population for whom poverty status is determined... lgl
+## (1): ...375
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...375`</code></pre>
+</div>
+<div id="nyc-census-demographic-optional-for-use" class="section level2">
+<h2>NYC census demographic [optional for use]</h2>
+<p><strong>For this data we have more detailed demographic by age
+division, and slightly different way of measuring race and ethnicty
+(Hispanic White non-Hispanic,Black non-Hispanic, Asian non-Hispanic,
+Some other race non-Hispanic, Non-Hispanic of two or more races). In
+case this will be interesting for EDA or analysis </strong></p>
+<pre class="r"><code>demo = 
+  read_excel(&quot;./Datasets/NYC_census_core_data.xlsx&quot;)|&gt;
+  janitor::clean_names()|&gt;
+  filter(geo_type == &quot;CT2020&quot;)|&gt;
+  rename(geoid = geo_id)</code></pre>
+</div>
+</div>
+>>>>>>> 01aa2cdacb3637a6f1514dc8cad285142743cc46
 
 
 
