@@ -412,109 +412,37 @@ cv_df |>
 Based on the rootmean square models, model 1 and 2 perform signficantly better than model 1, while model 3 performs slightly better than model 3. 
 
 
-## Statistical Analysis of Health Outcomes associated with Food Insecurity
+## Association of Health Outcomes and Redlining
 
+### Preview the Health Outcomes Data
 ```{r}
 baseline_char|>
   filter(variable %in% c("obesity","diabetes","highchol"))|>
   knitr::kable(digits = 3)
+
+final_analysis |>
+  select(red_grade, obesity, diabetes, highchol) |>
+  pivot_longer(cols = c(obesity, diabetes, highchol), 
+               names_to = "outcome", 
+               values_to = "value") |> 
+  ggplot(aes(x = red_grade, y = value, fill = outcome)) +
+  geom_boxplot() +
+  facet_wrap(~ outcome, scales = "free_y") +
+  labs(title = "Boxplot of Health Outcomes by Redlining Grade",
+       x = "Redlining Grade",
+       y = "Outcome Value")
 ```
 
-
-
-### Does the relationship between redlining and health outcomes depend on minority percentage?
+### Linear Models of Obesity, Diabetes and High Cholesterol
 
 ```{r}
-uni_ob = lm(obesity ~ red_grade, data = final_analysis) 
-uni_ob|> broom::tidy() |> knitr::kable(digits = 3)
+obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
+obesity_model|> broom::tidy() |> knitr::kable(digits = 3)
 
-mul_ob = lm(obesity ~ red_grade + minority, data = final_analysis) 
-mul_ob |> broom::tidy() |> knitr::kable(digits = 3)
+diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
+diabetes_model |> broom::tidy() |> knitr::kable(digits = 3)
 
-int_ob = lm(obesity ~ red_grade + minority + red_grade * minority, data = final_analysis) 
-int_ob |> broom::tidy() |> knitr::kable(digits = 3)
-
-
-uni_dia = lm(diabetes ~ red_grade, data = final_analysis)
-uni_dia |> broom::tidy() |> knitr::kable(digits = 3)
-
-mul_dia = lm(diabetes ~ red_grade + minority, data = final_analysis) 
-mul_dia |> broom::tidy() |> knitr::kable(digits = 3)
-
-int_dia = lm(diabetes ~ red_grade + minority + red_grade * minority, data = final_analysis) 
-int_dia |> broom::tidy() |> knitr::kable(digits = 3)
+chol_model = lm(highchol ~ red_grade, data = final_analysis) 
+chol_model |> broom::tidy() |> knitr::kable(digits = 3)
 ```
-
-### Model Comparisons
-
-```{r}
-AIC(uni_ob, mul_ob, int_ob)
-models_ob = list(Univariate = uni_ob, Multivariate = mul_ob, Interaction = int_ob)
-sapply(models_ob, function(model) summary(model)$adj.r.squared)
-
-AIC(uni_dia, mul_dia, int_dia)
-models_dia = list(Univariate = uni_dia, Multivariate = mul_dia, Interaction = int_dia)
-sapply(models_dia, function(model) summary(model)$adj.r.squared)
-```
-
-### Logistic Regression 
-
-```{r}
-final_analysis <- final_analysis |> 
-  mutate(high_obesity = ifelse(obesity > 30, 1, 0),
-         high_diabetes = ifelse(diabetes > 10, 1, 0))
-
-glm(high_obesity ~ red_grade + minority, data = final_analysis, family = binomial) |>
-  broom::tidy() |> 
-  mutate(odds_ratio = exp(estimate)) |>
-  select(term, estimate, odds_ratio, statistic, std.error, p.value) |>
-  knitr::kable(digits = 3)
-
-glm(high_diabetes ~ red_grade + minority, data = final_analysis, family = binomial) |>
-  broom::tidy() |> 
-  mutate(odds_ratio = exp(estimate)) |>
-  select(term, estimate, odds_ratio, statistic, std.error, p.value) |>
-  knitr::kable(digits = 3)
-```
-
-### residual plots
-
-```{r}
-ob_residual = data.frame(
-    fitted = fitted(int_ob),
-    residuals = residuals(int_ob)
-  ) 
-ob_residual |>
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  theme_minimal() +
-  labs(
-    title = "Residuals vs Fitted Values of Obesity Regression Model",
-    x = "Fitted Values",
-    y = "Residuals"
-  )
-
-dia_residual = data.frame(
-    fitted = fitted(int_dia),
-    residuals = residuals(int_dia)
-  ) 
-dia_residual |>
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  theme_minimal() +
-  labs(
-    title = "Residuals vs Fitted Values of Diabetes Regression Model",
-    x = "Fitted Values",
-    y = "Residuals"
-  )
-```
-
-
-
-
-
-
-
 

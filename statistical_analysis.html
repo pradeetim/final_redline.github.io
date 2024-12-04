@@ -13,7 +13,7 @@
 
 <title>Statistical Analysis</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
@@ -1249,11 +1249,11 @@ signficantly better than model 1, while model 3 performs slightly better
 than model 3.</p>
 </div>
 </div>
-<div
-id="statistical-analysis-of-health-outcomes-associated-with-food-insecurity"
+<div id="association-of-health-outcomes-and-redlining"
 class="section level2">
-<h2>Statistical Analysis of Health Outcomes associated with Food
-Insecurity</h2>
+<h2>Association of Health Outcomes and Redlining</h2>
+<div id="preview-the-health-outcomes-data" class="section level3">
+<h3>Preview the Health Outcomes Data</h3>
 <pre class="r"><code>baseline_char|&gt;
   filter(variable %in% c(&quot;obesity&quot;,&quot;diabetes&quot;,&quot;highchol&quot;))|&gt;
   knitr::kable(digits = 3)</code></pre>
@@ -1323,13 +1323,24 @@ Insecurity</h2>
 </tr>
 </tbody>
 </table>
-<div
-id="does-the-relationship-between-redlining-and-health-outcomes-depend-on-minority-percentage"
+<pre class="r"><code>final_analysis |&gt;
+  select(red_grade, obesity, diabetes, highchol) |&gt;
+  pivot_longer(cols = c(obesity, diabetes, highchol), 
+               names_to = &quot;outcome&quot;, 
+               values_to = &quot;value&quot;) |&gt; 
+  ggplot(aes(x = red_grade, y = value, fill = outcome)) +
+  geom_boxplot() +
+  facet_wrap(~ outcome, scales = &quot;free_y&quot;) +
+  labs(title = &quot;Boxplot of Health Outcomes by Redlining Grade&quot;,
+       x = &quot;Redlining Grade&quot;,
+       y = &quot;Outcome Value&quot;)</code></pre>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="linear-models-of-obesity-diabetes-and-high-cholesterol"
 class="section level3">
-<h3>Does the relationship between redlining and health outcomes depend
-on minority percentage?</h3>
-<pre class="r"><code>uni_ob = lm(obesity ~ red_grade, data = final_analysis) 
-uni_ob|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<h3>Linear Models of Obesity, Diabetes and High Cholesterol</h3>
+<pre class="r"><code>obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
+obesity_model|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1371,129 +1382,8 @@ uni_ob|&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>mul_ob = lm(obesity ~ red_grade + minority, data = final_analysis) 
-mul_ob |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">17.122</td>
-<td align="right">0.917</td>
-<td align="right">18.682</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB</td>
-<td align="right">1.173</td>
-<td align="right">0.963</td>
-<td align="right">1.218</td>
-<td align="right">0.224</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC</td>
-<td align="right">1.446</td>
-<td align="right">0.940</td>
-<td align="right">1.538</td>
-<td align="right">0.124</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD</td>
-<td align="right">2.639</td>
-<td align="right">0.949</td>
-<td align="right">2.781</td>
-<td align="right">0.005</td>
-</tr>
-<tr class="odd">
-<td align="left">minority</td>
-<td align="right">0.142</td>
-<td align="right">0.004</td>
-<td align="right">32.717</td>
-<td align="right">0.000</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>int_ob = lm(obesity ~ red_grade + minority + red_grade * minority, data = final_analysis) 
-int_ob |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">15.764</td>
-<td align="right">1.341</td>
-<td align="right">11.752</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB</td>
-<td align="right">1.646</td>
-<td align="right">1.473</td>
-<td align="right">1.118</td>
-<td align="right">0.264</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC</td>
-<td align="right">5.209</td>
-<td align="right">1.406</td>
-<td align="right">3.706</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD</td>
-<td align="right">1.066</td>
-<td align="right">1.438</td>
-<td align="right">0.741</td>
-<td align="right">0.459</td>
-</tr>
-<tr class="odd">
-<td align="left">minority</td>
-<td align="right">0.195</td>
-<td align="right">0.039</td>
-<td align="right">4.965</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB:minority</td>
-<td align="right">-0.037</td>
-<td align="right">0.041</td>
-<td align="right">-0.909</td>
-<td align="right">0.364</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC:minority</td>
-<td align="right">-0.091</td>
-<td align="right">0.040</td>
-<td align="right">-2.300</td>
-<td align="right">0.022</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD:minority</td>
-<td align="right">-0.007</td>
-<td align="right">0.040</td>
-<td align="right">-0.171</td>
-<td align="right">0.864</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>uni_dia = lm(diabetes ~ red_grade, data = final_analysis)
-uni_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<pre class="r"><code>diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
+diabetes_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1535,8 +1425,8 @@ uni_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>mul_dia = lm(diabetes ~ red_grade + minority, data = final_analysis) 
-mul_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
+<pre class="r"><code>chol_model = lm(highchol ~ red_grade, data = final_analysis) 
+chol_model |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -1550,291 +1440,34 @@ mul_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">7.027</td>
-<td align="right">0.412</td>
-<td align="right">17.054</td>
-<td align="right">0.000</td>
+<td align="right">37.275</td>
+<td align="right">0.583</td>
+<td align="right">63.977</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeB</td>
-<td align="right">-0.600</td>
-<td align="right">0.433</td>
-<td align="right">-1.385</td>
-<td align="right">0.166</td>
+<td align="right">-2.775</td>
+<td align="right">0.612</td>
+<td align="right">-4.536</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">red_gradeC</td>
-<td align="right">-0.163</td>
-<td align="right">0.423</td>
-<td align="right">-0.386</td>
-<td align="right">0.700</td>
+<td align="right">-3.133</td>
+<td align="right">0.593</td>
+<td align="right">-5.284</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">red_gradeD</td>
-<td align="right">-0.940</td>
-<td align="right">0.427</td>
-<td align="right">-2.202</td>
-<td align="right">0.028</td>
-</tr>
-<tr class="odd">
-<td align="left">minority</td>
-<td align="right">0.087</td>
-<td align="right">0.002</td>
-<td align="right">44.701</td>
-<td align="right">0.000</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>int_dia = lm(diabetes ~ red_grade + minority + red_grade * minority, data = final_analysis) 
-int_dia |&gt; broom::tidy() |&gt; knitr::kable(digits = 3)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">7.075</td>
-<td align="right">0.601</td>
-<td align="right">11.777</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB</td>
-<td align="right">-0.094</td>
-<td align="right">0.660</td>
-<td align="right">-0.142</td>
-<td align="right">0.887</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC</td>
-<td align="right">0.683</td>
-<td align="right">0.630</td>
-<td align="right">1.085</td>
-<td align="right">0.278</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD</td>
-<td align="right">-2.712</td>
-<td align="right">0.644</td>
-<td align="right">-4.211</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="odd">
-<td align="left">minority</td>
-<td align="right">0.085</td>
-<td align="right">0.018</td>
-<td align="right">4.844</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB:minority</td>
-<td align="right">-0.008</td>
-<td align="right">0.018</td>
-<td align="right">-0.463</td>
-<td align="right">0.643</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC:minority</td>
-<td align="right">-0.012</td>
-<td align="right">0.018</td>
-<td align="right">-0.691</td>
-<td align="right">0.490</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD:minority</td>
-<td align="right">0.029</td>
-<td align="right">0.018</td>
-<td align="right">1.630</td>
-<td align="right">0.103</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="model-comparisons" class="section level3">
-<h3>Model Comparisons</h3>
-<pre class="r"><code>AIC(uni_ob, mul_ob, int_ob)</code></pre>
-<pre><code>##        df      AIC
-## uni_ob  5 13537.07
-## mul_ob  6 12677.42
-## int_ob  9 12602.76</code></pre>
-<pre class="r"><code>models_ob = list(Univariate = uni_ob, Multivariate = mul_ob, Interaction = int_ob)
-sapply(models_ob, function(model) summary(model)$adj.r.squared)</code></pre>
-<pre><code>##   Univariate Multivariate  Interaction 
-##   0.03471427   0.36787495   0.39156456</code></pre>
-<pre class="r"><code>AIC(uni_dia, mul_dia, int_dia)</code></pre>
-<pre><code>##         df       AIC
-## uni_dia  5 10819.141
-## mul_dia  6  9426.990
-## int_dia  9  9336.586</code></pre>
-<pre class="r"><code>models_dia = list(Univariate = uni_dia, Multivariate = mul_dia, Interaction = int_dia)
-sapply(models_dia, function(model) summary(model)$adj.r.squared)</code></pre>
-<pre><code>##   Univariate Multivariate  Interaction 
-##   0.02801253   0.51016168   0.53215532</code></pre>
-</div>
-<div id="logistic-regression" class="section level3">
-<h3>Logistic Regression</h3>
-<pre class="r"><code>final_analysis &lt;- final_analysis |&gt; 
-  mutate(high_obesity = ifelse(obesity &gt; 30, 1, 0),
-         high_diabetes = ifelse(diabetes &gt; 10, 1, 0))
-
-glm(high_obesity ~ red_grade + minority, data = final_analysis, family = binomial) |&gt;
-  broom::tidy() |&gt; 
-  mutate(odds_ratio = exp(estimate)) |&gt;
-  select(term, estimate, odds_ratio, statistic, std.error, p.value) |&gt;
-  knitr::kable(digits = 3)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">odds_ratio</th>
-<th align="right">statistic</th>
-<th align="right">std.error</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">-4.937</td>
-<td align="right">0.007</td>
-<td align="right">-6.333</td>
-<td align="right">0.780</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB</td>
-<td align="right">-0.875</td>
-<td align="right">0.417</td>
-<td align="right">-1.112</td>
-<td align="right">0.787</td>
-<td align="right">0.266</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC</td>
-<td align="right">-1.112</td>
-<td align="right">0.329</td>
-<td align="right">-1.428</td>
-<td align="right">0.779</td>
-<td align="right">0.153</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD</td>
-<td align="right">-0.409</td>
-<td align="right">0.664</td>
-<td align="right">-0.525</td>
-<td align="right">0.779</td>
+<td align="right">-4.989</td>
 <td align="right">0.599</td>
-</tr>
-<tr class="odd">
-<td align="left">minority</td>
-<td align="right">0.074</td>
-<td align="right">1.077</td>
-<td align="right">21.430</td>
-<td align="right">0.003</td>
-<td align="right">0.000</td>
+<td align="right">-8.332</td>
+<td align="right">0</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>glm(high_diabetes ~ red_grade + minority, data = final_analysis, family = binomial) |&gt;
-  broom::tidy() |&gt; 
-  mutate(odds_ratio = exp(estimate)) |&gt;
-  select(term, estimate, odds_ratio, statistic, std.error, p.value) |&gt;
-  knitr::kable(digits = 3)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">odds_ratio</th>
-<th align="right">statistic</th>
-<th align="right">std.error</th>
-<th align="right">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">-2.696</td>
-<td align="right">0.067</td>
-<td align="right">-6.092</td>
-<td align="right">0.443</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeB</td>
-<td align="right">-0.265</td>
-<td align="right">0.768</td>
-<td align="right">-0.571</td>
-<td align="right">0.463</td>
-<td align="right">0.568</td>
-</tr>
-<tr class="odd">
-<td align="left">red_gradeC</td>
-<td align="right">0.689</td>
-<td align="right">1.993</td>
-<td align="right">1.534</td>
-<td align="right">0.450</td>
-<td align="right">0.125</td>
-</tr>
-<tr class="even">
-<td align="left">red_gradeD</td>
-<td align="right">-0.922</td>
-<td align="right">0.398</td>
-<td align="right">-1.997</td>
-<td align="right">0.461</td>
-<td align="right">0.046</td>
-</tr>
-<tr class="odd">
-<td align="left">minority</td>
-<td align="right">0.071</td>
-<td align="right">1.074</td>
-<td align="right">22.288</td>
-<td align="right">0.003</td>
-<td align="right">0.000</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="residual-plots" class="section level3">
-<h3>residual plots</h3>
-<pre class="r"><code>ob_residual = data.frame(
-    fitted = fitted(int_ob),
-    residuals = residuals(int_ob)
-  ) 
-ob_residual |&gt;
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
-  theme_minimal() +
-  labs(
-    title = &quot;Residuals vs Fitted Values of Obesity Regression Model&quot;,
-    x = &quot;Fitted Values&quot;,
-    y = &quot;Residuals&quot;
-  )</code></pre>
-<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<pre class="r"><code>dia_residual = data.frame(
-    fitted = fitted(int_dia),
-    residuals = residuals(int_dia)
-  ) 
-dia_residual |&gt;
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
-  theme_minimal() +
-  labs(
-    title = &quot;Residuals vs Fitted Values of Diabetes Regression Model&quot;,
-    x = &quot;Fitted Values&quot;,
-    y = &quot;Residuals&quot;
-  )</code></pre>
-<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 </div>
 </div>
 
