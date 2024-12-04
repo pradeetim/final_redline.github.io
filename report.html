@@ -429,11 +429,10 @@ challenges accessing SNAP benefits?</li>
 <li><strong>Analysis:</strong>
 <ul>
 <li>How does redlining classification (e.g., grade A, B, C, D) predict
-the density of healthy grocery stores in a neighborhood? What is the
-relationship between redlining and SNAP enrollment rates across
-neighborhoods in NYC?</li>
-<li>Are there other factors (e.g., income levels) that mediate the
-relationship between redlining and food access?</li>
+the proportion of households enrolled in SNAP at the census tract
+level?</li>
+<li>Is redlining associated with food insecurity related health
+outcomes(diabetes, obesity and high cholesterol level)?</li>
 </ul></li>
 </ul>
 </div>
@@ -158211,6 +158210,8 @@ screened</td>
 </table>
 </div>
 </div>
+<<<<<<< HEAD
+=======
 </div>
 <div id="optional-section" class="section level1">
 <h1>optional section</h1>
@@ -158253,6 +158254,7 @@ case this will be interesting for EDA or analysis </strong></p>
   filter(geo_type == &quot;CT2020&quot;)|&gt;
   rename(geoid = geo_id)</code></pre>
 </div>
+>>>>>>> f7c3c8fe1666c59e8822b460bcbe736edb3032f4
 <div id="exploratory-analysis" class="section level2">
 <h2>Exploratory Analysis</h2>
 <div id="visualizations" class="section level3">
@@ -158264,6 +158266,51 @@ case this will be interesting for EDA or analysis </strong></p>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
+<p>Our analysis found that redlining is significantly associated with
+food insecurity in New York City at the census tract level. This finding
+indicates that historic housing policies affected households’ food
+security and relevant health outcomes in New York City. Households
+residing in neighborhoods that were graded as declining or hazardous
+were more likely to have limited access to adequate food compared to
+households residing in neighborhoods that were graded as desirable by
+HOLC.</p>
+<p>Discriminatory housing policies like redlining have created
+structural inequalities that have had a significant influence on
+people’s health, and racial minorities and people with low
+socio-economic status were disproportionately affected. Redlined
+neighborhoods also had a higher proportion of racial minorities,
+households with people with disabilities, and households living under
+the poverty line. Redlined neighborhoods had a higher prevalence of
+obesity compared to neighborhoods that were classified as desirable.
+However, diabetes was not found to be associated with historical
+redlining. Redlined neighborhoods were also found to have a
+significantly lower prevalence of high cholesterol levels compared to
+neighborhoods that were classified as desirable. Future research should
+focus on understanding the complex relationships between historical
+policies, food access, and relevant health outcomes. These findings
+imply that policy interventions need to target redlined neighborhoods
+with increased resources and support to address food insecurity and
+related health disparities, such as higher rates of obesity.</p>
+<p>The strength of our project was that we utilized data from multiple
+sources to explore the association between redlining and food
+insecurity. We explored the issue from both a socio-economic and health
+perspective using visualization and statistical analysis. One of the
+limitations of our analysis would be that the percentage of households
+enrolled in SNAP is highly right-skewed and thus may affect the
+homoscedasticity of the model. We were able to address that by
+performing a log transformation to increase the robustness of our
+model.</p>
+<p>The significant association between historical redlining and food
+insecurity in New York City suggests that discriminatory housing
+policies continue to have lasting effects on health outcomes. The higher
+prevalence of racial minorities, households with people with
+disabilities, and low-income families in redlined areas highlights the
+compounded impact of systemic inequities. Efforts to improve food access
+and reduce health disparities should therefore include targeted
+strategies aimed at these vulnerable populations. Public health
+initiatives might also need to involve urban planners, community
+organizations, and local governments to dismantle the structural
+barriers formed by redlining.</p>
 </div>
 </div>
 

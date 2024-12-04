@@ -23,8 +23,8 @@ This project is driven by a desire to shed light on the intersection of urban pl
 - **Grocery:** Are there fewer healthy grocery stores in neighborhoods that were historically redlined compared to other areas? How does access to health grocery stores correlate with health outcomes in these neighborhoods?
 - **SNAP:** Is there a higher rate of SNAP enrollment in areas that were historically redlined? Do these areas face more challenges accessing SNAP benefits? 
 - **Analysis:**
-  - How does redlining classification (e.g., grade A, B, C, D) predict the density of healthy grocery stores in a neighborhood? What is the relationship between redlining and SNAP enrollment rates across neighborhoods in NYC?
-  - Are there other factors (e.g., income levels) that mediate the relationship between redlining and food access?
+  - How does redlining classification (e.g., grade A, B, C, D) predict the proportion of households enrolled in SNAP at the census tract level?
+  - Is redlining associated with food insecurity related health outcomes(diabetes, obesity and high cholesterol level)?
 
 # Data
 
@@ -250,33 +250,6 @@ place_crude|>
   knitr::kable()
 ```
 
-# optional section 
-
-**Comments: I think we may or may not need the following data in analysis, but if someone want to use that, we will include them in the data cleaning, or I will just delete them**
-
-
-## poverty level [optional for use ]
-
-```{r}
-poverty = 
-  read_csv(file = "./Datasets/ACS-poverty-level.csv", skip=1)|>
-  janitor::clean_names()|>
-  mutate(geoid = str_remove(geography, ".*US"))
-```
-
-## NYC census demographic [optional for use]
-
-**For this data we have more detailed demographic by age division, and slightly different way of measuring race and ethnicty (Hispanic
-White non-Hispanic,Black non-Hispanic, Asian non-Hispanic, Some other race non-Hispanic, Non-Hispanic of two or more races). In case this will be interesting for EDA or analysis **
-
-```{r}
-demo = 
-  read_excel("./Datasets/NYC_census_core_data.xlsx")|>
-  janitor::clean_names()|>
-  filter(geo_type == "CT2020")|>
-  rename(geoid = geo_id)
-```
-
 ## Exploratory Analysis
 
 ### Visualizations
@@ -284,6 +257,14 @@ demo =
 ## Regression Analysis
 
 ## Discussion
+
+Our analysis found that redlining is significantly associated with food insecurity in New York City at the census tract level. This finding indicates that historic housing policies affected households' food security and relevant health outcomes in New York City. Households residing in neighborhoods that were graded as declining or hazardous were more likely to have limited access to adequate food compared to households residing in neighborhoods that were graded as desirable by HOLC.
+
+Discriminatory housing policies like redlining have created structural inequalities that have had a significant influence on people's health, and racial minorities and people with low socio-economic status were disproportionately affected. Redlined neighborhoods also had a higher proportion of racial minorities, households with people with disabilities, and households living under the poverty line. Redlined neighborhoods had a higher prevalence of obesity compared to neighborhoods that were classified as desirable. However, diabetes was not found to be associated with historical redlining. Redlined neighborhoods were also found to have a significantly lower prevalence of high cholesterol levels compared to neighborhoods that were classified as desirable. Future research should focus on understanding the complex relationships between historical policies, food access, and relevant health outcomes. These findings imply that policy interventions need to target redlined neighborhoods with increased resources and support to address food insecurity and related health disparities, such as higher rates of obesity.
+
+The strength of our project was that we utilized data from multiple sources to explore the association between redlining and food insecurity. We explored the issue from both a socio-economic and health perspective using visualization and statistical analysis. One of the limitations of our analysis would be that the percentage of households enrolled in SNAP is highly right-skewed and thus may affect the homoscedasticity of the model. We were able to address that by performing a log transformation to increase the robustness of our model. 
+
+The significant association between historical redlining and food insecurity in New York City suggests that discriminatory housing policies continue to have lasting effects on health outcomes. The higher prevalence of racial minorities, households with people with disabilities, and low-income families in redlined areas highlights the compounded impact of systemic inequities. Efforts to improve food access and reduce health disparities should therefore include targeted strategies aimed at these vulnerable populations. Public health initiatives might also need to involve urban planners, community organizations, and local governments to dismantle the structural barriers formed by redlining.
 
 
 
