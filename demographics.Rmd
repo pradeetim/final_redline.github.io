@@ -65,26 +65,24 @@ redlining_sf =
 
 ## Redlining Exploration:
 
-### Redlining Throughout Boroughs:
 
-Here is the map detailing the redlining scores (ranging from 1-4) given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
+## Redlining Exploration:
+Here is the map detailing the redlining grades given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
 
-```{r, echo=FALSE, warning=FALSE, fig.align='center'}
+```{r, echo=FALSE, warning=FALSE}
 
-borough_boundaries <- nyc_tracts |>
-  group_by(borough) |>
-  summarize(geometry = st_union(geometry), .groups = 'drop')
-
-pal <- colorNumeric(
-  palette = "YlOrRd",  
-  domain = redlining_sf$hrs2020, 
-  na.color = "grey"  
+pal <- colorFactor(
+  palette = c("#00FF00",  
+              "#FFFF00", 
+              "#800080", 
+              "#FF0000"),
+  domain = redlining_sf$red_grade
 )
 
 leaflet(redlining_sf) |>
-  addTiles() |>
+  addProviderTiles(providers$CartoDB.Positron) |> 
   addPolygons(
-    fillColor = ~pal(hrs2020),
+    fillColor = ~pal(red_grade),
     weight = 1,
     opacity = 1,
     color = "black",
@@ -95,45 +93,20 @@ leaflet(redlining_sf) |>
       fillOpacity = 0.9,
       bringToFront = TRUE
     ),
-    label = ~paste0("Census Tract: ", geoid, 
-                    "<br>Borough: ", borough, 
-                    "<br>Redlining Score (2020): ", hrs2020)
-  ) |>
-  addPolygons(
-    data = borough_boundaries,
-    weight = 3,
-    color = "black",
-    fill = FALSE,
-    opacity = 1,
-    highlightOptions = highlightOptions(
-      weight = 5,
-      color = "#000000",
-      bringToFront = TRUE
-    )
-  ) |>
-  addLabelOnlyMarkers(
-    data = st_centroid(borough_boundaries),
-    lng = ~st_coordinates(geometry)[,1],
-    lat = ~st_coordinates(geometry)[,2],
-    label = ~borough,
-    labelOptions = labelOptions(
-      noHide = TRUE,
-      direction = 'center',
-      textOnly = TRUE,
-      style = list("color" = "black", "font-size" = "16px", "font-weight" = "bold")
-    )
+    label = ~paste0("Census Tract: ", geoid, "<br>Redlining Interval: ", interval2020, "<br>Redlining Score (2020): ", hrs2020)
   ) |>
   addLegend(
     pal = pal,
-    values = ~hrs2020,
+    values = ~red_grade,
     opacity = 0.7,
-    title = "Redlining Score (2020)",
+    title = "Redlining Category",
     position = "bottomright"
   )
 
 ```
 
-### Average Redlining Score in Each Borough:
+
+### Average Redlining Score in Each Borough（-delete):
 
 Lets look at the average redlining score in each borough: 
 
@@ -168,7 +141,7 @@ redlining |>
 
 This graph shows the average redlining scores in each borough. Although it looks fairly different, the range is fairly low, between ~3.06 and ~3.24. This does not give us too much information. Lets look at the distribution: 
 
-### Distribution of Redlining Scores in Boroughs:
+### Distribution of Redlining Scores in Boroughs(-add average):
 
 ```{r, echo=FALSE, fig.align='center'}
 redlining |>
@@ -210,7 +183,7 @@ We can see here that Staten Island, Queens, and Bronx have the most C grade in t
 
 ## SNAP Exploration and Demographics:
 
-### SNAP Total Household Count in Boroughs:
+### SNAP Total Household Count in Boroughs(-change to %):
 
 ```{r, echo=FALSE, fig.align='center'}
 SNAP = SNAP |>
@@ -253,87 +226,98 @@ SNAP |>
   )
 ```
 
-### SNAP Enrollment Demographics (RACE):
-
-```{r, echo=FALSE, warning=FALSE, fig.align='center'}
-borough_snap_map = redlining_sf |>
-  separate(
-    name,
-    into = c("census_tract", "county", "state"),
-    sep = "; ",
-    fill = "right",
-    remove = FALSE
-  ) |>
-  mutate(
-    borough = case_when(
-      county == "Queens County" ~ "Queens",
-      county == "Bronx County" ~ "Bronx",
-      county == "New York County" ~ "Manhattan",
-      county == "Kings County" ~ "Brooklyn",
-      county == "Richmond County" ~ "Staten Island",
-      TRUE ~ "Unknown"
-    )
-  ) |>
-  group_by(borough)
-```
-
-```{r, echo=FALSE, warning=FALSE, fig.align='center'}
-race_snap_data <- borough_snap_map |>
-  select(borough, ph_white, ph_black, ph_asian, ph_hispanic, ph_other_race, ph_snap) |>
-  group_by(borough) |>
-  summarise(
-    avg_white = mean(ph_white, na.rm = TRUE),
-    avg_black = mean(ph_black, na.rm = TRUE),
-    avg_asian = mean(ph_asian, na.rm = TRUE),
-    avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
-    avg_other_race = mean(ph_other_race, na.rm = TRUE)
-  ) |>
+### Race VS Redlinging Grade:
+```{r, echo=FALSE}
+redlining_long <- redlining_sf |>
+  select(red_grade, ph_white, ph_black, ph_asian, ph_other_race) |>
   pivot_longer(
-    cols = starts_with("avg"),
-    names_to = "race",
-    values_to = "average_percentage"
+    cols = c(ph_white, ph_black, ph_asian, ph_other_race),
+    names_to = "race_group",
+    values_to = "percent_household"
   ) |>
-  mutate(
-    race = case_when(
-      race == "avg_white" ~ "White",
-      race == "avg_black" ~ "Black",
-      race == "avg_asian" ~ "Asian",
-      race == "avg_hispanic" ~ "Hispanic",
-      race == "avg_other_race" ~ "Other Race",
-      TRUE ~ race
-    )
-  )
+  mutate(race_group = case_when(
+    race_group == "ph_white" ~ "White",
+    race_group == "ph_black" ~ "Black",
+    race_group == "ph_asian" ~ "Asian",
+    race_group == "ph_other_race" ~ "Other"
+  ))
 
-ggplot(race_snap_data, aes(x = borough, y = average_percentage, fill = race)) +
-  geom_bar(stat = "identity", position = "fill") +
-  labs(
-    title = "Distribution of Race Among SNAP Enrollment by Borough",
-    x = "Borough",
-    y = "Proportion of Households (%)",
-    fill = "Race"
-  ) +
-  scale_y_continuous(labels = scales::percent) +
+ggplot(redlining_long, aes(x = red_grade, y = percent_household, fill = race_group)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = c("White" = "#FFC0CB",   # Pastel Pink for White
+                               "Black" = "#FFDDC1",   # Pastel Peach for Black
+                               "Asian" = "#BDECB6",   # Pastel Mint Green for Asian
+                               "Other" = "#C5A3FF")) + # Pastel Lavender for Other
   theme_minimal() +
+  labs(
+    title = "Race Distribution (White, Black, Asian, Other) by Redlining Grade",
+    x = "Redlining Grade",
+    y = "Percentage of Households",
+    fill = "Race Group"
+  ) +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "bottom"
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold"),
+    legend.position = "right"
   )
-
 ```
+
 
 ## Healthy Grocery Store Exploration:
 
-### Grocery Stores in Manhattan, Brooklyn, and Bronx:
+### Redlinging Grade VS. Grocery Stores(Manhattan,Brooklyn,and Bronx):
 
-```{r, echo=FALSE, fig.align='center'}
-leaflet() |>
-  addTiles() |>
+```{r, echo=FALSE}
+redlining_sf <- redlining_sf |>
+  mutate(
+    borough = case_when(
+      str_detect(NAME, "Bronx County") ~ "Bronx",
+      str_detect(NAME, "Kings County") ~ "Brooklyn",
+      str_detect(NAME, "New York County") ~ "Manhattan",
+      str_detect(NAME, "Queens County") ~ "Queens",
+      str_detect(NAME, "Richmond County") ~ "Staten Island",
+      TRUE ~ "Unknown"
+    )
+  )
+
+pal <- colorFactor(
+  palette = c("#00FF00",  
+              "#FFFF00", 
+              "#800080", 
+              "#FF0000"),
+  domain = redlining_sf$red_grade
+)
+
+leaflet(redlining_sf) |>
+  addProviderTiles(providers$CartoDB.Positron) |>  
+  addPolygons(
+    fillColor = ~pal(red_grade),
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    label = ~paste0("Census Tract: ", geoid, 
+                    "<br>Redlining Grade: ", red_grade,
+                    "<br>Borough: ", borough)
+  ) |>
   addCircleMarkers(
     data = nyc_healthy_store,
     lng = ~longitude,
     lat = ~latitude,
+<<<<<<< HEAD
     radius = 5,
     color = "green",
+=======
+    radius = 2.5,  
+    color = "blue",
+>>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     stroke = FALSE,
     fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
@@ -345,28 +329,74 @@ leaflet() |>
     )
   ) |>
   addLegend(
+<<<<<<< HEAD
     position = "bottomright",
     colors = "green",
     labels = "Grocery Store",
     title = "Healthy Grocery Stores"
+=======
+    pal = pal,
+    values = ~red_grade,
+    opacity = 0.7,
+    title = "Redlining Grade",
+    position = "bottomright"
+  ) |>
+  addLegend(
+    position = "bottomleft",
+    colors = "blue",
+    labels = "Healthy Grocery Store",
+    title = "Healthy Grocery Stores in NYC"
+>>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
   )
 
 ```
 
-### Grocery Stores in Bronx Only:
+### Redlinging Grade VS.Grocery Stores in Bronx Only:
 
-```{r, echo=FALSE, fig.align='center'}
+```{r, echo=FALSE}
+bronx_redlining <- redlining_sf |>
+  filter(borough == "Bronx")
+
 bronx_stores <- nyc_healthy_store |>
   filter(borough == "Bronx")
 
-leaflet() |>
-  addTiles() |>
+pal <- colorFactor(
+  palette = c("#00FF00",  
+              "#FFFF00",  
+              "#800080", 
+              "#FF0000"), 
+  domain = bronx_redlining$red_grade
+)
+
+leaflet(bronx_redlining) |>
+  addProviderTiles(providers$CartoDB.Positron) |>  
+  addPolygons(
+    fillColor = ~pal(red_grade),
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    label = ~paste0("Census Tract: ", geoid, 
+                    "<br>Redlining Grade: ", red_grade,
+                    "<br>Borough: ", borough)
+  ) |>
   addCircleMarkers(
     data = bronx_stores,
     lng = ~longitude,
     lat = ~latitude,
+<<<<<<< HEAD
     radius = 5,
     color = "green",
+=======
+    radius = 2.5,  
+    color = "blue", 
+>>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     stroke = FALSE,
     fillOpacity = 0.8,
     label = ~paste0("Store Name: ", store_name,
@@ -378,13 +408,27 @@ leaflet() |>
     )
   ) |>
   addLegend(
+<<<<<<< HEAD
     position = "bottomright",
     colors = "green",
     labels = "Grocery Store",
+=======
+    pal = pal,
+    values = ~red_grade,
+    opacity = 0.7,
+    title = "Redlining Grade",
+    position = "bottomright"
+  ) |>
+  addLegend(
+    position = "bottomleft",
+    colors = "blue",
+    labels = "Healthy Grocery Store",
+>>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     title = "Healthy Grocery Stores in Bronx"
   )
 
 ```
+
 
 ## Health Outcome vs Redlining Scores
 
@@ -427,8 +471,9 @@ The graph compares the impact of redlining on health outcomes (diabetes, obesity
 The higher redlining scores (A, B) tend to have slightly higher obesity and high cholesterol rates, potentially indicating the complex intersection of socioeconomic status, healthcare access, and environmental factors related to historical redlining.
 
 
-## Exploration of Redlining, SNAP, and Healthy Grocery Stores
+### SNAP Enrollment and Grocery Stores in Bronx(USE IN SHINY APP IF NEEDED).
 
+<<<<<<< HEAD
 ### Redlining Scores and Demographics:
 
 ```{r, echo=FALSE, fig.align='center'}
@@ -564,6 +609,10 @@ leaflet(bronx_redlining) |>
 
 ```{r, echo=FALSE, fig.align='center'}
 bronx_ <- borough_snap_map |>
+=======
+```{r, echo=FALSE}
+bronx_ <- redlining_sf |>
+>>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
   filter(borough == "Bronx")
 
 bronx_stores <- nyc_healthy_store |>
@@ -596,8 +645,13 @@ leaflet(bronx_) |>
     data = bronx_stores,
     lng = ~longitude,
     lat = ~latitude,
+<<<<<<< HEAD
     radius = 5,
     color = "green",
+=======
+    radius = 2.5,
+    color = "blue",
+>>>>>>> cb93c36910dfa3f9b5a43a45b1b915cb992b0f96
     stroke = FALSE,
     fillOpacity = 0.7,
     label = ~paste0("Store Name: ", store_name,
@@ -623,5 +677,4 @@ leaflet(bronx_) |>
   )
 
 ```
-
 
