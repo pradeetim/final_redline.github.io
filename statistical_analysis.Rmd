@@ -2,7 +2,6 @@
 title: "Statistical Analysis"
 output: 
   html_document:
-    code_folding: hide
     toc: true
     toc_float: true
 ---
@@ -103,7 +102,7 @@ final_analysis =
 
 ## Desciptive Characteristics Based on Redlining Grades
 
-### Total count of census tract for each HOLC grade 
+### Total count of census tract for each HOLC grade
 
 ```{r}
 final_analysis |>
@@ -111,6 +110,8 @@ final_analysis |>
   summarise(count = n())|>
    knitr::kable()
 ```
+
+The number of A-grade census tract is the smallest (n=36) while the number of C-grade census tract is the biggest(n=1003). 
 
 ### Comparison of HOLC grades 
 
@@ -189,8 +190,6 @@ anova(final_analysis, outcomes, "red_grade")|>
     variable == "ph_elderly" ~ "elderly",
     variable == "ph_below_poverty" ~ "poverty",
     variable == "ph_no_work" ~ "nowork",
-    variable == "ph_1_work" ~ "1work",
-    variable == "ph_2_work" ~ "2work",
     variable == "ph_white" ~ "white",
     variable == "ph_black" ~ "black",
     variable == "ph_asian" ~ "asian",
@@ -205,13 +204,11 @@ anova(final_analysis, outcomes, "red_grade")|>
 
 baseline_char|>
   filter(!variable %in% c("obesity","diabetes","highchol"))|>
-  knitr::kable(digits = 3)
-
-
-baseline_char|>
-  filter(variable %in% c("obesity","diabetes","highchol"))|>
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 2)
 ```
+
+We computed the average and standard deviation of the different socio-demographic factors across the redlining grade groups. ANOVA was utilized to compare the mean across different census tract grades (A, B, C and D). The percentage of household enrolled in snap/ food stamp program at the census tract level was significantly different among groups with different redlining grades at 5% significance level. A-grade census tracts had the lowest average percentage of SNAP enrollment (5.72%, sd: 6.95%) and the average percentage of SNAP enrollment is the highest in D-grade census tracts (23.70, sd: 17.85). In addition, the groups with different redlining grades reported significant different for the average percentage regarding households with children smaller than 18 years, households with elderly grater than 60 years, households below the poverty line, households with people with disability, race and ethnicity, and employment status. 
+
 
 ### Comparing census tracts with HRS for Grade A with Grade D
 
@@ -261,7 +258,7 @@ uni_reg = function(dataset, outcomes, predictor) {
   return(combined_results)
 }
 
-outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_disability", "minority", "ph_no_work", "obesity", "highchol", "diabetes")
+outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_disability", "ph_white", "ph_black", "ph_asian", "ph_no_work", "obesity", "highchol", "diabetes")
 
 
 uni_reg(q1_vs_q4, outcomes, "red_grade")|>
@@ -270,14 +267,26 @@ uni_reg(q1_vs_q4, outcomes, "red_grade")|>
   knitr::kable(digits = 3)
 ```
 
+Following the ANOVA test results, we wondered whether there is any significant difference across the least-redlined (A-grade) and most-redlined (D-grade) census tracts regarding snap enrollment, socio-demographic factors, and health outcomes. Based on the t-test outcome, D-grade census tracts had significantly higher average percentage of households enrolled for SNAP, average percentage of households with children, average percentage of households below the poverty line, average percentage of households with peoplw with diability, percentage of household with minority race compared to A-grade census tracts. Additionally, A-grade census tract had significantly higher average percentage of households with elderly, average percentage of households with no worker.
+
+Regarding the health outcomes, the average prevalence of obesity is 7.97% higher, and the average prevalence for diabetes is 2.34% higher in the D-grade census tracts compared to A-grade census tracts. The average prevalence of high cholesterol level is 4.99% higher in the A-grade census tracts compared to D-grade census tracts. All of the difference in the average prevalence is statistically signficant. 
+
+
 ## Regression Analysis for Redlining and Food Insecurity
+
+Based on the results for the baseline characteristics analysis, we computed a linear regression model to explore the association between redlining grades and precentage of households enrolled in SNAP. 
+
 
 ```{r}
 # univariate analysis
 lm(ph_snap~red_grade,final_analysis)|>
   broom::tidy()|>
   knitr::kable(digits= 3)
+```
 
+Based on the univariate model, we found the percentage of household enrolled in SNAP was 17.97%, 12.90% and 11.53% higher respectively in the D-grade, C-grade and B-grade census tracts compared to A-grade census tracts (all p-value <0.001). 
+
+```{r}
 ## multivariate model 1
 red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
 tidy_model = broom::tidy(red_snap_m1)
@@ -290,7 +299,23 @@ tidy_model|>
   )|>
   select(term, estimate, p.value, CI_Lower, CI_Upper)|>
   knitr::kable(digits = 3, caption = "Model 1 Estimates with 95% Confidence Intervals")
+```
 
+
+```{r}
+## histogram for snap enrollment
+ggplot(final_analysis, aes(x = ph_snap)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black") +
+  labs(
+    title = "Histogram of ph_snap",
+    x = "SNAP Enrollment (ph_snap)",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
 ## multivariate model 2
 red_snap_m2 =
   final_analysis|>
@@ -326,56 +351,8 @@ tidy_model|>
   knitr::kable(digits = 3, caption = "Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
 ```
 
-### Residual Plots
-
-```{r}
-m1_residual = data.frame(
-    fitted = fitted(red_snap_m1),
-    residuals = residuals(red_snap_m1)
-  ) 
-m1_residual |>
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point(alpha = 0.5, color = "deepskyblue") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  theme_minimal() +
-  labs(
-    title = "Residuals vs Fitted Values of Multivariate Model 1",
-    x = "Fitted Values",
-    y = "Residuals"
-  )
 
 
-m2_residual = data.frame(
-    fitted = fitted(red_snap_m2),
-    residuals = residuals(red_snap_m2)
-  ) 
-m2_residual |>
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point(alpha = 0.5, color = "deepskyblue") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  theme_minimal() +
-  labs(
-    title = "Residuals vs Fitted Values of Multivariate Model 2",
-    x = "Fitted Values",
-    y = "Residuals"
-  )
-
-
-m3_residual = data.frame(
-    fitted = fitted(red_snap_m3),
-    residuals = residuals(red_snap_m3)
-  ) 
-m3_residual |>
-  ggplot(aes(x = fitted, y = residuals)) +
-  geom_point(alpha = 0.5, color = "deepskyblue") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  theme_minimal() +
-  labs(
-    title = "Residuals vs Fitted Values of Multivariate Model 3",
-    x = "Fitted Values",
-    y = "Residuals"
-  )
-```
 
 ### Cross Validation and Model Selection
 
@@ -435,7 +412,15 @@ cv_df |>
 Based on the rootmean square models, model 1 and 2 perform signficantly better than model 1, while model 3 performs slightly better than model 3. 
 
 
-## Statistical Analysis of Obesity 
+## Statistical Analysis of Health Outcomes associated with Food Insecurity
+
+```{r}
+baseline_char|>
+  filter(variable %in% c("obesity","diabetes","highchol"))|>
+  knitr::kable(digits = 3)
+```
+
+
 
 ### Does the relationship between redlining and health outcomes depend on minority percentage?
 
