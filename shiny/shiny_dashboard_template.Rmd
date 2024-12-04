@@ -22,7 +22,7 @@ library(tidycensus)
 ```
 
 ```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-rmarkdown::render("data_cleaning.rmd", quiet = TRUE)
+rmarkdown::render("../data_cleaning.Rmd", quiet = TRUE)
 ```
 
 ```{r setup2, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
