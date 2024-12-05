@@ -21,8 +21,13 @@ library(leaflet)
 library(tidycensus)
 ```
 
-```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-rmarkdown::render("../data_cleaning.Rmd", quiet = TRUE)
+
+```{r server, echo=FALSE}
+server <- function(input, output, session) {
+  data_cleaning_report <- renderUI({
+    includeHTML("data_cleaning.html")
+  })
+}
 ```
 
 ```{r setup2, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -87,6 +92,10 @@ health_spatial_data <- nyc_tracts %>%
 
 Column {.sidebar}
 -----------------------------------------------------------------------
+
+```{r datacleaning, echo=FALSE}
+uiOutput("data_cleaning_report")
+```
 
 ```{r, echo=FALSE}
 health_indicator = 
