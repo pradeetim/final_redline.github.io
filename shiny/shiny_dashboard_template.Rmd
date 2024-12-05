@@ -141,45 +141,75 @@ selectInput(
 ```
 
 
-
-
-Column {data-width=650}
+Column {data-width=550}
 -----------------------------------------------------------------------
 
-### Redlining Map
+### Redlining Map (Health Grocery Stores)
 
 ```{r, echo=FALSE}
 renderLeaflet({
-  filtered_data <- redlining_sf %>% filter(borough == input$borough_choice)
-
-  # Create leaflet map with the filtered data
-leaflet(filtered_data) |>
-    addProviderTiles(providers$CartoDB.Positron) |> 
+  filtered_redlining <- redlining_sf %>% filter(borough == input$borough_choice)
+  
+  map <- leaflet(filtered_redlining) |>
+    addProviderTiles(providers$CartoDB.Positron) |>  
     addPolygons(
       fillColor = ~colorFactor(palette = c("#208e56", "#e4e44c", "#1595b4", "#ef647b"), domain = redlining_sf$red_grade)(red_grade),
       weight = 1,
       opacity = 1,
       color = "black",
-      fillOpacity = 0.9,
+      fillOpacity = 0.7,
       highlightOptions = highlightOptions(
         weight = 2,
         color = "#666",
         fillOpacity = 0.9,
         bringToFront = TRUE
       ),
-      label = ~paste0("Census Tract: ", geoid, "<br>Redlining Grade: ", red_grade)
+      label = ~paste0("Census Tract: ", geoid, 
+                      "<br>Redlining Grade: ", red_grade,
+                      "<br>Borough: ", borough)
     ) |>
     addLegend(
+      position = "bottomright",
       pal = colorFactor(palette = c("#208e56", "#e4e44c", "#1595b4", "#ef647b"), domain = redlining_sf$red_grade),
       values = ~red_grade,
-      opacity = 0.7,
-      title = "Redlining Category",
-      position = "bottomright"
+      title = "Redlining Grade",
+      opacity = 0.7
     )
+
+  filtered_stores <- nyc_healthy_store %>% filter(borough == input$borough_choice)
+  
+  if (input$store_check) {
+    map <- map |>
+      addCircleMarkers(
+        data = filtered_stores,
+        lng = ~longitude,
+        lat = ~latitude,
+        radius = 5,
+        color = "#0f6921",
+        stroke = FALSE,
+        fillOpacity = 0.7,
+        label = ~paste0("Store Name: ", store_name,
+                        "<br>Borough: ", borough,
+                        "<br>ZIP Code: ", zip_code),
+        labelOptions = labelOptions(
+          noHide = FALSE,
+          direction = "auto"
+        )
+      ) |>
+      addLegend(
+        position = "bottomleft",
+        colors = "#0f6921",
+        labels = "Healthy Grocery Store",
+        opacity = 0.7
+      )
+  }
+  
+  map
 })
 ```
 
-Column {data-width=350}
+
+Column {data-width=450}
 -----------------------------------------------------------------------
 
 ### Health Indicator Map
@@ -215,20 +245,35 @@ renderLeaflet({
 })
 ```
 
+### SNAP Enrollment and Grocery Stores Map
 
-### Healthy Grocery Stores and Redlining
+```{r, echo=FALSE, warning=FALSE}
 
-```{r, echo=FALSE}
+snap_pal <- colorNumeric(
+  palette = "YlGnBu",
+  domain = redlining_sf$ph_snap,
+  na.color = "grey"
+)
+
 renderLeaflet({
-  filtered_redlining <- redlining_sf %>% filter(borough == input$borough_choice)
+
+  req(input$borough_choice)
   
-  map <- leaflet(filtered_redlining) |>
-    addProviderTiles(providers$CartoDB.Positron) |>  
+  filtered_data <- health_spatial_data %>%
+    filter(borough == input$borough_choice)
+  
+  filtered_stores <- nyc_healthy_store %>%
+    filter(borough == input$borough_choice)
+  
+  map <- leaflet(filtered_data) |>
+    
+    addProviderTiles(providers$CartoDB.Positron) |>
+    
     addPolygons(
-      fillColor = ~colorFactor(palette = c("#208e56", "#e4e44c", "#1595b4", "#ef647b"), domain = redlining_sf$red_grade)(red_grade),
+      fillColor = ~snap_pal(ph_snap),  
       weight = 1,
       opacity = 1,
-      color = "black",
+      color = "black",  
       fillOpacity = 0.7,
       highlightOptions = highlightOptions(
         weight = 2,
@@ -236,41 +281,45 @@ renderLeaflet({
         fillOpacity = 0.9,
         bringToFront = TRUE
       ),
-      label = ~paste0("Census Tract: ", geoid, 
-                      "<br>Redlining Grade: ", red_grade,
-                      "<br>Borough: ", borough)
+      label = ~paste0(
+        "Census Tract: ", geoid, 
+        "<br>SNAP Enrollment (%): ", round(ph_snap, 2)
+      )
     ) |>
+    
     addLegend(
-      position = "bottomright",
-      pal = colorFactor(palette = c("#208e56", "#e4e44c", "#1595b4", "#ef647b"), domain = redlining_sf$red_grade),
-      values = ~red_grade,
-      title = "Redlining Grade",
-      opacity = 0.7
+      pal = snap_pal,
+      values = ~ph_snap,
+      opacity = 0.7,
+      title = "SNAP Enrollment (%)",
+      position = "bottomright"
     )
   
   if (input$store_check) {
     map <- map |>
       addCircleMarkers(
-        data = nyc_healthy_store,
-        lng = ~longitude,
-        lat = ~latitude,
-        radius = 5,
-        color = "#0f6921",
+        data = filtered_stores,
+        lng = ~longitude,  
+        lat = ~latitude,   
+        radius = 5,  
+        color = "#0f6921",  
         stroke = FALSE,
         fillOpacity = 0.7,
-        label = ~paste0("Store Name: ", store_name,
-                        "<br>Borough: ", borough,
-                        "<br>ZIP Code: ", zip_code),
+        label = ~paste0(
+          "Store Name: ", store_name,
+          "<br>Borough: ", borough,
+          "<br>ZIP Code: ", zip_code
+        ),
         labelOptions = labelOptions(
           noHide = FALSE,
           direction = "auto"
         )
       ) |>
+      
       addLegend(
         position = "bottomleft",
         colors = "#0f6921",
         labels = "Healthy Grocery Store",
-        title = "Healthy Grocery Stores in NYC",
         opacity = 0.7
       )
   }
@@ -278,7 +327,6 @@ renderLeaflet({
   map
 })
 ```
-
 
 
 
