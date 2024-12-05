@@ -5,6 +5,10 @@ account: sz3214
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13524331
+<<<<<<< HEAD
 bundleId: 9469172
+=======
+bundleId: 9463534
+>>>>>>> f89846bcf6fdd2a250df3750db403fbc015e623c
 url: https://sz3214.shinyapps.io/redlining/
 version: 1
