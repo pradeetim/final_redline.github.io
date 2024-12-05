@@ -63,7 +63,7 @@ redlining_sf =
 
 ```
 
-## Redlining Exploration:
+## Redlining Exploration
 
 Below is the map detailing the redlining grades given to areas in NYC. The corresponding colors and grades are in the legend. There are areas that our data set does not have information for, which are colored grey.
 
@@ -103,9 +103,9 @@ leaflet(redlining_sf) |>
 
 ```
 
-### Distribution of Redlining Scores in Boroughs:
+### Distribution of Redlining Scores in Boroughs
 
-Lets look at Redlining Scores in a different way:
+Lets look at Redlining Scores in a different way
 
 ```{r, echo=FALSE, fig.align='center'}
 redlining = redlining |>
@@ -137,7 +137,7 @@ redlining = redlining |>
 
 This graph shows different details. The distribution of the scores are fairly different for each of the boroughs, with Manhattan having the largest range and Queens having the smallest. Additionally, the mean and median redlining score for each of the borough are almost overlapping/the same. However, Manhattan has pretty different mean and median (mean closer to 3 and median closer to 4).
 
-### Redlining Grade Count by Borough:
+### Redlining Grade Count by Borough
 
 ```{r, echo=FALSE, fig.align='center'}
 set2_palette = RColorBrewer::brewer.pal(n = 4, name = "Set2") 
@@ -162,9 +162,47 @@ redlining |>
 
 This graph shows the grade count in each of the boroughs. Staten Island, Queens, and Bronx have the most C grade in their neighborhood (followed by D grade in second place). Manhattan and Brooklyn have grade D as the most frequent. This is reflective of what was previously observed in the violin plot. 
 
-## SNAP Exploration and Demographics:
+## SNAP Exploration and Demographics
 
-### SNAP Total % of Households within Redline Grade:
+### SNAP Enrollment
+
+```{r, echo=FALSE, warning=FALSE}
+
+snap_pal <- colorNumeric(
+  palette = "YlGnBu",
+  domain = redlining_sf$ph_snap,
+  na.color = "grey"
+)
+
+leaflet(redlining_sf) |>
+  addProviderTiles(providers$CartoDB.Positron) |> 
+  addPolygons(
+    fillColor = ~snap_pal(ph_snap),
+    weight = 1,
+    opacity = 1,
+    color = "black",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 2,
+      color = "#666",
+      fillOpacity = 0.9,
+      bringToFront = TRUE
+    ),
+    label = ~paste0("Census Tract: ", geoid, 
+                    "<br>SNAP Enrollment (%): ", round(ph_snap, 2))
+  ) |>
+
+  addLegend(
+    pal = snap_pal,
+    values = ~ph_snap,
+    opacity = 0.7,
+    title = "SNAP Enrollment (%)",
+    position = "bottomright"
+  ) 
+```
+
+
+### SNAP Total % of Households within Redline Grade
 
 ```{r, echo=FALSE, fig.align='center'}
 redlining_snap |>
@@ -208,7 +246,7 @@ redlining_snap |>
 
 This graph depicts the average % of households on SNAP within the areas with the grades. Unsurprisingly, areas with redlining grade of D have the highest average % of households on SNAP (23.7%), followed by C (18.6%), then B (17.2) and A (5.7) with the lowest. 
 
-### Race VS Redlinging Grade:
+### Race VS Redlinging Grade
 
 This is a stacked bar chart showing the race distribution of households by historical redlining grades (A, B, C, D, NA) in New York City.
 
@@ -253,239 +291,22 @@ ggplot(redlining_long, aes(x = red_grade, y = percent_household, fill = race_gro
 * Grade D ("Hazardous") areas have a higher concentration of Black and minority households compared to Grade A or B areas, which show a higher proportion of White households.
 * Grade C and D areas reflect the legacy of racial segregation, where redlined zones were predominantly occupied by communities of color.
 
-## Healthy Grocery Store Exploration:
+## Healthy Grocery Store Exploration
 
-### Redlinging Grade VS. Grocery Stores(Manhattan,Brooklyn,and Bronx):
-
-This map overlays the distribution of healthy grocery stores on top of the historical redlining grades across NYC.
-
-```{r store1, echo=FALSE}
-redlining_sf <- redlining_sf |>
-  mutate(
-    borough = case_when(
-      str_detect(NAME, "Bronx County") ~ "Bronx",
-      str_detect(NAME, "Kings County") ~ "Brooklyn",
-      str_detect(NAME, "New York County") ~ "Manhattan",
-      str_detect(NAME, "Queens County") ~ "Queens",
-      str_detect(NAME, "Richmond County") ~ "Staten Island",
-      TRUE ~ "Unknown"
-    )
-  )
-
-pal <- colorFactor(
-  palette = c("#208e56",  
-              "#e4e44c", 
-              "#1595b4", 
-              "#ef647b"),
-  domain = redlining_sf$red_grade
-)
-
-leaflet(redlining_sf) |>
-  addProviderTiles(providers$CartoDB.Positron) |>  
-  addPolygons(
-    fillColor = ~pal(red_grade),
-    weight = 1,
-    opacity = 1,
-    color = "black",
-    fillOpacity = 0.7,
-    highlightOptions = highlightOptions(
-      weight = 2,
-      color = "#666",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    ),
-    label = ~paste0("Census Tract: ", geoid, 
-                    "<br>Redlining Grade: ", red_grade,
-                    "<br>Borough: ", borough)
-  ) |>
-  addCircleMarkers(
-    data = nyc_healthy_store,
-    lng = ~longitude,
-    lat = ~latitude,
-    radius = 5,
-    color = "#0f6921",
-    stroke = FALSE,
-    fillOpacity = 0.7,
-    label = ~paste0("Store Name: ", store_name,
-                    "<br>Borough: ", borough,
-                    "<br>ZIP Code: ", zip_code),
-    labelOptions = labelOptions(
-      noHide = FALSE,
-      direction = "auto"
-    )
-  ) |>
-  addLegend(
-    position = "bottomright",
-    pal = pal,
-    values = ~red_grade,
-    title = "Redlining Grade",
-    opacity = 0.7
-  ) |>
-  addLegend(
-    position = "bottomleft",
-    colors = "#0f6921",
-    labels = "Healthy Grocery Store",
-    title = "Healthy Grocery Stores in NYC",
-    opacity = 0.7
-  )
-```
-
-
-### Redlinging Grade VS.Grocery Stores in Bronx Only:
-
-This map zooms in on the Bronx area to focus on the distribution of healthy grocery stores within the context of historical redlining grades.
-
-```{r bronx, echo=FALSE}
-redlining_sf <- redlining_sf |>
-  mutate(
-    borough = case_when(
-      str_detect(NAME, "Bronx County") ~ "Bronx",
-      str_detect(NAME, "Kings County") ~ "Brooklyn",
-      str_detect(NAME, "New York County") ~ "Manhattan",
-      str_detect(NAME, "Queens County") ~ "Queens",
-      str_detect(NAME, "Richmond County") ~ "Staten Island",
-      TRUE ~ "Unknown"
-    )
-  )
-
-bronx_ <- redlining_sf |>
-  filter(borough == "Bronx")
-
-bronx_stores <- nyc_healthy_store |>
-  filter(borough == "Bronx")
-
-
-pal <- colorFactor(
-  palette = c("#208e56",  
-              "#e4e44c", 
-              "#1595b4", 
-              "#ef647b"),
-  domain = redlining_sf$red_grade
-)
-
-leaflet(bronx_) |>
-  addProviderTiles(providers$CartoDB.Positron) |>  
-  addPolygons(
-    fillColor = ~pal(red_grade),
-    weight = 1,
-    opacity = 1,
-    color = "black",
-    fillOpacity = 0.7,
-    highlightOptions = highlightOptions(
-      weight = 2,
-      color = "#666",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    ),
-    label = ~paste0("Census Tract: ", geoid, 
-                    "<br>Redlining Grade: ", red_grade,
-                    "<br>Borough: ", borough)
-  ) |>
-  addCircleMarkers(
-    data = bronx_stores,
-    lng = ~longitude,
-    lat = ~latitude,
-    radius = 5,
-    color = "#0f6921",
-    stroke = FALSE,
-    fillOpacity = 0.7,
-    label = ~paste0("Store Name: ", store_name,
-                    "<br>Borough: ", borough,
-                    "<br>ZIP Code: ", zip_code),
-    labelOptions = labelOptions(
-      noHide = FALSE,
-      direction = "auto"
-    )
-  ) |>
-  addLegend(
-    position = "bottomright",
-    pal = pal,
-    values = ~red_grade,
-    title = "Redlining Grade",
-    opacity = 0.7
-  ) |>
-  addLegend(
-    position = "bottomleft",
-    colors = "#0f6921",
-    labels = "Healthy Grocery Store",
-    title = "Healthy Grocery Stores in NYC",
-    opacity = 0.7
-  )
-```
-
-* Redlined areas (D) in the Bronx show fewer healthy grocery stores compared to blue (C) and yellow (B) areas.
-
-## Health Outcome vs Redlining Scores
-
-```{r, echo=FALSE, message=FALSE, fig.align='center'}
-health_data =
-  place_cleaned |>
-  mutate(geoid = as.character(geoid)) |>
-  left_join(redlining_snap, by = "geoid") |>
-  janitor::clean_names()
-
-health_data |>
-  drop_na(red_grade, obesity, diabetes, highchol) |>
-  select(red_grade, obesity, diabetes, highchol) |>
-  group_by(red_grade) |>
-  mutate(
-    obesity_rate = mean(obesity, na.rm = FALSE),
-    diabetes_rate = mean(diabetes, na.rm = FALSE),
-    highcholesterol_rate = mean(highchol, na.rm = FALSE)
-  ) |>
-  select(red_grade, obesity_rate, diabetes_rate, highcholesterol_rate) |>
-  pivot_longer(cols = c(obesity_rate, diabetes_rate, highcholesterol_rate), 
-               names_to = "condition", values_to = "rate") |>
-  ggplot(aes(x = condition, y = rate, fill = condition)) +
-  geom_bar(stat = "identity", position = "dodge", color = "black") +
-  facet_wrap(~red_grade) + 
-  labs(
-    title = "Diabetes, Obesity, and High Cholesterol Rates by Redlining Grade",
-    x = "Condition",
-    y = "Rate"
-  ) +
-  theme_minimal() +
-  scale_fill_brewer(palette = "Set2") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
-
-```
-
-The graph shows how redlining grades correlate with health outcomes (diabetes, obesity, and high cholesterol) in New York City. The neighborhoods with A grades have slightly lower rates of diabetes and obesity, but D areas suffer from higher rates of these conditions. High cholesterol rates are interestingly higher in better-graded areas, suggesting that factors such as access to healthcare and preventive services may play a significant role in these health outcomes.
-
-### SNAP Enrollment and Grocery Stores in Bronx(USE IN SHINY APP IF NEEDED).
+### Grocery Stores (Manhattan, Brooklyn and Bronx)
 
 ```{r, echo=FALSE, warning=FALSE}
-bronx_ <- redlining_sf |>
-  filter(borough == "Bronx")
-
-bronx_stores <- nyc_healthy_store |>
-  filter(borough == "Bronx")
 
 snap_pal <- colorNumeric(
   palette = "YlGnBu",
-  domain = bronx_$ph_snap,
+  domain = redlining_sf$ph_snap,
   na.color = "grey"
 )
 
-leaflet(bronx_) |>
+leaflet(redlining_sf) |>
   addProviderTiles(providers$CartoDB.Positron) |> 
-  addPolygons(
-    fillColor = ~snap_pal(ph_snap),
-    weight = 1,
-    opacity = 1,
-    color = "black",
-    fillOpacity = 0.7,
-    highlightOptions = highlightOptions(
-      weight = 2,
-      color = "#666",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    ),
-    label = ~paste0("Census Tract: ", geoid, 
-                    "<br>SNAP Enrollment (%): ", round(ph_snap, 2))
-  ) |>
   addCircleMarkers(
-    data = bronx_stores,
+    data = nyc_healthy_store,
     lng = ~longitude,
     lat = ~latitude,
     radius = 5,  
@@ -500,13 +321,7 @@ leaflet(bronx_) |>
       direction = "auto"
     )
   ) |>
-  addLegend(
-    pal = snap_pal,
-    values = ~ph_snap,
-    opacity = 0.7,
-    title = "SNAP Enrollment (%)",
-    position = "bottomright"
-  ) |>
+
   addLegend(
     position = "bottomleft",
     colors = "#0f6921",
@@ -517,7 +332,11 @@ leaflet(bronx_) |>
 
 ```
 
-### Health outcome map (shiny)
+
+## Health Outcomes Exploration
+
+### Health Outcomes in NYC
+
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 health_data =
   place_cleaned |>
@@ -579,3 +398,43 @@ leaflet(health_spatial_data) %>%
     position = "bottomright"
   )
 ```
+
+### Health Outcome vs Redlining Scores
+
+```{r, echo=FALSE, message=FALSE, fig.align='center'}
+health_data =
+  place_cleaned |>
+  mutate(geoid = as.character(geoid)) |>
+  left_join(redlining_snap, by = "geoid") |>
+  janitor::clean_names()
+
+health_data |>
+  drop_na(red_grade, obesity, diabetes, highchol) |>
+  select(red_grade, obesity, diabetes, highchol) |>
+  group_by(red_grade) |>
+  mutate(
+    obesity_rate = mean(obesity, na.rm = FALSE),
+    diabetes_rate = mean(diabetes, na.rm = FALSE),
+    highcholesterol_rate = mean(highchol, na.rm = FALSE)
+  ) |>
+  select(red_grade, obesity_rate, diabetes_rate, highcholesterol_rate) |>
+  pivot_longer(cols = c(obesity_rate, diabetes_rate, highcholesterol_rate), 
+               names_to = "condition", values_to = "rate") |>
+  ggplot(aes(x = condition, y = rate, fill = condition)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  facet_wrap(~red_grade) + 
+  labs(
+    title = "Diabetes, Obesity, and High Cholesterol Rates by Redlining Grade",
+    x = "Condition",
+    y = "Rate"
+  ) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set2") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
+
+```
+
+The graph shows how redlining grades correlate with health outcomes (diabetes, obesity, and high cholesterol) in New York City. The neighborhoods with A grades have slightly lower rates of diabetes and obesity, but D areas suffer from higher rates of these conditions. High cholesterol rates are interestingly higher in better-graded areas, suggesting that factors such as access to healthcare and preventive services may play a significant role in these health outcomes.
+
+
+
