@@ -100,7 +100,7 @@ SNAP =
 ```
 
     ## Rows: 2330 Columns: 458
-    ## ── Column specification ─────────────────────────────────────
+    ## ── Column specification ──────────────────────────────────────────
     ## Delimiter: ","
     ## chr (458): ﻿"GEO_ID", NAME, S2201_C01_001E, S2201_C01_001M, S2201_C01_002E, ...
     ## 
@@ -109,8 +109,7 @@ SNAP =
 
     ## Warning: There were 17 warnings in `mutate()`.
     ## The first warning was:
-    ## ℹ In argument: `across(total_ct_households:ph_snap,
-    ##   as.numeric)`.
+    ## ℹ In argument: `across(total_ct_households:ph_snap, as.numeric)`.
     ## Caused by warning:
     ## ! NAs introduced by coercion
     ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 16 remaining
@@ -163492,12 +163491,12 @@ nyc_healthy_store =
 ```
 
     ## Rows: 675 Columns: 15
-    ## ── Column specification ─────────────────────────────────────
+    ## ── Column specification ──────────────────────────────────────────
     ## Delimiter: ","
     ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
     ## dbl (10): Zip 
     ## Code, Year Awarded, Program 
-    ## Wave, Latitude, Longitude, Com...
+    ## Wave, Latitude, Longitude, Commu...
     ## lgl  (1): Address
     ## 
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
@@ -163726,7 +163725,7 @@ place_crude =
 ```
 
     ## Rows: 73621 Columns: 25
-    ## ── Column specification ─────────────────────────────────────
+    ## ── Column specification ──────────────────────────────────────────
     ## Delimiter: ","
     ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
     ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
@@ -163872,52 +163871,8 @@ place_crude|>
   knitr::kable()
 ```
 
-| measure                                                   | data_value_unit | measure_id |
-|:----------------------------------------------------------|:----------------|:-----------|
-| Obesity among adults                                      | %               | OBESITY    |
-| Diagnosed diabetes among adults                           | %               | DIABETES   |
-| High cholesterol among adults who have ever been screened | %               | HIGHCHOL   |
-
-# optional section
-
-**Comments: I think we may or may not need the following data in
-analysis, but if someone want to use that, we will include them in the
-data cleaning, or I will just delete them**
-
-## poverty level \[optional for use \]
-
-``` r
-poverty = 
-  read_csv(file = "./Datasets/ACS-poverty-level.csv", skip=1)|>
-  janitor::clean_names()|>
-  mutate(geoid = str_remove(geography, ".*US"))
-```
-
-    ## New names:
-    ## Rows: 2327 Columns: 375
-    ## ── Column specification
-    ## ───────────────────────────────────── Delimiter: "," chr
-    ## (146): Geography, Geographic Area Name,
-    ## Estimate!!Total!!UNRELATED INDIV... dbl (228):
-    ## Estimate!!Total!!Population for whom poverty status is
-    ## determined... lgl (1): ...375
-    ## ℹ Use `spec()` to retrieve the full column specification for
-    ## this data. ℹ Specify the column types or set `show_col_types
-    ## = FALSE` to quiet this message.
-    ## • `` -> `...375`
-
-## NYC census demographic \[optional for use\]
-
-**For this data we have more detailed demographic by age division, and
-slightly different way of measuring race and ethnicty (Hispanic White
-non-Hispanic,Black non-Hispanic, Asian non-Hispanic, Some other race
-non-Hispanic, Non-Hispanic of two or more races). In case this will be
-interesting for EDA or analysis **
-
-``` r
-demo = 
-  read_excel("./Datasets/NYC_census_core_data.xlsx")|>
-  janitor::clean_names()|>
-  filter(geo_type == "CT2020")|>
-  rename(geoid = geo_id)
-```
+| measure | data_value_unit | measure_id |
+|:---|:---|:---|
+| Obesity among adults | % | OBESITY |
+| Diagnosed diabetes among adults | % | DIABETES |
+| High cholesterol among adults who have ever been screened | % | HIGHCHOL |
