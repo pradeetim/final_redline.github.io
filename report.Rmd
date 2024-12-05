@@ -250,13 +250,13 @@ place_crude|>
   knitr::kable()
 ```
 
-## Exploratory Analysis
+# Exploratory Analysis
 
-### Visualizations
+## Visualizations
 
-## Regression Analysis
+# Regression Analysis
 
-## Discussion
+# Discussion
 
 Our analysis found that redlining is significantly associated with food insecurity in New York City at the census tract level. This finding indicates that historic housing policies affected households' food security and relevant health outcomes in New York City. Households residing in neighborhoods that were graded as declining or hazardous were more likely to have limited access to adequate food compared to households residing in neighborhoods that were graded as desirable by HOLC.
 

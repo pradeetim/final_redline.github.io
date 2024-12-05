@@ -21,6 +21,7 @@ library(leaflet)
 library(tidycensus)
 ```
 
+<<<<<<< HEAD
 
 ```{r server, echo=FALSE}
 server <- function(input, output, session) {
@@ -28,6 +29,10 @@ server <- function(input, output, session) {
     includeHTML("data_cleaning.html")
   })
 }
+=======
+```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+rmarkdown::render("data_cleaning_shiny.Rmd", quiet = TRUE)
+>>>>>>> 8ffeb999a15a159e3fc275be7930dbd9e03eb635
 ```
 
 ```{r setup2, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
