@@ -266,7 +266,21 @@ The strength of our project was that we utilized data from multiple sources to e
 
 The significant association between historical redlining and food insecurity in New York City suggests that discriminatory housing policies continue to have lasting effects on health outcomes. The higher prevalence of racial minorities, households with people with disabilities, and low-income families in redlined areas highlights the compounded impact of systemic inequities. Efforts to improve food access and reduce health disparities should therefore include targeted strategies aimed at these vulnerable populations. Public health initiatives might also need to involve urban planners, community organizations, and local governments to dismantle the structural barriers formed by redlining.
 
+Our project explored the relationship between redlining grades and three health outcomes: diabetes, high cholesterol, and obesity. The results, derived from regression models for each health outcome, were statistically significant across all models, suggesting a strong relationship between redlining and these health conditions.
 
+Obesity Model
+The model for obesity shows a significant negative relationship with the redlining grades, with higher redlining grades (B, C, D) corresponding to a decrease in obesity outcomes. Specifically, the estimate for redlining grade B was -2.775 (p < 0.001), C was -3.133 (p < 0.001), and D was -4.989 (p < 0.001). This suggests that as the redlining grade increases from A to D, individuals in these areas are more likely to experience lower levels of obesity. This result aligns with public health research suggesting that socioeconomic and environmental factors in these areas may reduce access to healthy food options, contributing to a higher prevalence of obesity.
+
+Diabetes Model
+For diabetes, the results similarly show that as the redlining grade worsens (moving from A to D), the likelihood of diabetes decreases. For example, the red_gradeB estimate of 5.187 (p < 0.001) suggests that people in grade B areas have higher diabetes levels compared to grade A areas, with significant increases for higher grades. This finding could be indicative of disparities in healthcare access and lifestyle factors that are linked to socio-economic conditions in more redlined areas. Redlining may exacerbate diabetes-related risk factors due to poor living conditions, limited access to healthcare, and reduced availability of preventive measures.
+
+High Cholesterol Model
+In the high cholesterol model, the estimates for red_gradeB, C, and D were positive but decreasing, indicating a trend of higher high cholesterol rates as redlining grades improve. The most significant finding here was for red_gradeD, which had a strong positive effect with an estimate of 37.275 (p < 0.001). This suggests that worse environmental conditions, such as lower access to health-promoting resources, are linked to elevated cholesterol levels in individuals from redlined neighborhoods.
+
+Other Predictors
+In the multivariate models adjusted for race, ethnicity, and disability, the presence of ph_black, ph_asian, ph_elderly, and ph_disability emerged as significant predictors of health outcomes, underscoring the complexity of health disparities. Notably, the variables ph_black and ph_asian were significant in predicting both diabetes and obesity, highlighting the compounded effect of race in health disparities.
+
+The models suggest that individuals in historically disadvantaged neighborhoods (indicated by higher redlining grades) are more likely to experience health disparities, including obesity, diabetes, and high cholesterol, influenced by various socio-economic and demographic factors. These findings emphasize the critical need for public health initiatives that address the intersections of redlining, race, and healthcare access to mitigate health inequalities.
 
 
 
