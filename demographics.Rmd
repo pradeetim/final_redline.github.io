@@ -64,7 +64,8 @@ redlining_sf =
 ```
 
 ## Redlining Exploration:
-Here is the map detailing the redlining grades given to areas in NYC. There are areas that our data set does not have information for, which are colored grey.
+
+Below is the map detailing the redlining grades given to areas in NYC. The corresponding colors and grades are in the legend. There are areas that our data set does not have information for, which are colored grey.
 
 ```{r redlining, echo=FALSE, warning=FALSE}
 
@@ -104,6 +105,8 @@ leaflet(redlining_sf) |>
 
 ### Distribution of Redlining Scores in Boroughs:
 
+Lets look at Redlining Scores in a different way:
+
 ```{r, echo=FALSE, fig.align='center'}
 redlining = redlining |>
   mutate(
@@ -132,7 +135,7 @@ redlining = redlining |>
 
 ```
 
-This graph shows more detail. The distribution of the scores are fairly different for the boroughs, which Manhattan having the most distribution and Queens having the smallest.
+This graph shows different details. The distribution of the scores are fairly different for each of the boroughs, with Manhattan having the largest range and Queens having the smallest. Additionally, the mean and median redlining score for each of the borough are almost overlapping/the same. However, Manhattan has pretty different mean and median (mean closer to 3 and median closer to 4).
 
 ### Redlining Grade Count by Borough:
 
@@ -154,7 +157,7 @@ redlining |>
   )
 ```
 
-We can see here that Staten Island, Queens, and Bronx have the most C grade in their neighborhood. Manhattan and Brooklyn have the grade D as the most frequent. This is similar to what we saw in the violin plot previously. 
+This graph shows the grade count in each of the boroughs. Staten Island, Queens, and Bronx have the most C grade in their neighborhood (followed by D grade in second place). Manhattan and Brooklyn have grade D as the most frequent. This is reflective of what was previously observed in the violin plot. 
 
 ## SNAP Exploration and Demographics:
 
@@ -199,6 +202,8 @@ redlining_snap |>
   )
   
 ```
+
+This graph depicts the average % of households on SNAP within the areas with the grades. Unsurprisingly, areas with redlining grade of D have the highest average % of households on SNAP (23.7%), followed by C (18.6%), then B (17.2) and A (5.7) with the lowest. 
 
 ### Race VS Redlinging Grade:
 
