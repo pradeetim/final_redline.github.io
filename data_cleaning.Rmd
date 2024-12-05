@@ -4,7 +4,7 @@ output: github_document
 always_allow_html: true
 ---
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readxl)
 ```
@@ -35,7 +35,7 @@ We selected the variables that were relevant to our analysis to build the final 
   - `ph_2_work`: estimate percent of families with 2 or more workers in past 12 months 
   - `ph_snap`: estimate percent of households receiving SNAP/Food Stamp 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 SNAP = 
   read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
   janitor::clean_names()|>
@@ -128,7 +128,7 @@ redlining_snap|>
 
 We obtained a data regarding recognized healthy store from the NYC Department of Health and Mental Hygiene. This dataset contained 675 bodegas & grocery stores receiving recognition from Borough President's Office regarding providing healthy food choices to its customers. The original dataset contained variables describing basic information of the stores(name, store identifier), geographic location(address, census tract, zip code, borough, longitude and latitude), year awarded and the program wave. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 nyc_healthy_store = 
   read_csv("./Datasets/Recognized_Shop_Healthy_Stores.csv")|>
   janitor::clean_names()|>
@@ -159,7 +159,7 @@ The data only had stores from the Bronx, Brooklyn and New York County. We coded 
 
 We obtain the count for the number of healthy food stores within each census tracts and matched that with the snap enrollment data for New York City, Bronx and Brooklyn Borough based on geoid.  
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 health_store_count = 
 nyc_healthy_store|>
   group_by(geoid)|>
@@ -177,7 +177,7 @@ redlining_snap|>
 
 We also extracted the PLACES: Local Data for Better Health, 2024 release for NYC census tracts from CDC to obtain the prevalence of a variety of health indicators that are likely associated with food insecurity. For the purpose of matching with other data sets, we pivoted the original data set into wide format to obtain the health measures as columns and rows as each census tracts. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 place_crude =
   read_csv("./Datasets/PLACES.csv")|>
   janitor::clean_names()|>
@@ -203,7 +203,7 @@ head(place_cleaned)|>
 ```
 The description regarding the health indicators we have used for the analysis were indicated in the table below. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 place_crude|>
   distinct(measure, data_value_unit, measure_id)|>
   filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
