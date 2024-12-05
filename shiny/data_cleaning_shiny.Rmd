@@ -12,7 +12,7 @@ library(readxl)
 
 ```{r, message=FALSE, warning=FALSE}
 SNAP = 
-  read_csv(file = "../Datasets/ACS_SNAP_ENROLLMENT.csv")|>
+  read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
   janitor::clean_names()|>
   select(
     geo_id:s2201_c01_001e,
@@ -57,7 +57,7 @@ SNAP =
 
 ```{r}
 redlining = 
-  read_excel("../Datasets/Historic Redlining Score 2020B.xlsx")|>
+  read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
   janitor::clean_names()|>
   select(-cbsa)|>
   mutate(fip = substr(geoid20, 1, 5),
@@ -87,7 +87,7 @@ redlining_snap =
 
 ```{r, message=FALSE, warning=FALSE}
 nyc_healthy_store = 
-  read_csv("../Datasets/Recognized_Shop_Healthy_Stores.csv")|>
+  read_csv("./Datasets/Recognized_Shop_Healthy_Stores.csv")|>
   janitor::clean_names()|>
   distinct(bin, .keep_all = TRUE)|>
   mutate(fipcode = case_when(
@@ -129,7 +129,7 @@ redlining_snap|>
 
 ```{r, message=FALSE, warning=FALSE}
 place_crude =
-  read_csv("../Datasets/PLACES.csv")|>
+  read_csv("./Datasets/PLACES.csv")|>
   janitor::clean_names()|>
   rename(geoid = location_id)|>
   select(geoid, measure:data_value, measure_id)

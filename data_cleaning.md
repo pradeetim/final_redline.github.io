@@ -99,22 +99,6 @@ SNAP =
   select(-geo_id)
 ```
 
-    ## Rows: 2330 Columns: 458
-    ## ── Column specification ──────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (458): ﻿"GEO_ID", NAME, S2201_C01_001E, S2201_C01_001M, S2201_C01_002E, ...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    ## Warning: There were 17 warnings in `mutate()`.
-    ## The first warning was:
-    ## ℹ In argument: `across(total_ct_households:ph_snap, as.numeric)`.
-    ## Caused by warning:
-    ## ! NAs introduced by coercion
-    ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 16 remaining
-    ##   warnings.
-
 The window below is a preview of the SNAP data set.
 
 ``` r
@@ -163488,21 +163472,7 @@ nyc_healthy_store =
   filter(!is.na(ct_label))|>
   mutate(geoid = paste(fipcode, ct_label, sep = ""))|>
   select(-fipcode, -ct_label)
-```
 
-    ## Rows: 675 Columns: 15
-    ## ── Column specification ──────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (4): Store Name, Street Address, Borough, Neighborhood Tabulation Area ...
-    ## dbl (10): Zip 
-    ## Code, Year Awarded, Program 
-    ## Wave, Latitude, Longitude, Commu...
-    ## lgl  (1): Address
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 head(nyc_healthy_store)|>
   knitr::kable()|>
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12) %>% 
@@ -163722,19 +163692,8 @@ place_crude =
   janitor::clean_names()|>
   rename(geoid = location_id)|>
   select(geoid, measure:data_value, measure_id)
-```
 
-    ## Rows: 73621 Columns: 25
-    ## ── Column specification ──────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (13): StateAbbr, StateDesc, CountyName, DataSource, Category, Measure, D...
-    ## dbl (10): Year, CountyFIPS, LocationName, Data_Value, Low_Confidence_Limit, ...
-    ## lgl  (2): Data_Value_Footnote_Symbol, Data_Value_Footnote
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-``` r
 place_cleaned=
   place_crude|>
   filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
@@ -163871,8 +163830,8 @@ place_crude|>
   knitr::kable()
 ```
 
-| measure | data_value_unit | measure_id |
-|:---|:---|:---|
-| Obesity among adults | % | OBESITY |
-| Diagnosed diabetes among adults | % | DIABETES |
-| High cholesterol among adults who have ever been screened | % | HIGHCHOL |
+| measure                                                   | data_value_unit | measure_id |
+|:----------------------------------------------------------|:----------------|:-----------|
+| Obesity among adults                                      | %               | OBESITY    |
+| Diagnosed diabetes among adults                           | %               | DIABETES   |
+| High cholesterol among adults who have ever been screened | %               | HIGHCHOL   |
