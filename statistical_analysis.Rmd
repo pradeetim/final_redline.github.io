@@ -104,7 +104,7 @@ final_analysis =
 
 ### Total count of census tract for each HOLC grade
 
-```{r}
+```{r, echo=FALSE}
 final_analysis |>
   group_by(red_grade)|>
   summarise(count = n())|>
@@ -115,7 +115,7 @@ The number of A-grade census tract is the smallest (n=36) while the number of C-
 
 ### Comparison of HOLC grades 
 
-```{r}
+```{r, echo=FALSE}
 redlining_grades=
 final_analysis |>
   group_by(red_grade) |>
@@ -212,7 +212,7 @@ We computed the average and standard deviation of the different socio-demographi
 
 ### Comparing census tracts with HRS for Grade A with Grade D
 
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, echo=FALSE}
 q1_vs_q4 = 
 final_analysis|>
   filter(red_grade %in%c("A","D"))|>
@@ -242,7 +242,7 @@ q1_vs_q4|>
 ```
 
 
-```{r }
+```{r, echo=FALSE}
 uni_reg = function(dataset, outcomes, predictor) {
   results = list() 
   for (outcome in outcomes) {
@@ -278,7 +278,7 @@ Regarding the health outcomes, the average prevalence of obesity is 7.97% higher
 
 Based on the results for the baseline characteristics analysis, we computed a linear regression model to explore the association between redlining grades and precentage of households enrolled in SNAP. 
 
-```{r}
+```{r, echo=FALSE}
 # univariate analysis
 lm(ph_snap~red_grade,final_analysis)|>
   broom::tidy()|>
@@ -287,9 +287,9 @@ lm(ph_snap~red_grade,final_analysis)|>
 
 Based on the univariate model, we found the percentage of household enrolled in SNAP was 17.97%, 12.90% and 11.53% higher respectively in the D-grade, C-grade and B-grade census tracts compared to A-grade census tracts (all p-value <0.001). 
 
-### Multivarite Modelling
+### Multivariate Modelling
 
-```{r}
+```{r, echo=FALSE}
 ## multivariate model 1
 red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
 tidy_model = broom::tidy(red_snap_m1)
@@ -306,7 +306,7 @@ tidy_model|>
 
 When the association between redlining grades and SNAP enrollment evaluated using a linear regression model, D-grade census tracts had a 4.04% higher SNAP enrollment compared to A-grade census tracts (p = 0.037), indicating a statistically significant relationship. However, for B-grade and C-grade tracts, the differences were not statistically significant (p = 0.087 and p = 0.283 respectively). Among the covariates, a 1% increase in minority population was associated with a 0.16% increase in SNAP enrollment (p < 0.001). Additionally, the percentage of households with elderly members was negatively associated with SNAP enrollment (-0.33%, p < 0.001), while households with disabilities (+0.75%, p < 0.001) and those with no workers (+0.32%, p < 0.001) showed significant positive associations.
 
-```{r}
+```{r, echo=FALSE}
 ## histogram for snap enrollment
 ggplot(final_analysis, aes(x = ph_snap)) +
   geom_histogram(binwidth = 5, fill = "skyblue", color = "black") +
@@ -320,7 +320,7 @@ ggplot(final_analysis, aes(x = ph_snap)) +
 
 The histogram shows that SNAP enrollment is right-skewed, with the majority of census tracts having lower percentages of households enrolled. Therefore, transformations were applied.
 
-```{r}
+```{r, echo=FALSE}
 ## multivariate model 2
 red_snap_m2 =
   final_analysis|>
@@ -342,7 +342,7 @@ tidy_model|>
 
 We applied a log transformation to SNAP enrollment to better address skewness in the data, with results interpreted as multiplicative changes. Compared to A-grade tracts, D-grade tracts exhibited 1.82 times higher SNAP enrollment (p < 0.001). Similarly, B-grade and C-grade tracts showed increases of 1.78 times (p < 0.001) and 1.75 times (p < 0.001), respectively. Covariates such as minority population and households with disabilities remained significant. A 1% increase in minority population was associated with a 1.2% increase in SNAP enrollment (p < 0.001), while households with elderly members were associated with a 1.4% decrease in SNAP enrollment (p < 0.001).
 
-```{r}
+```{r, echo=FALSE}
 ##multivariate model 3
 red_snap_m3 = lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 
@@ -365,10 +365,10 @@ Then we included specific ethnic proportions (White, Black, and Asian) as covari
 
 ### Cross Validation and Model Selection
 
-To assess the predictive performance of the three multivarite models, Monte Carlo cross-validation was conducted, calculating the Root Mean Square Error (RMSE) for each model across multiple training and testing splits.
+To assess the predictive performance of the three multivariate models, Monte Carlo cross-validation was conducted, calculating the Root Mean Square Error (RMSE) for each model across multiple training and testing splits.
 
 
-```{r}
+```{r, echo=FALSE}
 cv_df =
   crossv_mc(final_analysis, 100)
 
@@ -407,7 +407,7 @@ Model 1, which used a simple linear approach without log transformation, demonst
 
 Conversely, Model 2 and Model 3, both of which log-transformed SNAP enrollment to account for its right-skewed distribution, exhibited significantly lower RMSE values. This suggests that these models provided a much better fit to the data and were more reliable in predicting SNAP enrollment.
 
-```{r}
+```{r, echo=FALSE}
 cv_df |> 
   select(starts_with("rmse")) |> 
   pivot_longer(
@@ -430,7 +430,7 @@ Therefore, model 3 provides the most robust framework for understanding the rela
 ## Association of Health Outcomes and Redlining
 
 ### Preview the Health Outcomes Data
-```{r}
+```{r, echo=FALSE}
 baseline_char|>
   filter(variable %in% c("obesity","diabetes","highchol"))|>
   mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
@@ -458,31 +458,31 @@ final_analysis |>
 
 ### Univariate Modelling
 
-```{r}
+```{r, echo=FALSE}
 diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
 diabetes_model |> 
   broom::tidy()|> 
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, caption = "Univariate Regression Model for Diabetes")
 ```
 
 In the univariable diabetes model, the results indicate a similar trend, with redlining grades playing a significant role. The intercept for grade A was 9.247 (p < 0.001), while the estimates for grade B, grade C, and grade D were 1.866, 3.108, and 2.337, respectively. While the relationship is positive, it is less pronounced than for obesity. The coefficients show a gradual increase in diabetes levels as the redlining grade worsens, and the p-values for all estimates were statistically significant (p < 0.05), further solidifying the link between redlining and diabetes.
 
-```{r}
+```{r, echo=FALSE}
 chol_model = lm(highchol ~ red_grade, data = final_analysis) 
 chol_model |> 
   broom::tidy()|> 
   mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, caption = "Univariate Regression Model for High Cholesterol")
 ```
 
 The results from the univariable high cholesterol model showed a clear relationship between redlining grades and high cholesterol. Specifically, individuals from areas with worse redlining grades (e.g., grades C and D) are more likely to have higher high cholesterol outcomes. The intercept of 37.275 (p < 0.001) indicates a baseline level of high cholesterol for individuals in grade A areas. However, when moving to B, C, and D, the estimated effects were negative, with estimates of -2.775, -3.133, and -4.989, respectively, all with p-values less than 0.001. This trend suggests that, contrary to what might be expected, individuals from higher redlining grades may have lower high cholesterol scores, potentially due to systemic barriers and less access to health resources that prevent the management of high cholesterol.
 
-```{r}
+```{r, echo=FALSE}
 obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
 obesity_model|> 
   broom::tidy()|> 
   mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, caption = "Univariate Regresion Model for Obesity")
 ```
 
 In the univariable obesity model, the relationship between redlining and obesity outcomes is more directly significant. The intercept of 20.736 (p < 0.001) provides the baseline obesity rate for individuals in grade A areas. For grade B, grade C, and grade D, the estimates were 5.187, 6.770, and 7.974, respectively (all with p < 0.001). These results showed that as the redlining grade worsens, obesity prevalence increases. This finding aligns with previous research suggesting that neighborhoods with poorer infrastructure, limited access to healthy food, and reduced access to healthcare services may exacerbate obesity rates. The statistically significant p-values for all grades further support that redlining has a substantial effect on obesity outcomes.
@@ -491,31 +491,31 @@ In the univariable obesity model, the relationship between redlining and obesity
 Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (ph_white, ph_black, ph_asian), age (ph_elderly), disability (ph_disability), and employment status (ph_no_work). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
 
 
-### Multivarite Modelling
+### Multivariate Modelling
 
-```{r}
+```{r, echo=FALSE}
 diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 diabetes_adj_model |> 
   broom::tidy()|> 
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, caption = "Multivariate Regression Model for Diabetes")
 ```
 
 The adjusted model for diabetes revealed no significant differences in diabetes prevalence between redlining grades after accounting for covariates such as racial composition, elderly population, disability, and no-work households. The estimates for B-grade (0.022, p = 0.520), C-grade (0.057, p = 0.092), and D-grade (-0.008, p = 0.825) were not statistically significant. Among the covariates, the proportion of White, Black, and Asian populations were significantly associated with diabetes prevalence. Specifically, a 1% increase in the White population was associated with a 0.9% decrease in diabetes prevalence (p < 0.001), while increases in Black and Asian populations were also negatively associated but to a lesser extent. Other significant covariates included the proportion of elderly households (+0.6%, p < 0.001), disability (+0.7%, p < 0.001), and no-work households (+0.5%, p < 0.001), all of which were positively associated with diabetes prevalence.
 
-```{r}
+```{r, echo=FALSE}
 highcol_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 highcol_adj_model |> 
   broom::tidy()|> 
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, caption = "Multivariate Regression Model for High Cholesterol")
 ```
 
 The adjusted model for high cholesterol showed a significant decrease in prevalence in B-grade (-0.034, p = 0.015), C-grade (-0.047, p = 0.001), and D-grade (-0.059, p < 0.001) tracts compared to A-grade tracts. Among the covariates, the proportion of Asian households was positively associated with high cholesterol prevalence (+0.2%, p < 0.001), while the proportion of elderly households was strongly positively associated (+2.5%, p < 0.001). Disability (+0.1%, p < 0.001) and no-work households (+0.2%, p < 0.001) also showed positive associations. Interestingly, the proportions of White and Black populations did not exhibit significant associations with high cholesterol prevalence.
 
-```{r}
+```{r, echo=FALSE}
 obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 obesity_adj_model |> 
   broom::tidy()|> 
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, caption = "Multivariate Regression Model for Obesity")
 ```
 
 The adjusted model for obesity indicated significant differences across redlining grades, with obesity prevalence higher in B-grade (0.101, p < 0.001), C-grade (0.151, p < 0.001), and D-grade (0.118, p < 0.001) tracts compared to A-grade tracts. Among the covariates, the proportion of White households was negatively associated with obesity prevalence, with a 0.5% decrease per 1% increase in the White population (p < 0.001). Conversely, increases in Black and Asian populations were also negatively associated, with estimates of -0.1% (p < 0.001) and -1.0% (p < 0.001), respectively. Other significant covariates included disability (+0.5%, p < 0.001) and no-work households (+0.1%, p = 0.011), which were positively associated with obesity prevalence. The proportion of elderly households was negatively associated (-0.1%, p = 0.001).

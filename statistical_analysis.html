@@ -375,10 +375,6 @@ class="section level2">
 <div id="total-count-of-census-tract-for-each-holc-grade"
 class="section level3">
 <h3>Total count of census tract for each HOLC grade</h3>
-<pre class="r"><code>final_analysis |&gt;
-  group_by(red_grade)|&gt;
-  summarise(count = n())|&gt;
-   knitr::kable()</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -410,95 +406,6 @@ number of C-grade census tract is the biggest(n=1003).</p>
 </div>
 <div id="comparison-of-holc-grades" class="section level3">
 <h3>Comparison of HOLC grades</h3>
-<pre class="r"><code>redlining_grades=
-final_analysis |&gt;
-  group_by(red_grade) |&gt;
-  summarise(
-    avg_snap = mean(ph_snap, na.rm = TRUE),
-    sd_snap = sd(ph_snap, na.rm = TRUE),
-    avg_elderly = mean(ph_elderly,na.rm=TRUE),
-    sd_elderly = sd(ph_elderly, na.rm = TRUE),
-    avg_child = mean(ph_with_children, na.rm = TRUE),
-    sd_child = sd(ph_with_children, na.rm = TRUE),
-    avg_poverty = mean(ph_below_poverty, na.rm = TRUE),
-    sd_poverty = sd(ph_below_poverty, na.rm = TRUE),
-    avg_disability = mean(ph_disability, na.rm = TRUE),
-    sd_disability = sd(ph_disability, na.rm = TRUE),
-    avg_white = mean(ph_white, na.rm = TRUE),
-    sd_white = sd(ph_white, na.rm = TRUE),
-    avg_black = mean(ph_black, na.rm = TRUE),
-    sd_black = sd(ph_black, na.rm = TRUE),
-    avg_asian = mean(ph_asian, na.rm = TRUE),
-    sd_asian = sd(ph_asian, na.rm = TRUE),
-    avg_otherrace = mean(ph_other_race, na.rm = TRUE),
-    sd_otherrace = sd(ph_other_race, na.rm = TRUE),
-    avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
-    sd_hispanic = sd(ph_hispanic, na.rm = TRUE),
-    avg_nowork = mean(ph_no_work, na.rm = TRUE),
-    sd_nowork = sd(ph_no_work, na.rm = TRUE),
-    avg_1work = mean(ph_1_work, na.rm = TRUE),
-    sd_1work = sd(ph_1_work, na.rm = TRUE),
-    avg_2work = mean(ph_2_work, na.rm = TRUE),
-    sd_2work = sd(ph_2_work, na.rm = TRUE),
-    avg_obesity = mean(obesity, na.rm = TRUE),
-    sd_obesity = sd(obesity, na.rm = TRUE),
-    avg_highchol = mean(highchol, na.rm = TRUE),
-    sd_highchol = sd(highchol, na.rm = TRUE),
-    avg_diabetes = mean(diabetes, na.rm = TRUE),
-    sd_diabetes = sd(diabetes, na.rm = TRUE)
-  )|&gt; pivot_longer(
-    cols = -red_grade,
-    names_to = c(&quot;stat&quot;, &quot;variable&quot;),
-    names_sep = &quot;_&quot;
-  )|&gt;
-  pivot_wider(
-    names_from = c(red_grade, stat), 
-    values_from = value,              
-    names_glue = &quot;{red_grade}_{stat}&quot;
-  )
-
-anova = function(dataset, outcomes, predictor) {
-  results = list() 
-  for (outcome in outcomes) {
-    formula = as.formula(paste(outcome, &quot;~&quot;, factor(predictor)))
-    model= aov(
-      formula,
-      data = dataset
-    )
-    results[[outcome]] = broom::tidy(model)
-  }
-  
-  combined_results = bind_rows(results, .id = &quot;outcome&quot;)
-  return(combined_results)
-}
-
-outcomes = c(&quot;ph_snap&quot;,&quot;ph_with_children&quot;, &quot;ph_elderly&quot;,&quot;ph_below_poverty&quot;, &quot;ph_disability&quot;, &quot;ph_white&quot;, &quot;ph_black&quot;, &quot;ph_asian&quot;, &quot;ph_other_race&quot;, &quot;ph_hispanic&quot;, &quot;ph_no_work&quot;,&quot;ph_1_work&quot;, &quot;ph_2_work&quot;, &quot;obesity&quot;, &quot;highchol&quot;, &quot;diabetes&quot;)
-
-baseline_char = 
-anova(final_analysis, outcomes, &quot;red_grade&quot;)|&gt;
-  filter(term == &quot;red_grade&quot;)|&gt;
-  rename(variable = outcome)|&gt;
-  mutate(variable = case_when(
-    variable == &quot;ph_snap&quot; ~ &quot;snap&quot;,
-    variable == &quot;ph_with_children&quot; ~ &quot;child&quot;,
-    variable == &quot;ph_elderly&quot; ~ &quot;elderly&quot;,
-    variable == &quot;ph_below_poverty&quot; ~ &quot;poverty&quot;,
-    variable == &quot;ph_no_work&quot; ~ &quot;nowork&quot;,
-    variable == &quot;ph_white&quot; ~ &quot;white&quot;,
-    variable == &quot;ph_black&quot; ~ &quot;black&quot;,
-    variable == &quot;ph_asian&quot; ~ &quot;asian&quot;,
-    variable == &quot;ph_other_race&quot; ~ &quot;otherrace&quot;,
-    variable == &quot;ph_disability&quot; ~ &quot;disability&quot;,
-    variable == &quot;ph_hispanic&quot; ~ &quot;hispanic&quot;,
-    TRUE ~ variable
-  ))|&gt;
-  inner_join(redlining_grades, by=&quot;variable&quot;)|&gt;
-  select(variable, A_avg:D_sd,  p.value)
-
-
-baseline_char|&gt;
-  filter(!variable %in% c(&quot;obesity&quot;,&quot;diabetes&quot;,&quot;highchol&quot;))|&gt;
-  knitr::kable(digits = 3)</code></pre>
 <table style="width:100%;">
 <colgroup>
 <col width="14%" />
@@ -679,54 +586,6 @@ ethnicity, and employment status.</p>
 <div id="comparing-census-tracts-with-hrs-for-grade-a-with-grade-d"
 class="section level3">
 <h3>Comparing census tracts with HRS for Grade A with Grade D</h3>
-<pre class="r"><code>q1_vs_q4 = 
-final_analysis|&gt;
-  filter(red_grade %in%c(&quot;A&quot;,&quot;D&quot;))|&gt;
-  mutate()
-
-q1q4_desc = 
-q1_vs_q4|&gt;
-  group_by(red_grade)|&gt;
-  summarise(
-    ph_snap = mean(ph_snap),
-    ph_with_children = mean(ph_with_children),
-    ph_elderly = mean(ph_elderly),
-    ph_below_poverty = mean(ph_below_poverty),
-    ph_disability = mean(ph_disability),
-    minority = mean(minority),
-    ph_no_work = mean(ph_no_work),
-    obesity = mean(obesity),
-    highchol = mean(highchol),
-    diabetes = mean(diabetes)
-  )|&gt;
- pivot_longer(cols = -red_grade, names_to = &quot;variable&quot;, values_to = &quot;value&quot;)|&gt;
- pivot_wider(names_from = red_grade, names_prefix = &quot;grade_&quot;, values_from = value)|&gt;
- mutate(
-    mean_diff = grade_D - grade_A,
-  )|&gt;
-  rename(outcome = variable)</code></pre>
-<pre class="r"><code>uni_reg = function(dataset, outcomes, predictor) {
-  results = list() 
-  for (outcome in outcomes) {
-    formula = as.formula(paste(outcome, &quot;~&quot;, predictor))
-    model= t.test(
-      formula,
-      data = dataset
-    )
-    results[[outcome]] = broom::tidy(model)
-  }
-  
-  combined_results = bind_rows(results, .id = &quot;outcome&quot;)
-  return(combined_results)
-}
-
-outcomes = c(&quot;ph_snap&quot;,&quot;ph_with_children&quot;, &quot;ph_elderly&quot;,&quot;ph_below_poverty&quot;, &quot;ph_disability&quot;, &quot;ph_white&quot;, &quot;ph_black&quot;, &quot;ph_asian&quot;, &quot;ph_no_work&quot;, &quot;obesity&quot;, &quot;highchol&quot;, &quot;diabetes&quot;)
-
-
-uni_reg(q1_vs_q4, outcomes, &quot;red_grade&quot;)|&gt;
-  inner_join(q1q4_desc, by=&quot;outcome&quot;)|&gt;
-  select(outcome, grade_A, grade_D, mean_diff, p.value)|&gt;
-  knitr::kable(digits = 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -831,10 +690,6 @@ class="section level2">
 <p>Based on the results for the baseline characteristics analysis, we
 computed a linear regression model to explore the association between
 redlining grades and precentage of households enrolled in SNAP.</p>
-<pre class="r"><code># univariate analysis
-lm(ph_snap~red_grade,final_analysis)|&gt;
-  broom::tidy()|&gt;
-  knitr::kable(digits= 3)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -881,20 +736,8 @@ enrolled in SNAP was 17.97%, 12.90% and 11.53% higher respectively in
 the D-grade, C-grade and B-grade census tracts compared to A-grade
 census tracts (all p-value &lt;0.001).</p>
 </div>
-<div id="multivarite-modelling" class="section level3">
-<h3>Multivarite Modelling</h3>
-<pre class="r"><code>## multivariate model 1
-red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
-tidy_model = broom::tidy(red_snap_m1)
-ci = confint(red_snap_m1)
-
-tidy_model|&gt;
-  mutate(
-    CI_Lower = ci[, 1],
-    CI_Upper = ci[, 2],
-  )|&gt;
-  select(term, estimate, p.value, CI_Lower, CI_Upper)|&gt;
-  knitr::kable(digits = 3, caption = &quot;Model 1 Estimates with 95% Confidence Intervals&quot;)</code></pre>
+<div id="multivariate-modelling" class="section level3">
+<h3>Multivariate Modelling</h3>
 <table>
 <caption>Model 1 Estimates with 95% Confidence Intervals</caption>
 <thead>
@@ -977,36 +820,10 @@ percentage of households with elderly members was negatively associated
 with SNAP enrollment (-0.33%, p &lt; 0.001), while households with
 disabilities (+0.75%, p &lt; 0.001) and those with no workers (+0.32%, p
 &lt; 0.001) showed significant positive associations.</p>
-<pre class="r"><code>## histogram for snap enrollment
-ggplot(final_analysis, aes(x = ph_snap)) +
-  geom_histogram(binwidth = 5, fill = &quot;skyblue&quot;, color = &quot;black&quot;) +
-  labs(
-    title = &quot;Histogram of ph_snap&quot;,
-    x = &quot;SNAP Enrollment (ph_snap)&quot;,
-    y = &quot;Frequency&quot;
-  ) +
-  theme_minimal()</code></pre>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>The histogram shows that SNAP enrollment is right-skewed, with the
 majority of census tracts having lower percentages of households
 enrolled. Therefore, transformations were applied.</p>
-<pre class="r"><code>## multivariate model 2
-red_snap_m2 =
-  final_analysis|&gt;
-  lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
-
-tidy_model = broom::tidy(red_snap_m2)
-ci = confint(red_snap_m2)
-
-tidy_model|&gt;
-  mutate(
-    Back_Transformed_Estimate = exp(estimate),
-    CI_Lower = exp(ci[, 1]),
-    CI_Upper = exp(ci[, 2]),
-    p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)
-  )|&gt;
-  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|&gt;
-  knitr::kable(digits = 3, caption = &quot;Model 2 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
 <table>
 <caption>Model 2 Coefficients with Back-Transformed Estimates and 95%
 Confidence Intervals</caption>
@@ -1105,21 +922,6 @@ households with disabilities remained significant. A 1% increase in
 minority population was associated with a 1.2% increase in SNAP
 enrollment (p &lt; 0.001), while households with elderly members were
 associated with a 1.4% decrease in SNAP enrollment (p &lt; 0.001).</p>
-<pre class="r"><code>##multivariate model 3
-red_snap_m3 = lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-
-tidy_model = broom::tidy(red_snap_m3)
-ci = confint(red_snap_m3)
-
-tidy_model|&gt;
-  mutate(
-    Back_Transformed_Estimate = exp(estimate),
-    CI_Lower = exp(ci[, 1]),
-    CI_Upper = exp(ci[, 2]),
-    p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)
-  )|&gt;
-  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|&gt;
-  knitr::kable(digits = 3, caption = &quot;Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals&quot;)</code></pre>
 <table>
 <caption>Model 3 Coefficients with Back-Transformed Estimates and 95%
 Confidence Intervals</caption>
@@ -1239,42 +1041,10 @@ significant predictors of higher SNAP enrollment.</p>
 </div>
 <div id="cross-validation-and-model-selection" class="section level3">
 <h3>Cross Validation and Model Selection</h3>
-<p>To assess the predictive performance of the three multivarite models,
-Monte Carlo cross-validation was conducted, calculating the Root Mean
-Square Error (RMSE) for each model across multiple training and testing
-splits.</p>
-<pre class="r"><code>cv_df =
-  crossv_mc(final_analysis, 100)
-
-cv_df =
-cv_df|&gt;
-  mutate(model_1 = map(train, \(df)  
-                       lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,
-                          data=df)),
-         model_2 = map(train, \(df) 
-                       lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability
-                          +ph_no_work,data=df)),
-         model_3 = map(train, \(df) 
-                       lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly
-                          +ph_disability+ph_no_work, data=df))
-           )|&gt;
-  mutate(
-    rmse_m1 = map2_dbl(model_1, test, \(mod, df) rmse(model = mod, data = df)),
-    rmse_m2 = map2_dbl(model_2, test, \(mod, df) rmse(model = mod, data = df)),
-    rmse_m3 = map2_dbl(model_3, test, \(mod, df) rmse(model = mod, data = df))
-  )
-
-cv_df |&gt; 
-  select(starts_with(&quot;rmse&quot;)) |&gt; 
-  pivot_longer(
-    everything(),
-    names_to = &quot;model&quot;, 
-    values_to = &quot;rmse&quot;,
-    names_prefix = &quot;rmse_&quot;) |&gt; 
-  mutate(model = fct_inorder(model)) |&gt; 
-  ggplot(aes(x = model, y = rmse)) + geom_violin()+
-  labs(title = &quot;Model 1 vs. Model 2 &amp; 3&quot;)+
-  theme_minimal()</code></pre>
+<p>To assess the predictive performance of the three multivariate
+models, Monte Carlo cross-validation was conducted, calculating the Root
+Mean Square Error (RMSE) for each model across multiple training and
+testing splits.</p>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Model 1, which used a simple linear approach without log
 transformation, demonstrated the highest RMSE values, averaging over 10
@@ -1285,18 +1055,6 @@ enrollment to account for its right-skewed distribution, exhibited
 significantly lower RMSE values. This suggests that these models
 provided a much better fit to the data and were more reliable in
 predicting SNAP enrollment.</p>
-<pre class="r"><code>cv_df |&gt; 
-  select(starts_with(&quot;rmse&quot;)) |&gt; 
-  pivot_longer(
-    everything(),
-    names_to = &quot;model&quot;, 
-    values_to = &quot;rmse&quot;,
-    names_prefix = &quot;rmse_&quot;) |&gt; 
-  mutate(model = fct_inorder(model)) |&gt; 
-  filter(model == &quot;m2&quot; | model== &quot;m3&quot;)|&gt;
-  ggplot(aes(x = model, y = rmse)) + geom_violin()+
-  labs(title = &quot;Model 2 vs. Model 3&quot;)+
-  theme_minimal()</code></pre>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Focusing on the violin plot comparing Model 2 and Model 3, the RMSE
 values for both models are clustered closely together, with Model 3
@@ -1316,10 +1074,6 @@ class="section level2">
 <h2>Association of Health Outcomes and Redlining</h2>
 <div id="preview-the-health-outcomes-data" class="section level3">
 <h3>Preview the Health Outcomes Data</h3>
-<pre class="r"><code>baseline_char|&gt;
-  filter(variable %in% c(&quot;obesity&quot;,&quot;diabetes&quot;,&quot;highchol&quot;))|&gt;
-  mutate(p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)) |&gt; 
-  knitr::kable(digits = 3)</code></pre>
 <table style="width:100%;">
 <colgroup>
 <col width="13%" />
@@ -1386,17 +1140,6 @@ class="section level2">
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>final_analysis |&gt;
-  select(red_grade, obesity, diabetes, highchol) |&gt;
-  pivot_longer(cols = c(obesity, diabetes, highchol), 
-               names_to = &quot;outcome&quot;, 
-               values_to = &quot;value&quot;) |&gt; 
-  ggplot(aes(x = red_grade, y = value, fill = outcome)) +
-  geom_boxplot() +
-  facet_wrap(~ outcome, scales = &quot;free_y&quot;) +
-  labs(title = &quot;Boxplot of Health Outcomes by Redlining Grade&quot;,
-       x = &quot;Redlining Grade&quot;,
-       y = &quot;Outcome Value&quot;)</code></pre>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <ul>
 <li><p>Obesity prevalence increases with worsening redlining grades,
@@ -1417,11 +1160,8 @@ areas.</p></li>
 </div>
 <div id="univariate-modelling-1" class="section level3">
 <h3>Univariate Modelling</h3>
-<pre class="r"><code>diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
-diabetes_model |&gt; 
-  broom::tidy()|&gt; 
-  knitr::kable(digits = 3)</code></pre>
 <table>
+<caption>Univariate Regression Model for Diabetes</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -1471,12 +1211,8 @@ The coefficients show a gradual increase in diabetes levels as the
 redlining grade worsens, and the p-values for all estimates were
 statistically significant (p &lt; 0.05), further solidifying the link
 between redlining and diabetes.</p>
-<pre class="r"><code>chol_model = lm(highchol ~ red_grade, data = final_analysis) 
-chol_model |&gt; 
-  broom::tidy()|&gt; 
-  mutate(p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)) |&gt; 
-  knitr::kable(digits = 3)</code></pre>
 <table>
+<caption>Univariate Regression Model for High Cholesterol</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -1529,12 +1265,8 @@ less than 0.001. This trend suggests that, contrary to what might be
 expected, individuals from higher redlining grades may have lower high
 cholesterol scores, potentially due to systemic barriers and less access
 to health resources that prevent the management of high cholesterol.</p>
-<pre class="r"><code>obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
-obesity_model|&gt; 
-  broom::tidy()|&gt; 
-  mutate(p.value = ifelse(p.value&lt;0.001, &quot;&lt;0.001&quot;, p.value)) |&gt; 
-  knitr::kable(digits = 3)</code></pre>
 <table>
+<caption>Univariate Regresion Model for Obesity</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -1594,13 +1326,10 @@ models was to assess whether the relationships observed between
 redlining grades and health outcomes would hold after accounting for
 these important socio-demographic factors.</p>
 </div>
-<div id="multivarite-modelling-1" class="section level3">
-<h3>Multivarite Modelling</h3>
-<pre class="r"><code>diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-diabetes_adj_model |&gt; 
-  broom::tidy()|&gt; 
-  knitr::kable(digits = 3)</code></pre>
+<div id="multivariate-modelling-1" class="section level3">
+<h3>Multivariate Modelling</h3>
 <table>
+<caption>Multivariate Regression Model for Diabetes</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -1698,11 +1427,8 @@ covariates included the proportion of elderly households (+0.6%, p &lt;
 0.001), disability (+0.7%, p &lt; 0.001), and no-work households (+0.5%,
 p &lt; 0.001), all of which were positively associated with diabetes
 prevalence.</p>
-<pre class="r"><code>highcol_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-highcol_adj_model |&gt; 
-  broom::tidy()|&gt; 
-  knitr::kable(digits = 3)</code></pre>
 <table>
+<caption>Multivariate Regression Model for High Cholesterol</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
@@ -1796,11 +1522,8 @@ positively associated (+2.5%, p &lt; 0.001). Disability (+0.1%, p &lt;
 associations. Interestingly, the proportions of White and Black
 populations did not exhibit significant associations with high
 cholesterol prevalence.</p>
-<pre class="r"><code>obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-obesity_adj_model |&gt; 
-  broom::tidy()|&gt; 
-  knitr::kable(digits = 3)</code></pre>
 <table>
+<caption>Multivariate Regression Model for Obesity</caption>
 <thead>
 <tr class="header">
 <th align="left">term</th>
