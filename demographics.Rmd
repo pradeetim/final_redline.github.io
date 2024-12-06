@@ -102,6 +102,11 @@ leaflet(redlining_sf) |>
   )
 
 ```
+This map effectively captures the historical spatial boundaries of redlining across NYC boroughs, showing how systemic inequities were distributed geographically.
+
+- Manhattan and Brooklyn show stark contrasts between privileged (green/blue) and marginalized (yellow/red) areas.
+- The Bronx and Brooklyn have the highest concentration of historically "hazardous" (D) zones, reflecting long-standing inequities.
+- Queens and Staten Island had relatively fewer redlined areas, suggesting different historical patterns of urban development and disinvestment.
 
 ### Distribution of Redlining Scores in Boroughs
 
@@ -200,6 +205,11 @@ leaflet(redlining_sf) |>
     position = "bottomright"
   ) 
 ```
+This map illustrates the strong correlation between historical redlining and present-day SNAP enrollment, underscoring how systemic inequities continue to influence food assistance needs across NYC.
+
+- The Bronx stands out with the highest overall SNAP enrollment, aligning with its high concentration of historically redlined zones and lower-income households.
+- Brooklyn also shows significant SNAP participation in neighborhoods historically marked as “hazardous.”
+- Queens and Staten Island have lower overall SNAP participation, which reflects fewer redlined areas and more suburban development patterns.
 
 
 ### SNAP Total % of Households within Redline Grade
@@ -331,6 +341,9 @@ leaflet(redlining_sf) |>
   )
 
 ```
+This map provide a focused exploration of healthy grocery stores in three boroughs: Manhattan, Brooklyn, and the Bronx.
+- The density of healthy grocery stores in Bronx is uneven across neighborhoods, with higher concentrations in specific areas.
+- In Brooklyn, healthy grocery stores are relatively well-distributed, but there are clear clusters in central and northern neighborhoods. Southern Brooklyn appears less represented in this dataset, potentially reflecting disparities in access.
 
 
 ## Health Outcomes Exploration
