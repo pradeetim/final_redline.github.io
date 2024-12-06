@@ -700,7 +700,7 @@ health_data |>
 ```
 
 The graph shows how redlining grades correlate with health outcomes (diabetes, obesity, and high cholesterol) in New York City. The neighborhoods with A grades have slightly lower rates of diabetes and obesity, but D areas suffer from higher rates of these conditions. High cholesterol rates are interestingly higher in better-graded areas, suggesting that factors such as access to healthcare and preventive services may play a significant role in these health outcomes.
-# Regression Analysis
+
 
 # Discussion
 
