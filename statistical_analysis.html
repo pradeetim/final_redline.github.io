@@ -13,7 +13,7 @@
 
 <title>Statistical Analysis</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
@@ -344,7 +344,7 @@ div.tocify {
   <a href="statistical_analysis.html">Statistical Analysis</a>
 </li>
 <li>
-  <a href="https://sz3214.shinyapps.io/redlining/">Shiny App</a>
+  <a href="https://sz3214.shinyapps.io/shiny_dashboard_template/">Shiny App</a>
 </li>
 <li>
   <a href="report.html">Project Report</a>
@@ -826,6 +826,8 @@ in the average prevalence is statistically signficant.</p>
 <div id="regression-analysis-for-redlining-and-food-insecurity"
 class="section level2">
 <h2>Regression Analysis for Redlining and Food Insecurity</h2>
+<div id="univariate-modelling" class="section level3">
+<h3>Univariate Modelling</h3>
 <p>Based on the results for the baseline characteristics analysis, we
 computed a linear regression model to explore the association between
 redlining grades and precentage of households enrolled in SNAP.</p>
@@ -878,6 +880,9 @@ lm(ph_snap~red_grade,final_analysis)|&gt;
 enrolled in SNAP was 17.97%, 12.90% and 11.53% higher respectively in
 the D-grade, C-grade and B-grade census tracts compared to A-grade
 census tracts (all p-value &lt;0.001).</p>
+</div>
+<div id="multivarite-modelling" class="section level3">
+<h3>Multivarite Modelling</h3>
 <pre class="r"><code>## multivariate model 1
 red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
 tidy_model = broom::tidy(red_snap_m1)
@@ -960,6 +965,18 @@ tidy_model|&gt;
 </tr>
 </tbody>
 </table>
+<p>When the association between redlining grades and SNAP enrollment
+evaluated using a linear regression model, D-grade census tracts had a
+4.04% higher SNAP enrollment compared to A-grade census tracts (p =
+0.037), indicating a statistically significant relationship. However,
+for B-grade and C-grade tracts, the differences were not statistically
+significant (p = 0.087 and p = 0.283 respectively). Among the
+covariates, a 1% increase in minority population was associated with a
+0.16% increase in SNAP enrollment (p &lt; 0.001). Additionally, the
+percentage of households with elderly members was negatively associated
+with SNAP enrollment (-0.33%, p &lt; 0.001), while households with
+disabilities (+0.75%, p &lt; 0.001) and those with no workers (+0.32%, p
+&lt; 0.001) showed significant positive associations.</p>
 <pre class="r"><code>## histogram for snap enrollment
 ggplot(final_analysis, aes(x = ph_snap)) +
   geom_histogram(binwidth = 5, fill = &quot;skyblue&quot;, color = &quot;black&quot;) +
@@ -970,6 +987,9 @@ ggplot(final_analysis, aes(x = ph_snap)) +
   ) +
   theme_minimal()</code></pre>
 <p><img src="statistical_analysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>The histogram shows that SNAP enrollment is right-skewed, with the
+majority of census tracts having lower percentages of households
+enrolled. Therefore, transformations were applied.</p>
 <pre class="r"><code>## multivariate model 2
 red_snap_m2 =
   final_analysis|&gt;
@@ -1075,6 +1095,16 @@ Confidence Intervals</caption>
 </tr>
 </tbody>
 </table>
+<p>We applied a log transformation to SNAP enrollment to better address
+skewness in the data, with results interpreted as multiplicative
+changes. Compared to A-grade tracts, D-grade tracts exhibited 1.82 times
+higher SNAP enrollment (p &lt; 0.001). Similarly, B-grade and C-grade
+tracts showed increases of 1.78 times (p &lt; 0.001) and 1.75 times (p
+&lt; 0.001), respectively. Covariates such as minority population and
+households with disabilities remained significant. A 1% increase in
+minority population was associated with a 1.2% increase in SNAP
+enrollment (p &lt; 0.001), while households with elderly members were
+associated with a 1.4% decrease in SNAP enrollment (p &lt; 0.001).</p>
 <pre class="r"><code>##multivariate model 3
 red_snap_m3 = lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 
@@ -1194,11 +1224,29 @@ Confidence Intervals</caption>
 </tr>
 </tbody>
 </table>
+<p>Then we included specific ethnic proportions (White, Black, and
+Asian) as covariates, refining the analysis. In this model, D-grade
+tracts had 1.94 times higher SNAP enrollment compared to A-grade tracts
+(p &lt; 0.001). B-grade and C-grade tracts had increases of 1.85 times
+(p &lt; 0.001) and 1.80 times (p &lt; 0.001), respectively. Among ethnic
+covariates, a higher proportion of White households was associated with
+slightly lower SNAP enrollment, with a 1% increase in White population
+reducing enrollment by 1.9% (p &lt; 0.001). Similarly, higher
+proportions of Black and Asian households also exhibited small negative
+associations. As in previous models, households with disabilities
+(+3.2%, p &lt; 0.001) and no workers (+0.9%, p &lt; 0.001) remained
+significant predictors of higher SNAP enrollment.</p>
+</div>
 <div id="cross-validation-and-model-selection" class="section level3">
 <h3>Cross Validation and Model Selection</h3>
+<p>To assess the predictive performance of the three multivarite models,
+Monte Carlo cross-validation was conducted, calculating the Root Mean
+Square Error (RMSE) for each model across multiple training and testing
+splits.</p>
 <pre class="r"><code>cv_df =
-  crossv_mc(final_analysis, 100)</code></pre>
-<pre class="r"><code>cv_df =
+  crossv_mc(final_analysis, 100)
+
+cv_df =
 cv_df|&gt;
   mutate(model_1 = map(train, \(df)  
                        lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,
@@ -1214,8 +1262,9 @@ cv_df|&gt;
     rmse_m1 = map2_dbl(model_1, test, \(mod, df) rmse(model = mod, data = df)),
     rmse_m2 = map2_dbl(model_2, test, \(mod, df) rmse(model = mod, data = df)),
     rmse_m3 = map2_dbl(model_3, test, \(mod, df) rmse(model = mod, data = df))
-  )</code></pre>
-<pre class="r"><code>cv_df |&gt; 
+  )
+
+cv_df |&gt; 
   select(starts_with(&quot;rmse&quot;)) |&gt; 
   pivot_longer(
     everything(),
@@ -1226,7 +1275,16 @@ cv_df|&gt;
   ggplot(aes(x = model, y = rmse)) + geom_violin()+
   labs(title = &quot;Model 1 vs. Model 2 &amp; 3&quot;)+
   theme_minimal()</code></pre>
-<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Model 1, which used a simple linear approach without log
+transformation, demonstrated the highest RMSE values, averaging over 10
+units. This poor performance indicates that the linearity assumption of
+Model 1 poorly captures the variability in SNAP enrollment.</p>
+<p>Conversely, Model 2 and Model 3, both of which log-transformed SNAP
+enrollment to account for its right-skewed distribution, exhibited
+significantly lower RMSE values. This suggests that these models
+provided a much better fit to the data and were more reliable in
+predicting SNAP enrollment.</p>
 <pre class="r"><code>cv_df |&gt; 
   select(starts_with(&quot;rmse&quot;)) |&gt; 
   pivot_longer(
@@ -1239,10 +1297,18 @@ cv_df|&gt;
   ggplot(aes(x = model, y = rmse)) + geom_violin()+
   labs(title = &quot;Model 2 vs. Model 3&quot;)+
   theme_minimal()</code></pre>
-<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
-<p>Based on the rootmean square models, model 2 and 3 perform
-signficantly better than model 1, while model 3 performs slightly better
-than model 3.</p>
+<p><img src="statistical_analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Focusing on the violin plot comparing Model 2 and Model 3, the RMSE
+values for both models are clustered closely together, with Model 3
+showing slightly lower RMSE on average. Model 3, which incorporates
+detailed racial and ethnic composition variables, performed marginally
+better than Model 2, which used a simplified “minority” variable to
+summarize racial and ethnic factors. This improvement indicates that
+accounting for specific racial variations enhances the model’s ability
+to explain and predict SNAP enrollment.</p>
+<p>Therefore, model 3 provides the most robust framework for
+understanding the relationship between redlining, demographic factors,
+and food insecurity.</p>
 </div>
 </div>
 <div id="association-of-health-outcomes-and-redlining"
