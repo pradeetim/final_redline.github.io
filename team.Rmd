@@ -18,7 +18,7 @@ Sining is a second-year MPH student in the Biostatistics Department. She works i
 
 #### Yan Li 
 
-<img src = "images/authors/Yan_L.jpg" style = "width:25%">
+<img src = "images/authors/Yan_L.JPG" style = "width:25%">
 
 Yan is a second-year MPH student in the Epidemiology Department at Columbia University. She is interested in infectious disease and organ transplant research. She enjoys building Legos and spending time with cats.
 
