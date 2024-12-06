@@ -449,8 +449,33 @@ final_analysis |>
        y = "Outcome Value")
 ```
 
+- Obesity prevalence increases with worsening redlining grades, from 20.74% in A-grade tracts to 28.71% in D-grade tracts (p < 0.001). C-grade and B-grade tracts show averages of 27.51% and 25.92%, respectively. The boxplot reveals higher median values and greater variability in obesity for more redlined areas.
 
-### Linear Models of Obesity, Diabetes and High Cholesterol
+- High cholesterol prevalence decreases with worsening redlining grades, from 37.28% in A-grade tracts to 32.29% in D-grade tracts (p < 0.001). B-grade and C-grade tracts have averages of 34.50% and 34.14%, with tighter distributions in less-redlined areas.
+
+- Diabetes prevalence also rises with worsening redlining grades, increasing from 9.25% in A-grade tracts to 12.36% in C-grade tracts and 11.58% in D-grade tracts (p < 0.001). B-grade tracts fall in between at 11.11%, with greater variability observed in more redlined areas.
+
+
+### Univariate Modelling
+
+```{r}
+diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
+diabetes_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
+```
+
+In the univariable diabetes model, the results indicate a similar trend, with redlining grades playing a significant role. The intercept for grade A was 9.247 (p < 0.001), while the estimates for grade B, grade C, and grade D were 1.866, 3.108, and 2.337, respectively. While the relationship is positive, it is less pronounced than for obesity. The coefficients show a gradual increase in diabetes levels as the redlining grade worsens, and the p-values for all estimates were statistically significant (p < 0.05), further solidifying the link between redlining and diabetes.
+
+```{r}
+chol_model = lm(highchol ~ red_grade, data = final_analysis) 
+chol_model |> 
+  broom::tidy()|> 
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3)
+```
+
+The results from the univariable high cholesterol model showed a clear relationship between redlining grades and high cholesterol. Specifically, individuals from areas with worse redlining grades (e.g., grades C and D) are more likely to have higher high cholesterol outcomes. The intercept of 37.275 (p < 0.001) indicates a baseline level of high cholesterol for individuals in grade A areas. However, when moving to B, C, and D, the estimated effects were negative, with estimates of -2.775, -3.133, and -4.989, respectively, all with p-values less than 0.001. This trend suggests that, contrary to what might be expected, individuals from higher redlining grades may have lower high cholesterol scores, potentially due to systemic barriers and less access to health resources that prevent the management of high cholesterol.
 
 ```{r}
 obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
@@ -458,33 +483,40 @@ obesity_model|>
   broom::tidy()|> 
   mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
   knitr::kable(digits = 3)
-
-diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
-diabetes_model |> 
-  broom::tidy()|> 
-  knitr::kable(digits = 3)
-
-chol_model = lm(highchol ~ red_grade, data = final_analysis) 
-chol_model |> 
-  broom::tidy()|> 
-  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
-  knitr::kable(digits = 3)
 ```
+
+In the univariable obesity model, the relationship between redlining and obesity outcomes is more directly significant. The intercept of 20.736 (p < 0.001) provides the baseline obesity rate for individuals in grade A areas. For grade B, grade C, and grade D, the estimates were 5.187, 6.770, and 7.974, respectively (all with p < 0.001). These results showed that as the redlining grade worsens, obesity prevalence increases. This finding aligns with previous research suggesting that neighborhoods with poorer infrastructure, limited access to healthy food, and reduced access to healthcare services may exacerbate obesity rates. The statistically significant p-values for all grades further support that redlining has a substantial effect on obesity outcomes.
+
+
+Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (ph_white, ph_black, ph_asian), age (ph_elderly), disability (ph_disability), and employment status (ph_no_work). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
+
+
+### Multivarite Modelling
+
 ```{r}
 diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 diabetes_adj_model |> 
   broom::tidy()|> 
   knitr::kable(digits = 3)
+```
 
+The adjusted model for diabetes revealed no significant differences in diabetes prevalence between redlining grades after accounting for covariates such as racial composition, elderly population, disability, and no-work households. The estimates for B-grade (0.022, p = 0.520), C-grade (0.057, p = 0.092), and D-grade (-0.008, p = 0.825) were not statistically significant. Among the covariates, the proportion of White, Black, and Asian populations were significantly associated with diabetes prevalence. Specifically, a 1% increase in the White population was associated with a 0.9% decrease in diabetes prevalence (p < 0.001), while increases in Black and Asian populations were also negatively associated but to a lesser extent. Other significant covariates included the proportion of elderly households (+0.6%, p < 0.001), disability (+0.7%, p < 0.001), and no-work households (+0.5%, p < 0.001), all of which were positively associated with diabetes prevalence.
 
+```{r}
+highcol_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+highcol_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3)
+```
+
+The adjusted model for high cholesterol showed a significant decrease in prevalence in B-grade (-0.034, p = 0.015), C-grade (-0.047, p = 0.001), and D-grade (-0.059, p < 0.001) tracts compared to A-grade tracts. Among the covariates, the proportion of Asian households was positively associated with high cholesterol prevalence (+0.2%, p < 0.001), while the proportion of elderly households was strongly positively associated (+2.5%, p < 0.001). Disability (+0.1%, p < 0.001) and no-work households (+0.2%, p < 0.001) also showed positive associations. Interestingly, the proportions of White and Black populations did not exhibit significant associations with high cholesterol prevalence.
+
+```{r}
 obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
 obesity_adj_model |> 
   broom::tidy()|> 
   knitr::kable(digits = 3)
-
-obesity_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
-obesity_adj_model |> 
-  broom::tidy()|> 
-  knitr::kable(digits = 3)
 ```
+
+The adjusted model for obesity indicated significant differences across redlining grades, with obesity prevalence higher in B-grade (0.101, p < 0.001), C-grade (0.151, p < 0.001), and D-grade (0.118, p < 0.001) tracts compared to A-grade tracts. Among the covariates, the proportion of White households was negatively associated with obesity prevalence, with a 0.5% decrease per 1% increase in the White population (p < 0.001). Conversely, increases in Black and Asian populations were also negatively associated, with estimates of -0.1% (p < 0.001) and -1.0% (p < 0.001), respectively. Other significant covariates included disability (+0.5%, p < 0.001) and no-work households (+0.1%, p = 0.011), which were positively associated with obesity prevalence. The proportion of elderly households was negatively associated (-0.1%, p = 0.001).
 
