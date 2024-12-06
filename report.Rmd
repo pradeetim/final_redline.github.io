@@ -703,29 +703,542 @@ The graph shows how redlining grades correlate with health outcomes (diabetes, o
 
 # Statistical Analysis
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(modelr)
+
+SNAP = 
+  read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
+  janitor::clean_names()|>
+  select(
+    geo_id:s2201_c01_001e,
+    s2201_c02_002e,
+    s2201_c02_009e,
+    s2201_c02_015e,
+    s2201_c02_021e:s2201_c02_028e,
+    s2201_c02_032e,
+    s2201_c02_036e:s2201_c02_038e,
+    s2201_c04_001e)|>
+  select(-ends_with("m"))|>
+  slice(-1)|>
+  mutate(geoid = str_remove(geo_id, ".*US"))|>
+  rename(
+     total_ct_households = s2201_c01_001e,
+     ph_elderly = s2201_c02_002e,
+     ph_with_children = s2201_c02_009e,
+     ph_no_children = s2201_c02_015e,
+     ph_below_poverty = s2201_c02_021e,
+     ph_above_poverty = s2201_c02_022e,
+     ph_disability = s2201_c02_023e,
+     ph_no_disability = s2201_c02_024e,
+     ph_white = s2201_c02_025e,
+     ph_black = s2201_c02_026e,
+     ph_asian = s2201_c02_028e,
+     ph_hispanic = s2201_c02_032e,
+     ph_no_work = s2201_c02_036e,
+     ph_1_work = s2201_c02_037e,
+     ph_2_work = s2201_c02_038e,
+     ph_snap = s2201_c04_001e
+  )|>
+  mutate(across(total_ct_households:ph_snap, as.numeric),
+         ph_other_race = 100-ph_white-ph_black-ph_asian,
+         ph_non_hispanic = 100-ph_hispanic)|>
+  select(geoid,name,ph_snap,everything())|>
+  select(-geo_id)
+
+redlining = 
+  read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
+  janitor::clean_names()|>
+  select(-cbsa)|>
+  mutate(fip = substr(geoid20, 1, 5),
+         interval2020 = as.character(interval2020),
+         red_grade = case_when(
+           hrs2020 < 1.5 ~ "A",
+           hrs2020 < 2.5 ~ "B",
+           hrs2020 < 3.5 ~ "C",
+           TRUE ~ "D"
+         ))|>
+  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
+  rename(geoid = geoid20)
+
+redlining_snap = 
+  redlining|>
+  left_join(SNAP, by = "geoid")|>
+  filter(is.na(ph_snap)==FALSE)
+
+place_crude =
+  read_csv("./Datasets/PLACES.csv")|>
+  janitor::clean_names()|>
+  rename(geoid = location_id)|>
+  select(geoid, measure:data_value, measure_id)
+
+
+place_cleaned=
+  place_crude|>
+  filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
+  pivot_wider(
+    id_cols = geoid,
+    names_from = measure_id,
+    values_from = data_value
+  )|>
+  janitor::clean_names()|>
+  mutate(geoid = as.character(geoid))
+
+# match place data with redlining_snap 
+final_analysis = 
+  redlining_snap|>
+  left_join(place_cleaned, by = "geoid")|>
+  filter(!is.na(obesity))|>
+  mutate(
+    minority = 100-ph_white
+  )
+```
+
+
+## Desciptive Characteristics Based on Redlining Grades
+
+### Total count of census tract for each HOLC grade
+
+```{r}
+final_analysis |>
+  group_by(red_grade)|>
+  summarise(count = n())|>
+   knitr::kable()
+```
+
+The number of A-grade census tract is the smallest (n=36) while the number of C-grade census tract is the biggest(n=1003). 
+
+### Comparison of HOLC grades 
+
+```{r}
+redlining_grades=
+final_analysis |>
+  group_by(red_grade) |>
+  summarise(
+    avg_snap = mean(ph_snap, na.rm = TRUE),
+    sd_snap = sd(ph_snap, na.rm = TRUE),
+    avg_elderly = mean(ph_elderly,na.rm=TRUE),
+    sd_elderly = sd(ph_elderly, na.rm = TRUE),
+    avg_child = mean(ph_with_children, na.rm = TRUE),
+    sd_child = sd(ph_with_children, na.rm = TRUE),
+    avg_poverty = mean(ph_below_poverty, na.rm = TRUE),
+    sd_poverty = sd(ph_below_poverty, na.rm = TRUE),
+    avg_disability = mean(ph_disability, na.rm = TRUE),
+    sd_disability = sd(ph_disability, na.rm = TRUE),
+    avg_white = mean(ph_white, na.rm = TRUE),
+    sd_white = sd(ph_white, na.rm = TRUE),
+    avg_black = mean(ph_black, na.rm = TRUE),
+    sd_black = sd(ph_black, na.rm = TRUE),
+    avg_asian = mean(ph_asian, na.rm = TRUE),
+    sd_asian = sd(ph_asian, na.rm = TRUE),
+    avg_otherrace = mean(ph_other_race, na.rm = TRUE),
+    sd_otherrace = sd(ph_other_race, na.rm = TRUE),
+    avg_hispanic = mean(ph_hispanic, na.rm = TRUE),
+    sd_hispanic = sd(ph_hispanic, na.rm = TRUE),
+    avg_nowork = mean(ph_no_work, na.rm = TRUE),
+    sd_nowork = sd(ph_no_work, na.rm = TRUE),
+    avg_1work = mean(ph_1_work, na.rm = TRUE),
+    sd_1work = sd(ph_1_work, na.rm = TRUE),
+    avg_2work = mean(ph_2_work, na.rm = TRUE),
+    sd_2work = sd(ph_2_work, na.rm = TRUE),
+    avg_obesity = mean(obesity, na.rm = TRUE),
+    sd_obesity = sd(obesity, na.rm = TRUE),
+    avg_highchol = mean(highchol, na.rm = TRUE),
+    sd_highchol = sd(highchol, na.rm = TRUE),
+    avg_diabetes = mean(diabetes, na.rm = TRUE),
+    sd_diabetes = sd(diabetes, na.rm = TRUE)
+  )|> pivot_longer(
+    cols = -red_grade,
+    names_to = c("stat", "variable"),
+    names_sep = "_"
+  )|>
+  pivot_wider(
+    names_from = c(red_grade, stat), 
+    values_from = value,              
+    names_glue = "{red_grade}_{stat}"
+  )
+
+anova = function(dataset, outcomes, predictor) {
+  results = list() 
+  for (outcome in outcomes) {
+    formula = as.formula(paste(outcome, "~", factor(predictor)))
+    model= aov(
+      formula,
+      data = dataset
+    )
+    results[[outcome]] = broom::tidy(model)
+  }
+  
+  combined_results = bind_rows(results, .id = "outcome")
+  return(combined_results)
+}
+
+outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_disability", "ph_white", "ph_black", "ph_asian", "ph_other_race", "ph_hispanic", "ph_no_work","ph_1_work", "ph_2_work", "obesity", "highchol", "diabetes")
+
+baseline_char = 
+anova(final_analysis, outcomes, "red_grade")|>
+  filter(term == "red_grade")|>
+  rename(variable = outcome)|>
+  mutate(variable = case_when(
+    variable == "ph_snap" ~ "snap",
+    variable == "ph_with_children" ~ "child",
+    variable == "ph_elderly" ~ "elderly",
+    variable == "ph_below_poverty" ~ "poverty",
+    variable == "ph_no_work" ~ "nowork",
+    variable == "ph_white" ~ "white",
+    variable == "ph_black" ~ "black",
+    variable == "ph_asian" ~ "asian",
+    variable == "ph_other_race" ~ "otherrace",
+    variable == "ph_disability" ~ "disability",
+    variable == "ph_hispanic" ~ "hispanic",
+    TRUE ~ variable
+  ))|>
+  inner_join(redlining_grades, by="variable")|>
+  select(variable, A_avg:D_sd,  p.value)
+
+
+baseline_char|>
+  filter(!variable %in% c("obesity","diabetes","highchol"))|>
+  knitr::kable(digits = 3)
+```
+
+We computed the average and standard deviation of the different socio-demographic factors across the redlining grade groups. ANOVA was utilized to compare the mean across different census tract grades (A, B, C and D). The percentage of household enrolled in snap/ food stamp program at the census tract level was significantly different among groups with different redlining grades at 5% significance level. A-grade census tracts had the lowest average percentage of SNAP enrollment (5.72%, sd: 6.95%) and the average percentage of SNAP enrollment is the highest in D-grade census tracts (23.70, sd: 17.85). In addition, the groups with different redlining grades reported significant different for the average percentage regarding households with children smaller than 18 years, households with elderly grater than 60 years, households below the poverty line, households with people with disability, race and ethnicity, and employment status. 
+
+
+### Comparing census tracts with HRS for Grade A with Grade D
+
+```{r warning=FALSE, message=FALSE}
+q1_vs_q4 = 
+final_analysis|>
+  filter(red_grade %in%c("A","D"))|>
+  mutate()
+
+q1q4_desc = 
+q1_vs_q4|>
+  group_by(red_grade)|>
+  summarise(
+    ph_snap = mean(ph_snap),
+    ph_with_children = mean(ph_with_children),
+    ph_elderly = mean(ph_elderly),
+    ph_below_poverty = mean(ph_below_poverty),
+    ph_disability = mean(ph_disability),
+    minority = mean(minority),
+    ph_no_work = mean(ph_no_work),
+    obesity = mean(obesity),
+    highchol = mean(highchol),
+    diabetes = mean(diabetes)
+  )|>
+ pivot_longer(cols = -red_grade, names_to = "variable", values_to = "value")|>
+ pivot_wider(names_from = red_grade, names_prefix = "grade_", values_from = value)|>
+ mutate(
+    mean_diff = grade_D - grade_A,
+  )|>
+  rename(outcome = variable)
+```
+
+
+```{r}
+uni_reg = function(dataset, outcomes, predictor) {
+  results = list() 
+  for (outcome in outcomes) {
+    formula = as.formula(paste(outcome, "~", predictor))
+    model= t.test(
+      formula,
+      data = dataset
+    )
+    results[[outcome]] = broom::tidy(model)
+  }
+  
+  combined_results = bind_rows(results, .id = "outcome")
+  return(combined_results)
+}
+
+outcomes = c("ph_snap","ph_with_children", "ph_elderly","ph_below_poverty", "ph_disability", "ph_white", "ph_black", "ph_asian", "ph_no_work", "obesity", "highchol", "diabetes")
+
+
+uni_reg(q1_vs_q4, outcomes, "red_grade")|>
+  inner_join(q1q4_desc, by="outcome")|>
+  select(outcome, grade_A, grade_D, mean_diff, p.value)|>
+  knitr::kable(digits = 3)
+```
+
+Following the ANOVA test results, we wondered whether there is any significant difference across the least-redlined (A-grade) and most-redlined (D-grade) census tracts regarding snap enrollment, socio-demographic factors, and health outcomes. Based on the t-test outcome, D-grade census tracts had significantly higher average percentage of households enrolled for SNAP, average percentage of households with children, average percentage of households below the poverty line, average percentage of households with peoplw with diability, percentage of household with minority race compared to A-grade census tracts. Additionally, A-grade census tract had significantly higher average percentage of households with elderly, average percentage of households with no worker.
+
+Regarding the health outcomes, the average prevalence of obesity is 7.97% higher, and the average prevalence for diabetes is 2.34% higher in the D-grade census tracts compared to A-grade census tracts. The average prevalence of high cholesterol level is 4.99% higher in the A-grade census tracts compared to D-grade census tracts. All of the difference in the average prevalence is statistically signficant. 
+
+
+## Regression Analysis for Redlining and Food Insecurity
+
+### Univariate Modelling
+
+Based on the results for the baseline characteristics analysis, we computed a linear regression model to explore the association between redlining grades and precentage of households enrolled in SNAP. 
+
+```{r}
+# univariate analysis
+lm(ph_snap~red_grade,final_analysis)|>
+  broom::tidy()|>
+  knitr::kable(digits= 3)
+```
+
+Based on the univariate model, we found the percentage of household enrolled in SNAP was 17.97%, 12.90% and 11.53% higher respectively in the D-grade, C-grade and B-grade census tracts compared to A-grade census tracts (all p-value <0.001). 
+
+### Multivariate Modelling
+
+```{r}
+## multivariate model 1
+red_snap_m1 = lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,final_analysis)
+tidy_model = broom::tidy(red_snap_m1)
+ci = confint(red_snap_m1)
+
+tidy_model|>
+  mutate(
+    CI_Lower = ci[, 1],
+    CI_Upper = ci[, 2],
+  )|>
+  select(term, estimate, p.value, CI_Lower, CI_Upper)|>
+  knitr::kable(digits = 3, caption = "Model 1 Estimates with 95% Confidence Intervals")
+```
+
+When the association between redlining grades and SNAP enrollment evaluated using a linear regression model, D-grade census tracts had a 4.04% higher SNAP enrollment compared to A-grade census tracts (p = 0.037), indicating a statistically significant relationship. However, for B-grade and C-grade tracts, the differences were not statistically significant (p = 0.087 and p = 0.283 respectively). Among the covariates, a 1% increase in minority population was associated with a 0.16% increase in SNAP enrollment (p < 0.001). Additionally, the percentage of households with elderly members was negatively associated with SNAP enrollment (-0.33%, p < 0.001), while households with disabilities (+0.75%, p < 0.001) and those with no workers (+0.32%, p < 0.001) showed significant positive associations.
+
+```{r}
+## histogram for snap enrollment
+ggplot(final_analysis, aes(x = ph_snap)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black") +
+  labs(
+    title = "Histogram of ph_snap",
+    x = "SNAP Enrollment (ph_snap)",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+```
+
+The histogram shows that SNAP enrollment is right-skewed, with the majority of census tracts having lower percentages of households enrolled. Therefore, transformations were applied.
+
+```{r}
+## multivariate model 2
+red_snap_m2 =
+  final_analysis|>
+  lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability+ph_no_work, data=_)
+
+tidy_model = broom::tidy(red_snap_m2)
+ci = confint(red_snap_m2)
+
+tidy_model|>
+  mutate(
+    Back_Transformed_Estimate = exp(estimate),
+    CI_Lower = exp(ci[, 1]),
+    CI_Upper = exp(ci[, 2]),
+    p.value = ifelse(p.value<0.001, "<0.001", p.value)
+  )|>
+  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
+  knitr::kable(digits = 3, caption = "Model 2 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
+```
+
+We applied a log transformation to SNAP enrollment to better address skewness in the data, with results interpreted as multiplicative changes. Compared to A-grade tracts, D-grade tracts exhibited 1.82 times higher SNAP enrollment (p < 0.001). Similarly, B-grade and C-grade tracts showed increases of 1.78 times (p < 0.001) and 1.75 times (p < 0.001), respectively. Covariates such as minority population and households with disabilities remained significant. A 1% increase in minority population was associated with a 1.2% increase in SNAP enrollment (p < 0.001), while households with elderly members were associated with a 1.4% decrease in SNAP enrollment (p < 0.001).
+
+```{r}
+##multivariate model 3
+red_snap_m3 = lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+
+tidy_model = broom::tidy(red_snap_m3)
+ci = confint(red_snap_m3)
+
+tidy_model|>
+  mutate(
+    Back_Transformed_Estimate = exp(estimate),
+    CI_Lower = exp(ci[, 1]),
+    CI_Upper = exp(ci[, 2]),
+    p.value = ifelse(p.value<0.001, "<0.001", p.value)
+  )|>
+  select(term, estimate, p.value, Back_Transformed_Estimate, CI_Lower, CI_Upper)|>
+  knitr::kable(digits = 3, caption = "Model 3 Coefficients with Back-Transformed Estimates and 95% Confidence Intervals")
+```
+
+Then we included specific ethnic proportions (White, Black, and Asian) as covariates, refining the analysis. In this model, D-grade tracts had 1.94 times higher SNAP enrollment compared to A-grade tracts (p < 0.001). B-grade and C-grade tracts had increases of 1.85 times (p < 0.001) and 1.80 times (p < 0.001), respectively. Among ethnic covariates, a higher proportion of White households was associated with slightly lower SNAP enrollment, with a 1% increase in White population reducing enrollment by 1.9% (p < 0.001). Similarly, higher proportions of Black and Asian households also exhibited small negative associations. As in previous models, households with disabilities (+3.2%, p < 0.001) and no workers (+0.9%, p < 0.001) remained significant predictors of higher SNAP enrollment. 
+
+
+### Cross Validation and Model Selection
+
+To assess the predictive performance of the three multivariate models, Monte Carlo cross-validation was conducted, calculating the Root Mean Square Error (RMSE) for each model across multiple training and testing splits.
+
+
+```{r}
+cv_df =
+  crossv_mc(final_analysis, 100)
+
+cv_df =
+cv_df|>
+  mutate(model_1 = map(train, \(df)  
+                       lm(ph_snap~red_grade+minority+ph_elderly+ph_disability+ph_no_work,
+                          data=df)),
+         model_2 = map(train, \(df) 
+                       lm(log(ph_snap+1)~red_grade+minority+ph_elderly+ph_disability
+                          +ph_no_work,data=df)),
+         model_3 = map(train, \(df) 
+                       lm(log(ph_snap+1)~red_grade+ph_white+ph_black+ph_asian+ph_elderly
+                          +ph_disability+ph_no_work, data=df))
+           )|>
+  mutate(
+    rmse_m1 = map2_dbl(model_1, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_m2 = map2_dbl(model_2, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_m3 = map2_dbl(model_3, test, \(mod, df) rmse(model = mod, data = df))
+  )
+
+cv_df |> 
+  select(starts_with("rmse")) |> 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") |> 
+  mutate(model = fct_inorder(model)) |> 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()+
+  labs(title = "Model 1 vs. Model 2 & 3")+
+  theme_minimal()
+```
+
+Model 1, which used a simple linear approach without log transformation, demonstrated the highest RMSE values, averaging over 10 units. This poor performance indicates that the linearity assumption of Model 1 poorly captures the variability in SNAP enrollment.
+
+Conversely, Model 2 and Model 3, both of which log-transformed SNAP enrollment to account for its right-skewed distribution, exhibited significantly lower RMSE values. This suggests that these models provided a much better fit to the data and were more reliable in predicting SNAP enrollment.
+
+```{r}
+cv_df |> 
+  select(starts_with("rmse")) |> 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") |> 
+  mutate(model = fct_inorder(model)) |> 
+  filter(model == "m2" | model== "m3")|>
+  ggplot(aes(x = model, y = rmse)) + geom_violin()+
+  labs(title = "Model 2 vs. Model 3")+
+  theme_minimal()
+```
+
+Focusing on the violin plot comparing Model 2 and Model 3, the RMSE values for both models are clustered closely together, with Model 3 showing slightly lower RMSE on average. Model 3, which incorporates detailed racial and ethnic composition variables, performed marginally better than Model 2, which used a simplified “minority” variable to summarize racial and ethnic factors. This improvement indicates that accounting for specific racial variations enhances the model’s ability to explain and predict SNAP enrollment.
+
+Therefore, model 3 provides the most robust framework for understanding the relationship between redlining, demographic factors, and food insecurity.
+
+
+## Association of Health Outcomes and Redlining
+
+### Preview the Health Outcomes Data
+```{r}
+baseline_char|>
+  filter(variable %in% c("obesity","diabetes","highchol"))|>
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3)
+
+final_analysis |>
+  select(red_grade, obesity, diabetes, highchol) |>
+  pivot_longer(cols = c(obesity, diabetes, highchol), 
+               names_to = "outcome", 
+               values_to = "value") |> 
+  ggplot(aes(x = red_grade, y = value, fill = outcome)) +
+  geom_boxplot() +
+  facet_wrap(~ outcome, scales = "free_y") +
+  labs(title = "Boxplot of Health Outcomes by Redlining Grade",
+       x = "Redlining Grade",
+       y = "Outcome Value")
+```
+
+- Obesity prevalence increases with worsening redlining grades, from 20.74% in A-grade tracts to 28.71% in D-grade tracts (p < 0.001). C-grade and B-grade tracts show averages of 27.51% and 25.92%, respectively. The boxplot reveals higher median values and greater variability in obesity for more redlined areas.
+
+- High cholesterol prevalence decreases with worsening redlining grades, from 37.28% in A-grade tracts to 32.29% in D-grade tracts (p < 0.001). B-grade and C-grade tracts have averages of 34.50% and 34.14%, with tighter distributions in less-redlined areas.
+
+- Diabetes prevalence also rises with worsening redlining grades, increasing from 9.25% in A-grade tracts to 12.36% in C-grade tracts and 11.58% in D-grade tracts (p < 0.001). B-grade tracts fall in between at 11.11%, with greater variability observed in more redlined areas.
+
+
+### Univariate Modelling
+
+```{r}
+diabetes_model = lm(diabetes ~ red_grade, data = final_analysis)
+diabetes_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3, caption = "Univariate Regression Model for Diabetes")
+```
+
+In the univariable diabetes model, the results indicate a similar trend, with redlining grades playing a significant role. The intercept for grade A was 9.247 (p < 0.001), while the estimates for grade B, grade C, and grade D were 1.866, 3.108, and 2.337, respectively. While the relationship is positive, it is less pronounced than for obesity. The coefficients show a gradual increase in diabetes levels as the redlining grade worsens, and the p-values for all estimates were statistically significant (p < 0.05), further solidifying the link between redlining and diabetes.
+
+```{r}
+chol_model = lm(highchol ~ red_grade, data = final_analysis) 
+chol_model |> 
+  broom::tidy()|> 
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3, caption = "Univariate Regression Model for High Cholesterol")
+```
+
+The results from the univariable high cholesterol model showed a clear relationship between redlining grades and high cholesterol. Specifically, individuals from areas with worse redlining grades (e.g., grades C and D) are more likely to have higher high cholesterol outcomes. The intercept of 37.275 (p < 0.001) indicates a baseline level of high cholesterol for individuals in grade A areas. However, when moving to B, C, and D, the estimated effects were negative, with estimates of -2.775, -3.133, and -4.989, respectively, all with p-values less than 0.001. This trend suggests that, contrary to what might be expected, individuals from higher redlining grades may have lower high cholesterol scores, potentially due to systemic barriers and less access to health resources that prevent the management of high cholesterol.
+
+```{r}
+obesity_model = lm(obesity ~ red_grade, data = final_analysis) 
+obesity_model|> 
+  broom::tidy()|> 
+  mutate(p.value = ifelse(p.value<0.001, "<0.001", p.value)) |> 
+  knitr::kable(digits = 3, caption = "Univariate Regresion Model for Obesity")
+```
+
+In the univariable obesity model, the relationship between redlining and obesity outcomes is more directly significant. The intercept of 20.736 (p < 0.001) provides the baseline obesity rate for individuals in grade A areas. For grade B, grade C, and grade D, the estimates were 5.187, 6.770, and 7.974, respectively (all with p < 0.001). These results showed that as the redlining grade worsens, obesity prevalence increases. This finding aligns with previous research suggesting that neighborhoods with poorer infrastructure, limited access to healthy food, and reduced access to healthcare services may exacerbate obesity rates. The statistically significant p-values for all grades further support that redlining has a substantial effect on obesity outcomes.
+
+
+Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (ph_white, ph_black, ph_asian), age (ph_elderly), disability (ph_disability), and employment status (ph_no_work). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
+
+
+### Multivariate Modelling
+
+```{r}
+diabetes_adj_model = lm(log(diabetes)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+diabetes_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3, caption = "Multivariate Regression Model for Diabetes")
+```
+
+The adjusted model for diabetes revealed no significant differences in diabetes prevalence between redlining grades after accounting for covariates such as racial composition, elderly population, disability, and no-work households. The estimates for B-grade (0.022, p = 0.520), C-grade (0.057, p = 0.092), and D-grade (-0.008, p = 0.825) were not statistically significant. Among the covariates, the proportion of White, Black, and Asian populations were significantly associated with diabetes prevalence. Specifically, a 1% increase in the White population was associated with a 0.9% decrease in diabetes prevalence (p < 0.001), while increases in Black and Asian populations were also negatively associated but to a lesser extent. Other significant covariates included the proportion of elderly households (+0.6%, p < 0.001), disability (+0.7%, p < 0.001), and no-work households (+0.5%, p < 0.001), all of which were positively associated with diabetes prevalence.
+
+```{r}
+highcol_adj_model = lm(log(highchol)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+highcol_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3, caption = "Multivariate Regression Model for High Cholesterol")
+```
+
+The adjusted model for high cholesterol showed a significant decrease in prevalence in B-grade (-0.034, p = 0.015), C-grade (-0.047, p = 0.001), and D-grade (-0.059, p < 0.001) tracts compared to A-grade tracts. Among the covariates, the proportion of Asian households was positively associated with high cholesterol prevalence (+0.2%, p < 0.001), while the proportion of elderly households was strongly positively associated (+2.5%, p < 0.001). Disability (+0.1%, p < 0.001) and no-work households (+0.2%, p < 0.001) also showed positive associations. Interestingly, the proportions of White and Black populations did not exhibit significant associations with high cholesterol prevalence.
+
+```{r}
+obesity_adj_model = lm(log(obesity)~red_grade+ph_white+ph_black+ph_asian+ph_elderly+ph_disability+ph_no_work,final_analysis)
+obesity_adj_model |> 
+  broom::tidy()|> 
+  knitr::kable(digits = 3, caption = "Multivariate Regression Model for Obesity")
+```
+
+The adjusted model for obesity indicated significant differences across redlining grades, with obesity prevalence higher in B-grade (0.101, p < 0.001), C-grade (0.151, p < 0.001), and D-grade (0.118, p < 0.001) tracts compared to A-grade tracts. Among the covariates, the proportion of White households was negatively associated with obesity prevalence, with a 0.5% decrease per 1% increase in the White population (p < 0.001). Conversely, increases in Black and Asian populations were also negatively associated, with estimates of -0.1% (p < 0.001) and -1.0% (p < 0.001), respectively. Other significant covariates included disability (+0.5%, p < 0.001) and no-work households (+0.1%, p = 0.011), which were positively associated with obesity prevalence. The proportion of elderly households was negatively associated (-0.1%, p = 0.001).
+
+
 # Discussion
 
-Our analysis found that redlining is significantly associated with food insecurity in New York City at the census tract level. This finding indicates that historic housing policies affected households' food security and relevant health outcomes in New York City. Households residing in neighborhoods that were graded as declining or hazardous were more likely to have limited access to adequate food compared to households residing in neighborhoods that were graded as desirable by HOLC.
+Our analysis demonstrates a significant association between historical redlining and food insecurity in New York City, highlighting how discriminatory housing policies have shaped access to resources and health outcomes at the census tract level. Neighborhoods historically graded as “declining” or “hazardous” were more likely to experience limited access to adequate food compared to those classified as “desirable” by the Home Owners’ Loan Corporation (HOLC). These findings underscore the enduring legacy of systemic disinvestment in marginalized communities.
 
-Discriminatory housing policies like redlining have created structural inequalities that have had a significant influence on people's health, and racial minorities and people with low socio-economic status were disproportionately affected. Redlined neighborhoods also had a higher proportion of racial minorities, households with people with disabilities, and households living under the poverty line. Redlined neighborhoods had a higher prevalence of obesity compared to neighborhoods that were classified as desirable. However, diabetes was not found to be associated with historical redlining. Redlined neighborhoods were also found to have a significantly lower prevalence of high cholesterol levels compared to neighborhoods that were classified as desirable. Future research should focus on understanding the complex relationships between historical policies, food access, and relevant health outcomes. These findings imply that policy interventions need to target redlined neighborhoods with increased resources and support to address food insecurity and related health disparities, such as higher rates of obesity.
+Redlining has entrenched structural inequalities, disproportionately affecting racial minorities and individuals with low socioeconomic status. Redlined neighborhoods have higher proportions of racial minorities, households with people with disabilities, and families living under the poverty line. In terms of health outcomes, redlined neighborhoods exhibit significantly higher prevalence rates of obesity but a surprisingly lower prevalence of high cholesterol compared to more privileged neighborhoods. Diabetes, however, showed no significant direct association with redlining in adjusted models. These results suggest a complex interplay of historical policies, food access, and health outcomes that requires further investigation.
 
-The strength of our project was that we utilized data from multiple sources to explore the association between redlining and food insecurity. We explored the issue from both a socio-economic and health perspective using visualization and statistical analysis. One of the limitations of our analysis would be that the percentage of households enrolled in SNAP is highly right-skewed and thus may affect the homoscedasticity of the model. We were able to address that by performing a log transformation to increase the robustness of our model. 
+One strength of this study is the integration of multiple data sources, allowing for a comprehensive analysis of the socioeconomic and health dimensions of food insecurity. By combining visualizations and statistical models, this research provides insights into the legacy of redlining and its implications for modern-day disparities. However, limitations remain. The right-skewed distribution of SNAP enrollment posed challenges to modeling assumptions, which we addressed through log transformations. Additionally, the cross-sectional design limits causal interpretations, and aggregated census tract-level data may obscure individual variations.
 
-The significant association between historical redlining and food insecurity in New York City suggests that discriminatory housing policies continue to have lasting effects on health outcomes. The higher prevalence of racial minorities, households with people with disabilities, and low-income families in redlined areas highlights the compounded impact of systemic inequities. Efforts to improve food access and reduce health disparities should therefore include targeted strategies aimed at these vulnerable populations. Public health initiatives might also need to involve urban planners, community organizations, and local governments to dismantle the structural barriers formed by redlining.
+Our findings underscore the persistent impact of discriminatory housing policies on food insecurity and health outcomes in historically marginalized neighborhoods. Redlined areas remain disadvantaged in terms of food access, particularly regarding affordable and nutritious options, which has contributed to higher obesity rates. Furthermore, the intersection of race, disability, and economic vulnerability continues to play a critical role in perpetuating these disparities.
+
+## Implications for Public Health and Policy
+These findings underscore the importance of addressing historical and systemic inequities through targeted public health interventions and policy reforms. The concentration of food insecurity and health disparities in redlined neighborhoods calls for investment in community-based programs aimed at increasing access to affordable, nutritious food. Expanding the availability of healthy grocery stores, improving public transportation, and incentivizing local food production could mitigate the challenges faced by these communities.
+
+Additionally, policies should prioritize improving healthcare access and preventive services in historically redlined neighborhoods. Initiatives such as mobile health clinics, community health education, and subsidies for preventive care can help address the health disparities observed in these areas. Policymakers must also recognize the role of urban planning in shaping social determinants of health. Collaborative efforts involving public health agencies, city planners, and community organizations are essential to dismantling the structural barriers created by redlining and fostering equitable urban development.
+
+## Limitations
+
+While this study provides valuable insights, it is not without limitations. The cross-sectional nature of the analysis limits the ability to infer causality, and the use of aggregated census tract-level data may mask individual-level variations. Additionally, the models assume that historical redlining is uniformly experienced across neighborhoods, which may oversimplify the nuances of community dynamics and contemporary urban policies. Future research should explore longitudinal data to examine how neighborhood changes over time mediate the relationship between historical redlining and food insecurity.
 
 
+# Conclusion
 
+Our findings reveal the persistent and multifaceted impact of historical redlining on food insecurity and health disparities in New York City. Addressing these inequities requires systemic changes that go beyond individual interventions, focusing on dismantling structural barriers and promoting community resilience. By prioritizing equity in urban development and public health policies, it is possible to create sustainable, healthier environments for all New Yorkers, particularly those in historically marginalized communities.
 
-
-
-
-After adjusting for other socioeconomic factors, the redlining grades did not show statistically significant effects in this model, particularly for grades B, C, and D. Race and disability were significant predictors of the outcome, with white individuals showing a negative relationship with the outcome and black and asian individuals also showing significant negative associations.
-Being elderly, having a disability, or being unemployed were significantly associated with higher outcomes, suggesting that these socio-demographic factors play a critical role in the health disparity seen in redlined areas.
-
-The relationship between redlining grades and diabetes is robust, even after controlling for race, age, disability, and employment status. This indicated that redlining has a direct and significant impact on the prevalence of diabetes, likely due to limited access to healthcare, healthy food, and physical activity resources in redlined areas.
-
-For high cholesterol, redlining continued to show a negative relationship, but the effect size is smaller than for diabetes. The adjusted model indicated that race and socioeconomic status are crucial in understanding how redlining impacts health outcomes.
-
-Our findings indicated that redlining continues to have a direct and significant influence on diabetes outcomes, even after controlling for other socioeconomic factors, emphasizing that limited access to healthcare, nutritious food, and physical activity resources in these areas contributes to higher diabetes rates. Conversely, the relationship between redlining and high cholesterol is weaker, but still significant, highlighting the broader health disparities faced by residents in redlined communities. While the effect of redlining grades on obesity diminished after adjusting for socioeconomic factors, other important predictors, such as race and disability, remain significant, demonstrating the complexity of health outcomes in redlined areas. Specifically, individuals who are elderly, disabled, or unemployed were found to have higher levels of the outcome, reinforcing the role of social determinants in shaping health.
-
-These results emphasized the need for targeted interventions that address not only the historical and structural impacts of redlining, but also the broader socioeconomic factors that perpetuate health disparities.
