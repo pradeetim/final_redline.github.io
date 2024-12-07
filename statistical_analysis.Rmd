@@ -489,7 +489,7 @@ obesity_model|>
 In the univariable obesity model, the relationship between redlining and obesity outcomes is more directly significant. The intercept of 20.736 (p < 0.001) provides the baseline obesity rate for individuals in grade A areas. For grade B, grade C, and grade D, the estimates were 5.187, 6.770, and 7.974, respectively (all with p < 0.001). These results showed that as the redlining grade worsens, obesity prevalence increases. This finding aligns with previous research suggesting that neighborhoods with poorer infrastructure, limited access to healthy food, and reduced access to healthcare services may exacerbate obesity rates. The statistically significant p-values for all grades further support that redlining has a substantial effect on obesity outcomes.
 
 
-Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (ph_white, ph_black, ph_asian), age (ph_elderly), disability (ph_disability), and employment status (ph_no_work). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
+Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (`ph_white`, `ph_black`, `ph_asian`), age (`ph_elderly`), disability (`ph_disability`), and employment status (`ph_no_work`). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
 
 
 ### Multivariate Modelling

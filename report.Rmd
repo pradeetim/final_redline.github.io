@@ -206,13 +206,6 @@ health_store_count =
 nyc_healthy_store|>
   group_by(geoid)|>
   summarise(count_healthy_stores=n())
-
-#please note that healthy store count is only available in three boroughs so make sure you filter before the match
-#example code for the match
-
-redlining_snap|>
-  filter(str_starts(geoid, "36005") | str_starts(geoid, "36047")| str_starts(geoid, "36061"))|>
-  left_join(health_store_count,by="geoid")
 ```
 
 ### PLACE data 
@@ -263,18 +256,6 @@ Map visualizations play a key role in this project by bringing the data to life 
 
 We loaded essential libraries for data manipulation, visualization, and interactive plots, and we pulled ACS data for NYC census tracts using tidycensus, assigned borough names based on county names, transformed the spatial data for compatibility with leaflet, and merged this spatial data with redlining and SNAP-related datasets for further analysis and visualization.
 
-```{r setup, results='hide', message=FALSE, warning=FALSE}
-library(tidyverse)
-library(ggplot2)
-library(dplyr)
-library(plotly)
-library(stringr)
-```
-
-```{r datacleaning, results='hide', message=FALSE, warning=FALSE}
-rmarkdown::render("data_cleaning.rmd", quiet = TRUE)
-```
-
 ```{r setup2, results='hide', message=FALSE, warning=FALSE}
 # Mapping set up
 # Load the packages
@@ -306,9 +287,6 @@ nyc_tracts <- nyc_tracts |>
 
 head(nyc_tracts)
 
-```
-
-```{r, warning=FALSE}
 nyc_tracts = nyc_tracts |>
   rename(geoid = GEOID)
 
@@ -597,75 +575,11 @@ leaflet(redlining_sf) |>
 
 ```
 This map provide a focused exploration of healthy grocery stores in three boroughs: Manhattan, Brooklyn, and the Bronx.
-- The density of healthy grocery stores in Bronx is uneven across neighborhoods, with higher concentrations in specific areas.
-- In Brooklyn, healthy grocery stores are relatively well-distributed, but there are clear clusters in central and northern neighborhoods. Southern Brooklyn appears less represented in this dataset, potentially reflecting disparities in access.
+* The density of healthy grocery stores in Bronx is uneven across neighborhoods, with higher concentrations in specific areas.
+* In Brooklyn, healthy grocery stores are relatively well-distributed, but there are clear clusters in central and northern neighborhoods. Southern Brooklyn appears less represented in this dataset, potentially reflecting disparities in access.
 
 
 ## Health Outcomes Exploration
-
-### Health Outcomes in NYC
-
-```{r, warning=FALSE, message=FALSE}
-health_data =
-  place_cleaned |>
-  left_join(redlining_snap, by = "geoid") |>
-  janitor::clean_names()
-
-health_data_long <- health_data %>%
-  drop_na(red_grade, obesity, diabetes, highchol) %>%
-  pivot_longer(cols = c(obesity, diabetes, highchol), 
-               names_to = "condition", values_to = "rate")
-
-census_api_key("f7b3e47cd8e0fdf7f504751ffad10825be7a5ccf")  # API key for Census API
-nyc_tracts <- get_acs(
-  geography = "tract",
-  variables = "B19013_001",  # Median household income as an example (this is just to pull the geometry)
-  state = "NY",
-  county = c("Bronx", "Kings", "New York", "Queens", "Richmond"),
-  geometry = TRUE,
-  year = 2020
-) %>%
-  st_transform(crs = 4326)  # Transform to WGS84 for compatibility with Leaflet
-
-nyc_tracts <- nyc_tracts %>%
-  mutate(borough = case_when(
-    str_detect(NAME, "Bronx County") ~ "Bronx",
-    str_detect(NAME, "Kings County") ~ "Brooklyn",
-    str_detect(NAME, "New York County") ~ "Manhattan",
-    str_detect(NAME, "Queens County") ~ "Queens",
-    str_detect(NAME, "Richmond County") ~ "Staten Island",
-    TRUE ~ "Unknown"
-  )) |>
-  janitor::clean_names()
-
-health_spatial_data <- nyc_tracts %>%
-  left_join(health_data_long, by = "geoid")  # Make sure the 'geoid' column matches in both datasets
-
-leaflet(health_spatial_data) %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%  
-  addPolygons(
-    fillColor = ~colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate)(rate),  # Color based on 'rate'
-    weight = 1,
-    opacity = 1,
-    color = "black",
-    fillOpacity = 0.7,
-    highlightOptions = highlightOptions(
-      weight = 2,
-      color = "#666",
-      fillOpacity = 0.9,
-      bringToFront = TRUE
-    ),
-    # Modify the label to show 'condition' and 'rate'
-    label = ~paste0("Condition: ", condition,
-                    "<br>Rate: ", round(rate, 2))
-  ) %>%
-  addLegend(
-    pal = colorNumeric(palette = "YlOrRd", domain = health_spatial_data$rate),  # Legend for color scale
-    values = ~rate,
-    title = "Health Condition Rate",
-    position = "bottomright"
-  )
-```
 
 ### Health Outcome vs Redlining Scores
 
@@ -1109,7 +1023,7 @@ obesity_model|>
 In the univariable obesity model, the relationship between redlining and obesity outcomes is more directly significant. The intercept of 20.736 (p < 0.001) provides the baseline obesity rate for individuals in grade A areas. For grade B, grade C, and grade D, the estimates were 5.187, 6.770, and 7.974, respectively (all with p < 0.001). These results showed that as the redlining grade worsens, obesity prevalence increases. This finding aligns with previous research suggesting that neighborhoods with poorer infrastructure, limited access to healthy food, and reduced access to healthcare services may exacerbate obesity rates. The statistically significant p-values for all grades further support that redlining has a substantial effect on obesity outcomes.
 
 
-Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (ph_white, ph_black, ph_asian), age (ph_elderly), disability (ph_disability), and employment status (ph_no_work). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
+Thus, we extended analysis and performed multivariable regression models that adjusted for additional covariates, including race (`ph_white`, `ph_black`, `ph_asian`), age (`ph_elderly`), disability (`ph_disability`), and employment status (`ph_no_work`). The goal of these models was to assess whether the relationships observed between redlining grades and health outcomes would hold after accounting for these important socio-demographic factors.
 
 
 ### Multivariate Modelling
