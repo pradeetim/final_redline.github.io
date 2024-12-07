@@ -577,8 +577,8 @@ leaflet(redlining_sf) |>
 
 ```
 This map provide a focused exploration of healthy grocery stores in three boroughs: Manhattan, Brooklyn, and the Bronx.
-* The density of healthy grocery stores in Bronx is uneven across neighborhoods, with higher concentrations in specific areas.
-* In Brooklyn, healthy grocery stores are relatively well-distributed, but there are clear clusters in central and northern neighborhoods. Southern Brooklyn appears less represented in this dataset, potentially reflecting disparities in access.
+- The density of healthy grocery stores in Bronx is uneven across neighborhoods, with higher concentrations in specific areas.
+- In Brooklyn, healthy grocery stores are relatively well-distributed, but there are clear clusters in central and northern neighborhoods. Southern Brooklyn appears less represented in this dataset, potentially reflecting disparities in access.
 
 
 ## Health Outcomes Exploration
