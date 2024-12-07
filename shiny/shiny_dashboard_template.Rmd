@@ -72,7 +72,10 @@ redlining_sf <- redlining_sf |>
 
 nyc_healthy_store = nyc_healthy_store |>
   mutate(borough = case_when(
+    str_detect(borough, "Bronx") ~ "Bronx",
+    str_detect(borough, "Brooklyn") ~ "Brooklyn",
     str_detect(borough, "New York") ~ "Manhattan",
+    str_detect(borough, "Queens") ~ "Queens",
     TRUE ~ "Unknown" 
   ))
 
