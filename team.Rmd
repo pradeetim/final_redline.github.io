@@ -10,6 +10,24 @@ Thank you for visiting our website to learn more about redlining.
 
 Meet the team below:
 
+#### Polly Wu
+
+<img src = "images/authors/headshot_pw.jpg" style = "width:25%">
+
+Polly is a second year MPH student in the Epidemiology Department. She works as a fellow for the CEESP program and a research assistant for the School of Nursing at Columbia University. She loves crochet and cooking outside of her professional life. 
+
+#### Pradeeti Mainali
+
+<img src = "images/authors/pradeeti.jpg" style = "width:25%">
+
+Pradeeti is a second year MPH Epidemiology student. She currently works as a research assistant at NJMS DOMC Infectious Disease. She enjoys watching shows/movies and painting. She also likes playing games on her xbox (currently playing Diablo III).
+
+#### Shizhe Zhang
+
+<img src = "images/authors/Shizhe.JPG" style = "width:25%">
+
+Shizhe is a second year MPH Biostatistics student. She is currently a research assistant in Biostatistics Department in CUMC. She is a big fan of theaters.
+
 #### Sining Leng
 
 <img src = "images/authors/Sining.jpg" style = "width:25%">
@@ -22,20 +40,3 @@ Sining is a second-year MPH student in the Biostatistics Department. She works i
 
 Yan is a second-year MPH student in the Epidemiology Department at Columbia University. She is interested in infectious disease and organ transplant research. She enjoys building Legos and spending time with cats.
 
-#### Pradeeti Mainali
-
-<img src = "images/authors/pradeeti.jpg" style = "width:25%">
-
-Pradeeti is a second year MPH Epidemiology student. She currently works as a research assistant at NJMS DOMC Infectious Disease. She enjoys watching shows/movies and painting. She also likes playing games on her xbox (currently playing Diablo III).
-
-#### Polly Wu
-
-<img src = "images/authors/headshot_pw.jpg" style = "width:25%">
-
-Polly is a second year MPH student in the Epidemiology Department. She works as a fellow for the CEESP program and a research assistant for the School of Nursing at Columbia University. She loves crochet and cooking outside of her professional life. 
-
-#### Shizhe Zhang
-
-<img src = "images/authors/Shizhe.JPG" style = "width:25%">
-
-Shizhe is a second year MPH Biostatistics student. She is currently a research assistant in Biostatistics Department in CUMC. She is a big fan of theaters.
