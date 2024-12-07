@@ -38,6 +38,7 @@ We selected the variables that were relevant to our analysis to build the final 
   
   - ` r geoid`: the geographic id for identification of census tract 
   - `total_ct_households`: estimate total count for number of households 
+  - `ph_elderly`: estimate percentage of households with one or more people in the household to be 60 or over
   - `ph_with_children`: estimate percentage of households with children under 18 years
   - `ph_no_children`: estimate percentage of households without children under 18 years 
   - `ph_below_poverty`:estimate percentage of households below poverty level in the past 12 months
@@ -57,9 +58,9 @@ We selected the variables that were relevant to our analysis to build the final 
 
 ### Historic Redlining Score Data
 
-The historic redlining score(HRS) (`hrs2020`) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. The more detailed methodology regarding coding for redlining grades can be found [here](https://ncrc.org/holc-health/#methods).
+The historic redlining score (HRS) (`hrs2020`) was obtained from the calculation by the National Community Reinvestment Coalition(NCRC). It was a weighted score calculated based on the percentage of the area within each 2020 census tract according to HOLC grades. HRS ranged from 1-4, the higher the score indicated a greater level of historical redlining. The detailed method for calculating the HRS was indicated in the figure below. The hrs data was divided into quartiles and the division of quartiles is indicated by the `interval2020` variable. The more detailed methodology regarding coding for redlining grades can be found [here](https://ncrc.org/holc-health/#methods).
 
-We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with HOLC grades according to hrs. A (hrs: 1~1.5) defined as "Best", B (hrs: 1.5~2.5) defined as "Still Desirable", C (hrs: 2.5~3.5) defined as "Definitely Declining” and D(hrs > 3.5) defined as "Hazardous”.
+We filtered based on the geoid to only keep the data for the census tracts within NYC based on the fipcodes for NYC counties. We recoded the census tracts with the Home Owners’ Loan Corporation (HOLC) grades according to HRS. A (HRS: 1~1.5) defined as "Best", B (HRS: 1.5~2.5) defined as "Still Desirable", C (HRS: 2.5~3.5) defined as "Definitely Declining” and D(HRS > 3.5) defined as "Hazardous”.
 
 ## Recognized Healthy Store in NYC 
 
@@ -89,6 +90,7 @@ SNAP =
   janitor::clean_names()|>
   select(
     geo_id:s2201_c01_001e,
+    s2201_c02_002e,
     s2201_c02_009e,
     s2201_c02_015e,
     s2201_c02_021e:s2201_c02_028e,
@@ -100,6 +102,7 @@ SNAP =
   mutate(geoid = str_remove(geo_id, ".*US"))|>
   rename(
      total_ct_households = s2201_c01_001e,
+     ph_elderly = s2201_c02_002e,
      ph_with_children = s2201_c02_009e,
      ph_no_children = s2201_c02_015e,
      ph_below_poverty = s2201_c02_021e,
@@ -703,90 +706,9 @@ The graph shows how redlining grades correlate with health outcomes (diabetes, o
 
 # Statistical Analysis
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(readxl)
-library(ggplot2)
-library(modelr)
+We import the data set and merge the snap enrollment, redlining and place data together to create the dataset `final analysis`. We also created a variable to represent the percentage of household with minority population (1-percentage of household with white race) as `minority`. 
 
-SNAP = 
-  read_csv(file = "./Datasets/ACS_SNAP_ENROLLMENT.csv")|>
-  janitor::clean_names()|>
-  select(
-    geo_id:s2201_c01_001e,
-    s2201_c02_002e,
-    s2201_c02_009e,
-    s2201_c02_015e,
-    s2201_c02_021e:s2201_c02_028e,
-    s2201_c02_032e,
-    s2201_c02_036e:s2201_c02_038e,
-    s2201_c04_001e)|>
-  select(-ends_with("m"))|>
-  slice(-1)|>
-  mutate(geoid = str_remove(geo_id, ".*US"))|>
-  rename(
-     total_ct_households = s2201_c01_001e,
-     ph_elderly = s2201_c02_002e,
-     ph_with_children = s2201_c02_009e,
-     ph_no_children = s2201_c02_015e,
-     ph_below_poverty = s2201_c02_021e,
-     ph_above_poverty = s2201_c02_022e,
-     ph_disability = s2201_c02_023e,
-     ph_no_disability = s2201_c02_024e,
-     ph_white = s2201_c02_025e,
-     ph_black = s2201_c02_026e,
-     ph_asian = s2201_c02_028e,
-     ph_hispanic = s2201_c02_032e,
-     ph_no_work = s2201_c02_036e,
-     ph_1_work = s2201_c02_037e,
-     ph_2_work = s2201_c02_038e,
-     ph_snap = s2201_c04_001e
-  )|>
-  mutate(across(total_ct_households:ph_snap, as.numeric),
-         ph_other_race = 100-ph_white-ph_black-ph_asian,
-         ph_non_hispanic = 100-ph_hispanic)|>
-  select(geoid,name,ph_snap,everything())|>
-  select(-geo_id)
-
-redlining = 
-  read_excel("./Datasets/Historic Redlining Score 2020B.xlsx")|>
-  janitor::clean_names()|>
-  select(-cbsa)|>
-  mutate(fip = substr(geoid20, 1, 5),
-         interval2020 = as.character(interval2020),
-         red_grade = case_when(
-           hrs2020 < 1.5 ~ "A",
-           hrs2020 < 2.5 ~ "B",
-           hrs2020 < 3.5 ~ "C",
-           TRUE ~ "D"
-         ))|>
-  filter(fip %in% c("36005", "36047", "36061", "36081", "36085"))|>
-  rename(geoid = geoid20)
-
-redlining_snap = 
-  redlining|>
-  left_join(SNAP, by = "geoid")|>
-  filter(is.na(ph_snap)==FALSE)
-
-place_crude =
-  read_csv("./Datasets/PLACES.csv")|>
-  janitor::clean_names()|>
-  rename(geoid = location_id)|>
-  select(geoid, measure:data_value, measure_id)
-
-
-place_cleaned=
-  place_crude|>
-  filter(measure_id %in% c("DIABETES", "HIGHCHOL", "OBESITY"))|>
-  pivot_wider(
-    id_cols = geoid,
-    names_from = measure_id,
-    values_from = data_value
-  )|>
-  janitor::clean_names()|>
-  mutate(geoid = as.character(geoid))
-
-# match place data with redlining_snap 
+```{r message=FALSE, warning=FALSE}
 final_analysis = 
   redlining_snap|>
   left_join(place_cleaned, by = "geoid")|>
@@ -1066,6 +988,8 @@ To assess the predictive performance of the three multivariate models, Monte Car
 
 
 ```{r}
+library(modelr)
+
 cv_df =
   crossv_mc(final_analysis, 100)
 
@@ -1220,22 +1144,22 @@ The adjusted model for obesity indicated significant differences across redlinin
 
 # Discussion
 
-Our analysis demonstrates a significant association between historical redlining and food insecurity in New York City, highlighting how discriminatory housing policies have shaped access to resources and health outcomes at the census tract level. Neighborhoods historically graded as “declining” or “hazardous” were more likely to experience limited access to adequate food compared to those classified as “desirable” by the Home Owners’ Loan Corporation (HOLC). These findings underscore the enduring legacy of systemic disinvestment in marginalized communities.
+Our analysis demonstrates a significant association between historical redlining and food insecurity in New York City, highlighting how discriminatory housing policies have shaped access to resources and health outcomes at the census tract level. Neighborhoods historically graded as “declining” or “hazardous” were more likely to experience limited access to adequate food compared to those classified as “desirable” by HOLC. These findings underscore the enduring legacy of systemic disinvestment in marginalized communities.
 
 Redlining has entrenched structural inequalities, disproportionately affecting racial minorities and individuals with low socioeconomic status. Redlined neighborhoods have higher proportions of racial minorities, households with people with disabilities, and families living under the poverty line. In terms of health outcomes, redlined neighborhoods exhibit significantly higher prevalence rates of obesity but a surprisingly lower prevalence of high cholesterol compared to more privileged neighborhoods. Diabetes, however, showed no significant direct association with redlining in adjusted models. These results suggest a complex interplay of historical policies, food access, and health outcomes that requires further investigation.
 
-One strength of this study is the integration of multiple data sources, allowing for a comprehensive analysis of the socioeconomic and health dimensions of food insecurity. By combining visualizations and statistical models, this research provides insights into the legacy of redlining and its implications for modern-day disparities. However, limitations remain. The right-skewed distribution of SNAP enrollment posed challenges to modeling assumptions, which we addressed through log transformations. Additionally, the cross-sectional design limits causal interpretations, and aggregated census tract-level data may obscure individual variations.
-
-Our findings underscore the persistent impact of discriminatory housing policies on food insecurity and health outcomes in historically marginalized neighborhoods. Redlined areas remain disadvantaged in terms of food access, particularly regarding affordable and nutritious options, which has contributed to higher obesity rates. Furthermore, the intersection of race, disability, and economic vulnerability continues to play a critical role in perpetuating these disparities.
 
 ## Implications for Public Health and Policy
+
 These findings underscore the importance of addressing historical and systemic inequities through targeted public health interventions and policy reforms. The concentration of food insecurity and health disparities in redlined neighborhoods calls for investment in community-based programs aimed at increasing access to affordable, nutritious food. Expanding the availability of healthy grocery stores, improving public transportation, and incentivizing local food production could mitigate the challenges faced by these communities.
 
 Additionally, policies should prioritize improving healthcare access and preventive services in historically redlined neighborhoods. Initiatives such as mobile health clinics, community health education, and subsidies for preventive care can help address the health disparities observed in these areas. Policymakers must also recognize the role of urban planning in shaping social determinants of health. Collaborative efforts involving public health agencies, city planners, and community organizations are essential to dismantling the structural barriers created by redlining and fostering equitable urban development.
 
-## Limitations
+## Strength and Limitations
 
-While this study provides valuable insights, it is not without limitations. The cross-sectional nature of the analysis limits the ability to infer causality, and the use of aggregated census tract-level data may mask individual-level variations. Additionally, the models assume that historical redlining is uniformly experienced across neighborhoods, which may oversimplify the nuances of community dynamics and contemporary urban policies. Future research should explore longitudinal data to examine how neighborhood changes over time mediate the relationship between historical redlining and food insecurity.
+One strength of this study is the integration of multiple data sources, allowing for a comprehensive analysis of the socioeconomic and health dimensions of food insecurity. By combining visualizations and statistical models, this research provides insights into the legacy of redlining and its implications for modern-day disparities.
+
+While this study provides valuable insights, it is not without limitations.The right-skewed distribution of SNAP enrollment posed challenges to modeling assumptions, which we addressed through log transformations. Additionally, the cross-sectional design limits causal interpretations, and aggregated census tract-level data may obscure individual variations. The cross-sectional nature of the analysis limits the ability to infer causality, and the use of aggregated census tract-level data may mask individual-level variations. Additionally, the models assume that historical redlining is uniformly experienced across neighborhoods, which may oversimplify the nuances of community dynamics and contemporary urban policies. Future research should explore longitudinal data to examine how neighborhood changes over time mediate the relationship between historical redlining and food insecurity.
 
 
 # Conclusion

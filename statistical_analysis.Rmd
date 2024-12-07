@@ -99,6 +99,7 @@ final_analysis =
   )
 ```
 
+We import the data set and merge the snap enrollment, redlining and place data together to create the dataset `final analysis`. We also created a variable to represent the percentage of household with minority population (1-percentage of household with white race) as `minority`. 
 
 ## Desciptive Characteristics Based on Redlining Grades
 
