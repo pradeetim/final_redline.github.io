@@ -207,9 +207,9 @@ leaflet(redlining_sf) |>
 ```
 This map illustrates the strong correlation between historical redlining and present-day SNAP enrollment, underscoring how systemic inequities continue to influence food assistance needs across NYC.
 
-- The Bronx stands out with the highest overall SNAP enrollment, aligning with its high concentration of historically redlined zones and lower-income households.
-- Brooklyn also shows significant SNAP participation in neighborhoods historically marked as “hazardous.”
-- Queens and Staten Island have lower overall SNAP participation, which reflects fewer redlined areas and more suburban development patterns.
+* The Bronx stands out with the highest overall SNAP enrollment, aligning with its high concentration of historically redlined zones and lower-income households.
+* Brooklyn also shows significant SNAP participation in neighborhoods historically marked as “hazardous.”
+* Queens and Staten Island have lower overall SNAP participation, which reflects fewer redlined areas and more suburban development patterns.
 
 
 ### SNAP Total % of Households within Redline Grade
