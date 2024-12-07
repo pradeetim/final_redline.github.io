@@ -14,6 +14,7 @@ We selected the variables that were relevant to our analysis to build the final 
   
   - ` r geoid`: the geographic id for identification of census tract 
   - `total_ct_households`: estimate total count for number of households 
+  - `ph_elderly`: estimate percentage of households with one or more people in the household to be 60 or over
   - `ph_with_children`: estimate percentage of households with children under 18 years
   - `ph_no_children`: estimate percentage of households without children under 18 years 
   - `ph_below_poverty`:estimate percentage of households below poverty level in the past 12 months
