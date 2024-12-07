@@ -36,6 +36,7 @@ Our website will cover the following:
     - Healthy Grocery Stores in NYC
     - Distributions including all three variables
 - [Statistical Analysis](statistical_analysis.html)
+- [Shiny App](https://sz3214.shinyapps.io/shiny_dashboard_template/)
 
 
 ### Project Overview: Screencast
