@@ -41,7 +41,7 @@ Our website will cover the following:
 
 ### Project Overview: Screencast
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 library(vembedr)
 embed_url("https://youtu.be/BgGWxXNCHao")
 
