@@ -5,6 +5,6 @@ account: sz3214
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13522869
-bundleId: 9470118
+bundleId: 9477921
 url: https://sz3214.shinyapps.io/shiny_dashboard_template/
 version: 1

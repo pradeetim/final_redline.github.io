@@ -21,18 +21,9 @@ library(leaflet)
 library(tidycensus)
 ```
 
-<<<<<<< HEAD
 
-```{r server, echo=FALSE}
-server <- function(input, output, session) {
-  data_cleaning_report <- renderUI({
-    includeHTML("data_cleaning.html")
-  })
-}
-=======
-```{r datacleaning, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 rmarkdown::render("data_cleaning_shiny.Rmd", quiet = TRUE)
->>>>>>> 8ffeb999a15a159e3fc275be7930dbd9e03eb635
 ```
 
 ```{r setup2, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -78,6 +69,15 @@ redlining_sf <- redlining_sf |>
       TRUE ~ "Unknown"
     )
   )
+
+nyc_healthy_store = nyc_healthy_store |>
+  mutate(borough = case_when(
+    str_detect(borough, "Bronx") ~ "Bronx",
+    str_detect(borough, "Brooklyn") ~ "Brooklyn",
+    str_detect(borough, "New York") ~ "Manhattan",
+    str_detect(borough, "Queens") ~ "Queens",
+    TRUE ~ "Unknown" 
+  ))
 
 health_data =
   place_cleaned |>
