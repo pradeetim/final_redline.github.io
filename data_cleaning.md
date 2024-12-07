@@ -163830,8 +163830,8 @@ place_crude|>
   knitr::kable()
 ```
 
-| measure                                                   | data_value_unit | measure_id |
-|:----------------------------------------------------------|:----------------|:-----------|
-| Obesity among adults                                      | %               | OBESITY    |
-| Diagnosed diabetes among adults                           | %               | DIABETES   |
-| High cholesterol among adults who have ever been screened | %               | HIGHCHOL   |
+| measure | data_value_unit | measure_id |
+|:---|:---|:---|
+| Obesity among adults | % | OBESITY |
+| Diagnosed diabetes among adults | % | DIABETES |
+| High cholesterol among adults who have ever been screened | % | HIGHCHOL |
